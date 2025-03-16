@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'pages/home_page.dart';
 import 'pages/focuses_page.dart';
-import 'pages/planner_page.dart';
+import 'pages/schedule_page.dart';
 import 'pages/profile_page.dart';
 
 class MainScreen extends StatefulWidget {
@@ -33,6 +33,8 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -51,9 +53,6 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Profile'
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
       ),
     );
   }
