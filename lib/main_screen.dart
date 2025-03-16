@@ -15,6 +15,9 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = <Widget>[
+    HomePage(),
+    PlannerPage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
