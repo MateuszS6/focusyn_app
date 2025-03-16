@@ -1,8 +1,9 @@
-import 'package:focusyn_app/pages/planner_page.dart';
-import 'package:focusyn_app/pages/profile_page.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/home_page.dart';
+import 'pages/focuses_page.dart';
+import 'pages/planner_page.dart';
+import 'pages/profile_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,7 +17,8 @@ class _MainScreenState extends State<MainScreen> {
 
   final List<Widget> _pages = <Widget>[
     HomePage(),
-    PlannerPage(),
+    FocusesPage(),
+    SchedulePage(),
     ProfilePage(),
   ];
 
@@ -34,7 +36,11 @@ class _MainScreenState extends State<MainScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Home'
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.star),
+            label: 'Focuses'
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
@@ -42,7 +48,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Profile',
+            label: 'Profile'
           ),
         ],
         currentIndex: _selectedIndex,
