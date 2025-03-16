@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Focusyn [Alpha]',
       debugShowCheckedModeBanner: false,
+      home: MainScreen(),
     );
   }
 }
