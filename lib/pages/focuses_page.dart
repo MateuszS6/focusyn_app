@@ -10,15 +10,10 @@ class FocusesPage extends StatefulWidget {
 class _FocusesPageState extends State<FocusesPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Your Focuses'),
-          ],
-        ),
-      ),
+    return ListView(
+      children: <Widget>[
+        Text('Your Focuses')
+      ],
     );
   }
 }

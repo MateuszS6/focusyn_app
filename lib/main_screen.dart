@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/page_wrapper.dart';
 
-import 'pages/home_page.dart';
 import 'pages/focuses_page.dart';
-import 'pages/schedule_page.dart';
+import 'pages/home_page.dart';
 import 'pages/profile_page.dart';
+import 'pages/schedule_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -16,10 +17,10 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = <Widget>[
-    HomePage(),
-    FocusesPage(),
-    SchedulePage(),
-    ProfilePage(),
+    PageWrapper(child: HomePage()),
+    PageWrapper(child: FocusesPage()),
+    PageWrapper(child: SchedulePage()),
+    PageWrapper(child: ProfilePage()),
   ];
 
   void _onItemTapped(int index) {
@@ -41,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Home'
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.star),
+            icon: Icon(Icons.list),
             label: 'Focuses'
           ),
           BottomNavigationBarItem(

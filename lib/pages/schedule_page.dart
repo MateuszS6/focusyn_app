@@ -10,15 +10,10 @@ class SchedulePage extends StatefulWidget {
 class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Your Schedule'),
-          ],
-        ),
-      ),
+    return ListView(
+      children: <Widget>[
+        Text('Your Schedule'),
+      ],
     );
   }
 }
