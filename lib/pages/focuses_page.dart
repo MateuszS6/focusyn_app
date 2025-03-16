@@ -1,3 +1,4 @@
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
 class FocusesPage extends StatefulWidget {
@@ -29,6 +30,7 @@ class _FocusesPageState extends State<FocusesPage> {
           'Moments',
           'Upcoming events and deadlines',
         ),
+        _buildAddNewFocusCard(),
       ],
     );
   }
@@ -52,3 +54,35 @@ class _FocusesPageState extends State<FocusesPage> {
       ),
     );
   }
+
+  Widget _buildAddNewFocusCard() {
+    return GestureDetector(
+      onTap: () {
+        // nothing yet
+      },
+      child: DottedBorder(
+        color: Colors.grey,
+        strokeWidth: 2,
+        borderType: BorderType.RRect,
+        radius: Radius.circular(20),
+        dashPattern: [8, 4], // 8 is the dash, 4 is the gap
+        child: Container(
+          height: 100,
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add, color: Colors.grey),
+                SizedBox(width: 8),
+                Text(
+                  'Add New Focus',
+                  style: TextStyle(fontSize: 18, color: Colors.grey),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
