@@ -12,7 +12,10 @@ class _FocusesPageState extends State<FocusesPage> {
   Widget build(BuildContext context) {
     return ListView(
       children: <Widget>[
-        Text('Your Focuses')
+        Text(
+          'Your Focuses',
+          style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
+        ),
       ],
     );
   }
