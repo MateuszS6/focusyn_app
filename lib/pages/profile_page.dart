@@ -13,7 +13,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return ListView(
       children: <Widget>[
         Text(
-          'Profile',
+          'Mateusz',
           style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
         ),
       ],

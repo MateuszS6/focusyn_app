@@ -13,7 +13,7 @@ class _SchedulePageState extends State<SchedulePage> {
     return ListView(
       children: <Widget>[
         Text(
-          'Your Schedule',
+          'Schedule',
           style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
         ),
       ],

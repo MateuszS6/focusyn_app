@@ -14,7 +14,7 @@ class _FocusesPageState extends State<FocusesPage> {
     return ListView(
       children: <Widget>[
         Text(
-          'Your Focuses',
+          'Focuses',
           style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 48.0),
@@ -66,7 +66,7 @@ class _FocusesPageState extends State<FocusesPage> {
         borderType: BorderType.RRect,
         radius: Radius.circular(20),
         dashPattern: [8, 4], // 8 is the dash, 4 is the gap
-        child: Container(
+        child: SizedBox(
           height: 100,
           child: Center(
             child: Row(
@@ -75,7 +75,7 @@ class _FocusesPageState extends State<FocusesPage> {
                 Icon(Icons.add, color: Colors.grey),
                 SizedBox(width: 8),
                 Text(
-                  'Add New Focus',
+                  'Add new focus area',
                   style: TextStyle(fontSize: 18, color: Colors.grey),
                 ),
               ],

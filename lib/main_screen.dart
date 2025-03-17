@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/page_wrapper.dart';
 
 import 'pages/focuses_page.dart';
 import 'pages/home_page.dart';
@@ -17,10 +16,10 @@ class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = <Widget>[
-    PageWrapper(child: HomePage()),
-    PageWrapper(child: FocusesPage()),
-    PageWrapper(child: SchedulePage()),
-    PageWrapper(child: ProfilePage()),
+    HomePage(),
+    FocusesPage(),
+    SchedulePage(),
+    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -32,28 +31,50 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_selectedIndex],
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildSearchBar(),
+            Expanded(child: _pages.elementAt(_selectedIndex)),
+          ],
+        ),
+      ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        currentIndex: _selectedIndex,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home'
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list),
-            label: 'Focuses'
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Focuses'),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
             label: 'Schedule',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile'
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
         ],
+      ),
+    );
+  }
+
+  // Search bar widget
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: TextField(
+        onChanged: (value) {
+          // Implement search functionality here
+        },
+        decoration: InputDecoration(
+          hintText: 'Search...',
+          prefixIcon: Icon(Icons.search),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(30),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: Colors.grey[200],
+          contentPadding: const EdgeInsets.symmetric(vertical: 0.0),
+        ),
       ),
     );
   }
