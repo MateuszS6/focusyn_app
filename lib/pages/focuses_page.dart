@@ -11,46 +11,71 @@ class FocusesPage extends StatefulWidget {
 class _FocusesPageState extends State<FocusesPage> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(
       children: <Widget>[
-        Text(
-          'Focuses',
-          style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 32.0),
+          child: Text(
+            'Focuses',
+            style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold),
+          ),
         ),
-        const SizedBox(height: 48.0),
-        _buildFocusCard(
-          'Actions',
-          'Capture and organise tasks',
+        Expanded(
+          child: _buildFocusCard(
+            Icons.checklist_rounded,
+            'Actions',
+            'Capture and organise tasks',
+          ),
         ),
-        _buildFocusCard(
-          'Flows',
-          'Build daily and weekly habits',
+        Expanded(
+          child: _buildFocusCard(
+            Icons.timeline_rounded,
+            'Flows',
+            'Build daily and weekly habits',
+          ),
         ),
-        _buildFocusCard(
-          'Moments',
-          'Upcoming events and deadlines',
+        Expanded(
+          child: _buildFocusCard(
+            Icons.event_rounded,
+            'Moments',
+            'Upcoming events and deadlines',
+          ),
         ),
-        _buildAddNewFocusCard(),
+        // _buildAddNewFocusCard(),
       ],
     );
   }
 
   // Helper Widget
-  Widget _buildFocusCard(String title, String description) {
+  Widget _buildFocusCard(IconData icon, String title, String description) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.all(20),
+      margin: EdgeInsets.only(left: 8, top: 24, right: 8),
+      padding: EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.grey[200], // Placeholder color
+        color: Colors.grey[200], // Placeholder colour
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
         children: [
-          Text(title, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-          SizedBox(height: 8),
-          Text(description, style: TextStyle(fontSize: 16, color: Colors.grey[600])),
-        ],
+          Padding(
+            padding: const EdgeInsets.only(left: 8, right: 24.0),
+            child: Icon(icon, size: 48),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(title, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+              SizedBox(height: 8),
+              Text(
+                description,
+                style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ]
       ),
     );
   }

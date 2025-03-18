@@ -51,9 +51,12 @@ class _MainScreenState extends State<MainScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard_rounded),
-            label: 'Summary',
+            label: 'Dash',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.view_agenda), label: 'Focuses'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.view_agenda),
+            label: 'Focuses',
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.today_rounded),
             label: 'Schedule',
