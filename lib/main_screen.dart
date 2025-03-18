@@ -35,8 +35,13 @@ class _MainScreenState extends State<MainScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            _buildSearchBar(),
-            Expanded(child: _pages.elementAt(_selectedIndex)),
+            // _buildSearchBar(),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _pages.elementAt(_selectedIndex),
+              ),
+            ),
           ],
         ),
       ),
@@ -44,13 +49,19 @@ class _MainScreenState extends State<MainScreen> {
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Focuses'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
+            icon: Icon(Icons.dashboard_rounded),
+            label: 'Summary',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.view_agenda), label: 'Focuses'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.today_rounded),
             label: 'Schedule',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Me'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle_rounded),
+            label: 'Me',
+          ),
         ],
       ),
     );

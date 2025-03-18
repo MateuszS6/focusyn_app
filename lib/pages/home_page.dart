@@ -13,7 +13,7 @@ class _HomePageState extends State<HomePage> {
     return ListView(
       children: <Widget>[
         Text(
-          'Home',
+          'Summary',
           style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 16.0),
