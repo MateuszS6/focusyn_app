@@ -32,24 +32,7 @@ class _MainScreenState extends State<MainScreen> {
       appBar: _buildAppBar(),
       backgroundColor: Colors.white,
       body: _pages.elementAt(_selectedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: _onItemTapped,
-        currentIndex: _selectedIndex,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_rounded),
-            label: 'Dash',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.view_agenda),
-            label: 'Focuses',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_view_day_rounded),
-            label: 'Schedule',
-          ),
-        ],
-      ),
+      bottomNavigationBar: _buildNavBar(),
     );
   }
 
@@ -60,34 +43,32 @@ class _MainScreenState extends State<MainScreen> {
 
     switch (_selectedIndex) {
       case 0: // Home (Dashboard)
-        title = 'Dash';
-        actions.add(
+        title = 'Home';
+        actions = [
           IconButton(
             icon: Icon(Icons.notifications_rounded),
             onPressed: () {
               // Implement notifications functionality here
             },
-          )
-        );
-        actions.add(
+          ),
           IconButton(
             icon: Icon(Icons.account_circle_rounded),
             onPressed: () {
               // Implement profile functionality here
             },
           )
-        );
+        ];
         break;
       case 1: // Focuses
         title = 'Focuses';
-        actions.add(
+        actions = [
           IconButton(
             icon: Icon(Icons.add_circle_rounded),
             onPressed: () {
               // Implement add new focus functionality here
             },
           )
-        );
+        ];
         break;
       case 2:
         title = 'Schedule';
@@ -97,8 +78,38 @@ class _MainScreenState extends State<MainScreen> {
     }
 
     return AppBar(
-      title: Text(title),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 32.0,
+          fontWeight: FontWeight.w900,
+        ),
+      ),
       actions: actions,
+      backgroundColor: Colors.white,
+      foregroundColor: Colors.black,
+    );
+  }
+
+  // Custom navigation bar widget
+  Widget _buildNavBar() {
+    return BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home_rounded),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.category_rounded),
+          label: 'Focuses',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.today_rounded),
+          label: 'Schedule',
+        ),
+      ],
+      currentIndex: _selectedIndex,
+      onTap: _onItemTapped,
     );
   }
 
