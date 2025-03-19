@@ -11,13 +11,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Focusyn [Alpha]',
+      title: 'Focusyn (Alpha)',
       debugShowCheckedModeBanner: false,
       home: MainScreen(),
       theme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          iconTheme: IconThemeData(
+            size: 28.0,
+            color: Colors.black,
+          ),
+        ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+          backgroundColor: Colors.white,
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.grey,
         ),

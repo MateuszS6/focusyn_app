@@ -47,15 +47,11 @@ class _MainScreenState extends State<MainScreen> {
         actions = [
           IconButton(
             icon: Icon(Icons.notifications_rounded),
-            onPressed: () {
-              // Implement notifications functionality here
-            },
+            onPressed: () {},
           ),
           IconButton(
             icon: Icon(Icons.account_circle_rounded),
-            onPressed: () {
-              // Implement profile functionality here
-            },
+            onPressed: () {},
           )
         ];
         break;
@@ -64,10 +60,12 @@ class _MainScreenState extends State<MainScreen> {
         actions = [
           IconButton(
             icon: Icon(Icons.add_circle_rounded),
-            onPressed: () {
-              // Implement add new focus functionality here
-            },
-          )
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: Icon(Icons.edit_rounded),
+            onPressed: () {},
+          ),
         ];
         break;
       case 2:
@@ -86,8 +84,6 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ),
       actions: actions,
-      backgroundColor: Colors.white,
-      foregroundColor: Colors.black,
     );
   }
 
@@ -110,7 +106,6 @@ class _MainScreenState extends State<MainScreen> {
       ],
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
-      backgroundColor: Colors.white,
     );
   }
 
