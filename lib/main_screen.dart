@@ -36,7 +36,7 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  /// Dynamic AppBar based on the current page.
+  /// Builds a dynamic AppBar based on the current page.
   AppBar _buildAppBar() {
     String title;
     List<Widget> actions = [];
@@ -91,8 +91,8 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  // Custom navigation bar widget
-  Widget _buildNavBar() {
+  /// Builds the navigation bar widget.
+  BottomNavigationBar _buildNavBar() {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
@@ -110,6 +110,7 @@ class _MainScreenState extends State<MainScreen> {
       ],
       currentIndex: _selectedIndex,
       onTap: _onItemTapped,
+      backgroundColor: Colors.white,
     );
   }
 
