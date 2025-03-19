@@ -11,12 +11,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      padding: const EdgeInsets.all(16.0),
       children: <Widget>[
-        Text(
-          'Dash',
-          style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
-        ),
-        const SizedBox(height: 16.0),
         Text(
           'Something here',
           style: TextStyle(fontSize: 16.0, fontStyle: FontStyle.italic),

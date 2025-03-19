@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'pages/focuses_page.dart';
 import 'pages/home_page.dart';
-import 'pages/profile_page.dart';
 import 'pages/schedule_page.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,7 +18,6 @@ class _MainScreenState extends State<MainScreen> {
     HomePage(),
     FocusesPage(),
     SchedulePage(),
-    ProfilePage(),
   ];
 
   void _onItemTapped(int index) {
@@ -31,20 +29,9 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: _buildAppBar(),
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // _buildSearchBar(),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: _pages.elementAt(_selectedIndex),
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: _pages.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         onTap: _onItemTapped,
         currentIndex: _selectedIndex,
@@ -58,15 +45,60 @@ class _MainScreenState extends State<MainScreen> {
             label: 'Focuses',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.today_rounded),
+            icon: Icon(Icons.calendar_view_day_rounded),
             label: 'Schedule',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle_rounded),
-            label: 'Me',
           ),
         ],
       ),
+    );
+  }
+
+  /// Dynamic AppBar based on the current page.
+  AppBar _buildAppBar() {
+    String title;
+    List<Widget> actions = [];
+
+    switch (_selectedIndex) {
+      case 0: // Home (Dashboard)
+        title = 'Dash';
+        actions.add(
+          IconButton(
+            icon: Icon(Icons.notifications_rounded),
+            onPressed: () {
+              // Implement notifications functionality here
+            },
+          )
+        );
+        actions.add(
+          IconButton(
+            icon: Icon(Icons.account_circle_rounded),
+            onPressed: () {
+              // Implement profile functionality here
+            },
+          )
+        );
+        break;
+      case 1: // Focuses
+        title = 'Focuses';
+        actions.add(
+          IconButton(
+            icon: Icon(Icons.add_circle_rounded),
+            onPressed: () {
+              // Implement add new focus functionality here
+            },
+          )
+        );
+        break;
+      case 2:
+        title = 'Schedule';
+        break;
+      default:
+        title = 'Focusyn [Alpha]';
+    }
+
+    return AppBar(
+      title: Text(title),
+      actions: actions,
     );
   }
 

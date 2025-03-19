@@ -11,6 +11,7 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     return ListView(
+      padding: const EdgeInsets.all(16.0),
       children: <Widget>[
         Text(
           'Schedule',
