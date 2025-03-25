@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'focus_task_page.dart'; // Import the FocusTaskPage class
 
 class FocusesPage extends StatefulWidget {
   const FocusesPage({super.key});
@@ -8,28 +9,35 @@ class FocusesPage extends StatefulWidget {
 }
 
 class _FocusesPageState extends State<FocusesPage> {
+  final Map<String, List<Map<String, dynamic>>> _tasks = {
+    "Actions": [
+    ],
+    "Flows": [
+    ],
+    "Moments": [
+    ],
+    "Thoughts": [
+    ],
+  };
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 24.0),
-          child: Column(
-            children: [
-              Text(
-                'Organise your tasks, habits, and events',
-                style: TextStyle(fontSize: 20.0, color: Colors.grey[600]),
-              ),
-            ],
+          child: Text(
+            'Organise your tasks, habits, and events',
+            style: TextStyle(fontSize: 20.0, color: Colors.grey[600]),
           ),
         ),
         _buildFocusCard(
-          Icons.checklist_rounded,
+          Icons.category_rounded,
           'Actions',
           'Capture and organise tasks',
         ),
         _buildFocusCard(
-          Icons.timeline_rounded,
+          Icons.update_rounded,
           'Flows',
           'Build daily and weekly habits',
         ),
@@ -47,37 +55,47 @@ class _FocusesPageState extends State<FocusesPage> {
     );
   }
 
-  // Helper Widget
-  Widget _buildFocusCard(IconData icon, String title, String description) {
+  // Dynamic Focus Card
+  Widget _buildFocusCard(IconData icon, String category, String description) {
     return Expanded(
-      child: Container(
-        margin: EdgeInsets.only(left: 16, right: 16, bottom: 16),
-        padding: EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.grey[200], // Placeholder colour
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 8, right: 24.0),
-              child: Icon(icon, size: 48),
+      child: GestureDetector(
+        onTap: () {
+          _openTaskList(category);
+        },
+        child: Container(
+          alignment: Alignment.center,
+          margin: EdgeInsets.only(bottom: 16),
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: ListTile(
+            leading: CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.grey[300],
+              child: Icon(icon, size: 30, color: Colors.black),
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+            title: Text(
+              category,
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(description),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Text(title, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                SizedBox(height: 8),
                 Text(
-                  description,
-                  style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+                  "${_tasks[category]!.length}",
+                  style: TextStyle(color: Colors.blue, fontSize: 24),
+                ),
+                SizedBox(width: 4),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  size: 30,
+                  color: Colors.blue,
                 ),
               ],
             ),
-          ]
+          ),
         ),
       ),
     );
