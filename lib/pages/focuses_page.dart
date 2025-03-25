@@ -34,22 +34,22 @@ class _FocusesPageState extends State<FocusesPage> {
         _buildFocusCard(
           Icons.category_rounded,
           'Actions',
-          'Capture and organise tasks',
+          'Your unscheduled to-do list',
         ),
         _buildFocusCard(
           Icons.update_rounded,
           'Flows',
-          'Build daily and weekly habits',
+          'Your routines and habits',
         ),
         _buildFocusCard(
           Icons.event_rounded,
           'Moments',
-          'Upcoming events and deadlines',
+          'Your events and deadlines',
         ),
         _buildFocusCard(
           Icons.lightbulb_outline_rounded,
           'Thoughts',
-          'Capture ideas and thoughts',
+          'Your reflections for later',
         ),
       ],
     );
