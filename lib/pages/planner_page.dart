@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 
-class SchedulePage extends StatefulWidget {
-  const SchedulePage({super.key});
+class PlannerPage extends StatefulWidget {
+  const PlannerPage({super.key});
 
   @override
-  State<SchedulePage> createState() => _SchedulePageState();
+  State<PlannerPage> createState() => _PlannerPageState();
 }
 
-class _SchedulePageState extends State<SchedulePage> {
+class _PlannerPageState extends State<PlannerPage> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.all(16.0),
       children: <Widget>[
         Text(
-          'Schedule',
+          '...',
           style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.bold),
         ),
       ],
