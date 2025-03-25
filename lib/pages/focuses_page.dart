@@ -101,3 +101,17 @@ class _FocusesPageState extends State<FocusesPage> {
     );
   }
 }
+  /// Opens the FocusTaskPage for the selected category
+  void _openTaskList(String category) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder:
+            (_) => FocusTaskPage(
+              category: category,
+              initialTasks: _tasks[category]!,
+            ),
+      ),
+    );
+  }
+}
