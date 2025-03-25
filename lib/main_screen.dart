@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'pages/focuses_page.dart';
 import 'pages/home_page.dart';
-import 'pages/schedule_page.dart';
+import 'pages/planner_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -11,18 +11,24 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
+enum _MainScreenIndex {
+  home,
+  focuses,
+  planner,
+}
+
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
+  _MainScreenIndex _selectedIndex = _MainScreenIndex.home;
 
   final List<Widget> _pages = <Widget>[
     HomePage(),
     FocusesPage(),
-    SchedulePage(),
+    PlannerPage(),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = index;
+      _selectedIndex = _MainScreenIndex.values[index];
     });
   }
 
@@ -31,7 +37,10 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       appBar: _buildAppBar(),
       backgroundColor: Colors.white,
-      body: _pages.elementAt(_selectedIndex),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: _pages.elementAt(_selectedIndex.index),
+      ),
       bottomNavigationBar: _buildNavBar(),
     );
   }
@@ -42,8 +51,8 @@ class _MainScreenState extends State<MainScreen> {
     List<Widget> actions = [];
 
     switch (_selectedIndex) {
-      case 0: // Home (Dashboard)
-        title = 'Home';
+      case _MainScreenIndex.home: // Dashboard
+        title = 'Dashboard';
         actions = [
           IconButton(
             icon: Icon(Icons.notifications_rounded),
@@ -55,7 +64,7 @@ class _MainScreenState extends State<MainScreen> {
           )
         ];
         break;
-      case 1: // Focuses
+      case _MainScreenIndex.focuses: // Focuses
         title = 'Focuses';
         actions = [
           IconButton(
@@ -68,11 +77,9 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ];
         break;
-      case 2:
-        title = 'Schedule';
+      case _MainScreenIndex.planner: // Planner
+        title = 'Planner';
         break;
-      default:
-        title = 'Focusyn [Alpha]';
     }
 
     return AppBar(
@@ -92,43 +99,20 @@ class _MainScreenState extends State<MainScreen> {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home_rounded),
-          label: 'Home',
+          icon: Icon(Icons.dashboard_rounded),
+          label: 'Dash',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.category_rounded),
+          icon: Icon(Icons.view_agenda_rounded),
           label: 'Focuses',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.today_rounded),
-          label: 'Schedule',
+          icon: Icon(Icons.local_library_rounded),
+          label: 'Planner',
         ),
       ],
-      currentIndex: _selectedIndex,
+      currentIndex: _selectedIndex.index,
       onTap: _onItemTapped,
-    );
-  }
-
-  // Search bar widget
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: TextField(
-        onChanged: (value) {
-          // Implement search functionality here
-        },
-        decoration: InputDecoration(
-          hintText: 'Search...',
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(30),
-            borderSide: BorderSide.none,
-          ),
-          filled: true,
-          fillColor: Colors.grey[200],
-          contentPadding: const EdgeInsets.symmetric(vertical: 0.0),
-        ),
-      ),
     );
   }
 }
