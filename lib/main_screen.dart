@@ -68,10 +68,6 @@ class _MainScreenState extends State<MainScreen> {
         title = 'Focuses';
         actions = [
           IconButton(
-            icon: Icon(Icons.add_circle_rounded),
-            onPressed: () {},
-          ),
-          IconButton(
             icon: Icon(Icons.edit_rounded),
             onPressed: () {},
           ),
