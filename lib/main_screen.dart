@@ -65,9 +65,6 @@ class _MainScreenState extends State<MainScreen> {
         break;
       case _MainScreenIndex.focuses: // Focuses
         title = 'Focuses';
-        actions = [
-          IconButton(icon: Icon(Icons.edit_rounded), onPressed: () {}),
-        ];
         break;
       case _MainScreenIndex.planner: // Planner
         title = 'Planner';
