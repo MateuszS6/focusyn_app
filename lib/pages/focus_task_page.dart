@@ -2,10 +2,16 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/elements/add_task_dialog.dart';
-import 'package:focusyn_app/elements/filter_row.dart';
-import 'package:focusyn_app/elements/tag_manager_dialog.dart';
-import 'package:focusyn_app/elements/task_tile.dart';
+import 'package:focusyn_app/task_tiles/action_tile.dart';
+import 'package:focusyn_app/task_dialogs/add_action_dialog.dart';
+import 'package:focusyn_app/task_dialogs/add_flow_dialog.dart';
+import 'package:focusyn_app/task_dialogs/add_moment_dialog.dart';
+import 'package:focusyn_app/task_dialogs/add_thought_dialog.dart';
+import 'package:focusyn_app/task_tiles/flow_tile.dart';
+import 'package:focusyn_app/task_tiles/moment_tile.dart';
+import 'package:focusyn_app/task_tiles/thought_tile.dart';
+import 'package:focusyn_app/util/filter_row.dart';
+import 'package:focusyn_app/util/tag_manager_dialog.dart';
 
 class FocusTaskPage extends StatefulWidget {
   final String category;
@@ -26,23 +32,22 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
   late Map<String, List<String>> _filtersPerCategory;
   late Map<String, Set<String>> _hiddenPerCategory;
 
-  List<String> get _filters => _filtersPerCategory[widget.category] ?? ['All'];
-  Set<String> get _hidden => _hiddenPerCategory[widget.category] ?? {};
-
   String _selectedFilter = 'All';
-
   List<Map<String, dynamic>> get _filteredTasks {
     if (_selectedFilter == 'All') return _tasks;
     return _tasks.where((task) => task['tag'] == _selectedFilter).toList();
   }
 
+  List<String> get _filters => _filtersPerCategory[widget.category] ?? ['All'];
+
+  Set<String> get _hidden => _hiddenPerCategory[widget.category] ?? {};
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.close_rounded),
+          icon: Icon(Icons.arrow_back_ios_rounded),
           onPressed: () => Navigator.pop(context),
         ),
         title: Text(widget.category),
@@ -51,13 +56,13 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
             itemBuilder:
                 (context) => [
                   PopupMenuItem(value: 'tags', child: Text("Manage Tags")),
-                  PopupMenuItem(value: 'tasks', child: Text("Manage Tasks")),
+                  PopupMenuItem(value: 'tasks', child: Text("Sort Tasks")),
                 ],
             onSelected: (val) {
               if (val == 'tags') {
                 _openTagManagerDialog();
               } else if (val == 'tasks') {
-                // TODO: Implement task manager dialog
+                // TODO: Implement task sort
               }
             },
           ),
@@ -102,20 +107,46 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                         },
                         itemBuilder: (context, index) {
                           final task = _filteredTasks[index];
-                          return TaskTile(
-                            key: ValueKey(task),
-                            task: task,
-                            onComplete: () {
-                              setState(() {
-                                _tasks.remove(task);
-                              });
-                            },
-                            onEdit: (newTitle) {
-                              setState(() {
-                                task["title"] = newTitle;
-                              });
-                            },
-                          );
+
+                          if (widget.category == 'Actions') {
+                            return ActionTile(
+                              key: ValueKey(task),
+                              task: task,
+                              onComplete:
+                                  () => setState(() => _tasks.remove(task)),
+                              onEdit:
+                                  (newTitle) =>
+                                      setState(() => task["title"] = newTitle),
+                            );
+                          } else if (widget.category == 'Flows') {
+                            return FlowTile(
+                              key: ValueKey(task),
+                              task: task,
+                              onEdit:
+                                  (newTitle) =>
+                                      setState(() => task["title"] = newTitle),
+                              // Add any other Flow-specific callbacks here
+                            );
+                          } else if (widget.category == 'Moments') {
+                            return MomentTile(
+                              key: ValueKey(task),
+                              task: task,
+                              onEdit:
+                                  (newTitle) =>
+                                      setState(() => task["title"] = newTitle),
+                              // Add any other Moment-specific callbacks here
+                            );
+                          } else if (widget.category == 'Thoughts') {
+                            return ThoughtTile(
+                              key: ValueKey(task),
+                              task: task,
+                              onEdit:
+                                  (newText) =>
+                                      setState(() => task["text"] = newText),
+                            );
+                          } else {
+                            return SizedBox.shrink(); // Fallback
+                          }
                         },
                       ),
             ),
@@ -123,18 +154,38 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed:
-            () => showDialog(
-              context: context,
-              builder:
-                  (_) => AddTaskDialog(
-                    filters: _filters,
-                    onAdd: (task) => setState(() => _tasks.add(task)),
-                  ),
-            ),
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (_) {
+              if (widget.category == 'Actions') {
+                return AddActionDialog(
+                  filters: _filters,
+                  onAdd: (task) => setState(() => _tasks.add(task)),
+                );
+              } else if (widget.category == 'Flows') {
+                return AddFlowDialog(
+                  filters: _filters,
+                  onAdd: (task) => setState(() => _tasks.add(task)),
+                );
+              } else if (widget.category == 'Moments') {
+                return AddMomentDialog(
+                  filters: _filters,
+                  onAdd: (task) => setState(() => _tasks.add(task)),
+                );
+              } else if (widget.category == 'Thoughts') {
+                return AddThoughtDialog(
+                  onAdd: (task) => setState(() => _tasks.add(task)),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          );
+        },
         foregroundColor: Colors.white,
         backgroundColor: Colors.blue[400],
-        child: Icon(Icons.add_rounded, size: 30),
+        child: Icon(Icons.add_rounded, size: 40),
       ),
     );
   }
