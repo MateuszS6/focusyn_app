@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/pages/profile_page.dart';
 
 import 'pages/focuses_page.dart';
 import 'pages/home_page.dart';
@@ -11,11 +12,7 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-enum _MainScreenIndex {
-  home,
-  focuses,
-  planner,
-}
+enum _MainScreenIndex { home, focuses, planner }
 
 class _MainScreenState extends State<MainScreen> {
   _MainScreenIndex _selectedIndex = _MainScreenIndex.home;
@@ -54,23 +51,22 @@ class _MainScreenState extends State<MainScreen> {
       case _MainScreenIndex.home: // Dashboard
         title = 'Dashboard';
         actions = [
-          IconButton(
-            icon: Icon(Icons.notifications_rounded),
-            onPressed: () {},
-          ),
+          IconButton(icon: Icon(Icons.notifications_rounded), onPressed: () {}),
           IconButton(
             icon: Icon(Icons.account_circle_rounded),
-            onPressed: () {},
-          )
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfilePage()),
+              );
+            },
+          ),
         ];
         break;
       case _MainScreenIndex.focuses: // Focuses
         title = 'Focuses';
         actions = [
-          IconButton(
-            icon: Icon(Icons.edit_rounded),
-            onPressed: () {},
-          ),
+          IconButton(icon: Icon(Icons.edit_rounded), onPressed: () {}),
         ];
         break;
       case _MainScreenIndex.planner: // Planner
@@ -81,10 +77,7 @@ class _MainScreenState extends State<MainScreen> {
     return AppBar(
       title: Text(
         title,
-        style: TextStyle(
-          fontSize: 32.0,
-          fontWeight: FontWeight.w900,
-        ),
+        style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w900),
       ),
       actions: actions,
     );

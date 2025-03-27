@@ -31,7 +31,7 @@ class _HomePageState extends State<HomePage> {
           style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
         ),
         Text(
-          '[Button]\nTry to break down your tasks into smaller, more manageable chunks.',
+          'Try to break down your tasks into smaller, more manageable chunks.',
           style: TextStyle(fontSize: 16.0),
         ),
         const SizedBox(height: 48.0),
@@ -39,10 +39,8 @@ class _HomePageState extends State<HomePage> {
           'Quick Links',
           style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
         ),
-        Text(
-          '[Button] Self-care\n[Button] Motivational quote',
-          style: TextStyle(fontSize: 16.0),
-        ),
+        Text('Self-care', style: TextStyle(fontSize: 16.0)),
+        Text('Motivational quote', style: TextStyle(fontSize: 16)),
       ],
     );
   }
