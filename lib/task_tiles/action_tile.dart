@@ -17,7 +17,7 @@ class ActionTile extends BaseTaskTile {
 
 class _ActionTileState extends BaseTaskTileState<ActionTile> {
   @override
-  String getInitialText() => widget.task["title"] ?? '';
+  String getInitialText() => widget.task['title'] ?? '';
 
   @override
   Widget? buildTrailing() {
@@ -29,8 +29,11 @@ class _ActionTileState extends BaseTaskTileState<ActionTile> {
 
   @override
   Widget buildSubtitle() {
+    final priority = widget.task['priority'];
+    final brainPoints = widget.task['brainPoints'];
+
     return Text(
-      "Priority: ${widget.task["priority"]} • Brain Points: ${widget.task["brainPoints"]}",
+      'Priority: $priority • Brain Points: $brainPoints',
       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
     );
   }

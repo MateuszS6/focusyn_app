@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'base_task_tile.dart';
 
 class FlowTile extends BaseTaskTile {
-  const FlowTile({
-    super.key,
-    required super.task,
-    required super.onEdit,
-  });
+  const FlowTile({super.key, required super.task, required super.onEdit});
 
   @override
   State<FlowTile> createState() => _FlowTileState();
@@ -14,12 +10,17 @@ class FlowTile extends BaseTaskTile {
 
 class _FlowTileState extends BaseTaskTileState<FlowTile> {
   @override
-  String getInitialText() => widget.task["title"] ?? '';
+  String getInitialText() => widget.task['title'] ?? '';
 
   @override
   Widget buildSubtitle() {
+    final date = widget.task['date'] ?? 'N/A';
+    final time = widget.task['time'] ?? 'N/A';
+    final duration = widget.task['duration'] ?? 15;
+    final repeat = widget.task['repeat'] ?? 'None';
+
     return Text(
-      "${widget.task["dueDate"] ?? 'N/A'} • ${widget.task["time"] ?? 'N/A'} • ${widget.task["repeat"] ?? 'None'}",
+      '$date • $time • $duration min • $repeat',
       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
     );
   }
