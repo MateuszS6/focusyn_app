@@ -23,7 +23,6 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.black,
           iconTheme: IconThemeData(
             size: 28.0,
-            // color: Colors.black,
           ),
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(

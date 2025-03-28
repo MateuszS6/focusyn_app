@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'base_task_dialog.dart';
 
 class AddFlowDialog extends BaseTaskDialog {
-  const AddFlowDialog({super.key, required super.filters, required super.onAdd})
+  const AddFlowDialog({super.key, required super.onAdd})
     : super(title: "Add Flow");
 
   @override

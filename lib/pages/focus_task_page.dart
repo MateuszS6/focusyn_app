@@ -2,6 +2,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/app_data.dart';
 import 'package:focusyn_app/task_tiles/action_tile.dart';
 import 'package:focusyn_app/task_dialogs/add_action_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_flow_dialog.dart';
@@ -15,32 +16,23 @@ import 'package:focusyn_app/util/tag_manager_dialog.dart';
 
 class FocusTaskPage extends StatefulWidget {
   final String category;
-  final List<Map<String, dynamic>> taskList;
 
-  const FocusTaskPage({
-    super.key,
-    required this.category,
-    required this.taskList,
-  });
+  const FocusTaskPage({super.key, required this.category});
 
   @override
   State<FocusTaskPage> createState() => _FocusTaskPageState();
 }
 
 class _FocusTaskPageState extends State<FocusTaskPage> {
-  late List<Map<String, dynamic>> _tasks;
-  late Map<String, List<String>> _filtersPerCategory;
-  late Map<String, Set<String>> _hiddenPerCategory;
+  List<Map<String, dynamic>> get _tasks => AppData.instance.tasks[widget.category]!;
+  List<String> get _filters => AppData.instance.filters[widget.category]!;
+  Set<String> get _hidden => AppData.instance.hiddenFilters[widget.category]!;
 
   String _selectedFilter = 'All';
   List<Map<String, dynamic>> get _filteredTasks {
     if (_selectedFilter == 'All') return _tasks;
     return _tasks.where((task) => task['tag'] == _selectedFilter).toList();
   }
-
-  List<String> get _filters => _filtersPerCategory[widget.category] ?? ['All'];
-
-  Set<String> get _hidden => _hiddenPerCategory[widget.category] ?? {};
 
   @override
   Widget build(BuildContext context) {
@@ -160,17 +152,14 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
             builder: (_) {
               if (widget.category == 'Actions') {
                 return AddActionDialog(
-                  filters: _filters,
                   onAdd: (task) => setState(() => _tasks.add(task)),
                 );
               } else if (widget.category == 'Flows') {
                 return AddFlowDialog(
-                  filters: _filters,
                   onAdd: (task) => setState(() => _tasks.add(task)),
                 );
               } else if (widget.category == 'Moments') {
                 return AddMomentDialog(
-                  filters: _filters,
                   onAdd: (task) => setState(() => _tasks.add(task)),
                 );
               } else if (widget.category == 'Thoughts') {
@@ -188,24 +177,6 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
         child: Icon(Icons.add_rounded, size: 40),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _tasks = List<Map<String, dynamic>>.from(widget.taskList);
-    _filtersPerCategory = {
-      'Actions': ['All', 'Home', 'Errands', 'Study'],
-      'Flows': ['All', 'Morning', 'Evening', 'Wellness'],
-      'Moments': ['All', 'Events', 'Appointments'],
-      'Thoughts': ['All', 'Ideas', 'Journal'],
-    };
-    _hiddenPerCategory = {
-      'Actions': {},
-      'Flows': {},
-      'Moments': {},
-      'Thoughts': {},
-    };
   }
 
   void _openAddTagDialog() {
@@ -228,8 +199,8 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 onPressed: () {
                   if (newTag.isNotEmpty && !_filters.contains(newTag)) {
                     setState(() {
-                      _filtersPerCategory[widget.category]!.add(newTag);
-                      _hiddenPerCategory[widget.category]!.remove(newTag);
+                      _filters.add(newTag);
+                      _hidden.remove(newTag);
                       // _selectedFilter = newTag;
                     });
                   }
@@ -247,44 +218,41 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
       context: context,
       builder:
           (_) => TagManagerDialog(
-            tags: _filtersPerCategory[widget.category]!,
+            tags: _filters,
             onRename: (oldTag, newTag) {
               setState(() {
                 for (var task in _tasks) {
                   if (task['tag'] == oldTag) task['tag'] = newTag;
                 }
-                final list = _filtersPerCategory[widget.category]!;
-                final index = list.indexOf(oldTag);
-                if (index != -1) list[index] = newTag;
+                final index = _filters.indexOf(oldTag);
+                if (index != -1) _filters[index] = newTag;
 
-                final hidden = _hiddenPerCategory[widget.category]!;
-                if (hidden.remove(oldTag)) hidden.add(newTag);
+                if (_hidden.remove(oldTag)) _hidden.add(newTag);
 
                 if (_selectedFilter == oldTag) _selectedFilter = newTag;
               });
             },
             onDelete: (tag) {
               setState(() {
-                _filtersPerCategory[widget.category]!.remove(tag);
-                _hiddenPerCategory[widget.category]!.remove(tag);
+                _filters.remove(tag);
+                _hidden.remove(tag);
                 _tasks.removeWhere((task) => task['tag'] == tag);
                 if (_selectedFilter == tag) _selectedFilter = 'All';
               });
             },
             onToggleHide: (tag) {
               setState(() {
-                final hidden = _hiddenPerCategory[widget.category]!;
-                if (hidden.contains(tag)) {
-                  hidden.remove(tag);
+                if (_hidden.contains(tag)) {
+                  _hidden.remove(tag);
                 } else {
-                  hidden.add(tag);
+                  _hidden.add(tag);
                   if (_selectedFilter == tag) _selectedFilter = 'All';
                 }
               });
             },
             onReorder: (newOrder) {
               setState(() {
-                _filtersPerCategory[widget.category] = List<String>.from(
+                AppData.instance.filters[widget.category] = List<String>.from(
                   newOrder,
                 );
               });

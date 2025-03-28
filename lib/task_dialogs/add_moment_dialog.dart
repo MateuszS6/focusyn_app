@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'base_task_dialog.dart';
 
 class AddMomentDialog extends BaseTaskDialog {
-  const AddMomentDialog({
-    super.key,
-    required super.filters,
-    required super.onAdd,
-  }) : super(title: "Add Moment");
+  const AddMomentDialog({super.key, required super.onAdd})
+    : super(title: "Add Moment");
 
   @override
   State<AddMomentDialog> createState() => _AddMomentDialogState();
