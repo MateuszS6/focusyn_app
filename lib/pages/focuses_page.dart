@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/app_data.dart';
-import 'focus_task_page.dart';
+import 'package:focusyn_app/util/focus_card.dart';
 
 class FocusesPage extends StatefulWidget {
   const FocusesPage({super.key});
@@ -22,83 +21,27 @@ class _FocusesPageState extends State<FocusesPage> {
             style: TextStyle(fontSize: 20.0, color: Colors.grey[600]),
           ),
         ),
-        _buildFocusCard(
-          Icons.category_rounded,
-          'Actions',
-          'Your unscheduled to-do list',
+        const FocusCard(
+          icon: Icons.category_rounded,
+          category: 'Actions',
+          description: 'Your unscheduled to-do list',
         ),
-        _buildFocusCard(
-          Icons.update_rounded,
-          'Flows',
-          'Your routines and habits',
+        const FocusCard(
+          icon: Icons.update_rounded,
+          category: 'Flows',
+          description: 'Your routines and habits',
         ),
-        _buildFocusCard(
-          Icons.event_rounded,
-          'Moments',
-          'Your events and deadlines',
+        const FocusCard(
+          icon: Icons.event_rounded,
+          category: 'Moments',
+          description: 'Your events and deadlines',
         ),
-        _buildFocusCard(
-          Icons.lightbulb_outline_rounded,
-          'Thoughts',
-          'Your reflections for later',
+        const FocusCard(
+          icon: Icons.lightbulb_outline_rounded,
+          category: 'Thoughts',
+          description: 'Your reflections for later',
         ),
       ],
-    );
-  }
-
-  // Dynamic Focus Card
-  Widget _buildFocusCard(IconData icon, String category, String description) {
-    return Expanded(
-      child: GestureDetector(
-        onTap: () {
-          _openTaskList(category);
-        },
-        child: Card(
-          color: Colors.grey[100],
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          margin: EdgeInsets.only(bottom: 16),
-          child: Center(
-            child: ListTile(
-              leading: CircleAvatar(
-                radius: 30,
-                backgroundColor: Colors.grey[300],
-                child: Icon(icon, size: 30, color: Colors.black),
-              ),
-              title: Text(
-                category,
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              subtitle: Text(description),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "${AppData.instance.tasks[category]!.length}",
-                    style: TextStyle(fontSize: 24),
-                  ),
-                  SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_forward_ios_rounded,
-                    size: 30,
-                    color: Colors.blue,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Opens the FocusTaskPage for the selected category
-  void _openTaskList(String category) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => FocusTaskPage(category: category)),
     );
   }
 }
