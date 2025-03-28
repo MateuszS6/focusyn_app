@@ -21,7 +21,7 @@ class _MomentTileState extends BaseTaskTileState<MomentTile> {
     final loc = widget.task["location"];
     final locText = loc != null && loc != "" ? ' • Location: $loc' : '';
     return Text(
-      "Date: ${widget.task["date"] ?? 'N/A'} • Time: ${widget.task["time"] ?? 'N/A'}$locText",
+      "${widget.task["date"] ?? 'N/A'} • ${widget.task["time"] ?? 'N/A'}$locText",
       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
     );
   }

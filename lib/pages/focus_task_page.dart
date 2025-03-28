@@ -3,11 +3,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/app_data.dart';
-import 'package:focusyn_app/task_tiles/action_tile.dart';
 import 'package:focusyn_app/task_dialogs/add_action_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_flow_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_moment_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_thought_dialog.dart';
+import 'package:focusyn_app/task_tiles/action_tile.dart';
 import 'package:focusyn_app/task_tiles/flow_tile.dart';
 import 'package:focusyn_app/task_tiles/moment_tile.dart';
 import 'package:focusyn_app/task_tiles/thought_tile.dart';
@@ -24,7 +24,8 @@ class FocusTaskPage extends StatefulWidget {
 }
 
 class _FocusTaskPageState extends State<FocusTaskPage> {
-  List<Map<String, dynamic>> get _tasks => AppData.instance.tasks[widget.category]!;
+  List<Map<String, dynamic>> get _tasks =>
+      AppData.instance.tasks[widget.category]!;
   List<String> get _filters => AppData.instance.filters[widget.category]!;
   Set<String> get _hidden => AppData.instance.hiddenFilters[widget.category]!;
 
@@ -179,6 +180,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
     );
   }
 
+  /// Opens a dialog to add a new tag.
   void _openAddTagDialog() {
     String newTag = "";
     showDialog(
@@ -213,6 +215,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
     );
   }
 
+  /// Opens the tag manager dialog to manage tags.
   void _openTagManagerDialog() {
     showDialog(
       context: context,

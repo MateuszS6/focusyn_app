@@ -5,11 +5,7 @@ abstract class BaseTaskDialog extends StatefulWidget {
   final void Function(Map<String, dynamic>) onAdd;
   final String title;
 
-  const BaseTaskDialog({
-    super.key,
-    required this.onAdd,
-    required this.title,
-  });
+  const BaseTaskDialog({super.key, required this.onAdd, required this.title});
 }
 
 abstract class BaseTaskDialogState<T extends BaseTaskDialog> extends State<T> {
@@ -19,13 +15,14 @@ abstract class BaseTaskDialogState<T extends BaseTaskDialog> extends State<T> {
   @override
   void initState() {
     super.initState();
-    final category = widget.title.contains("Thought")
-        ? "Thoughts"
-        : widget.title.contains("Moment")
+    final category =
+        widget.title.contains("Thought")
+            ? "Thoughts"
+            : widget.title.contains("Moment")
             ? "Moments"
             : widget.title.contains("Flow")
-                ? "Flows"
-                : "Actions";
+            ? "Flows"
+            : "Actions";
 
     tags = List.from(AppData.instance.filters[category] ?? ['All']);
     selectedTag = tags.first;
@@ -62,9 +59,10 @@ abstract class BaseTaskDialogState<T extends BaseTaskDialog> extends State<T> {
     return DropdownButtonFormField<String>(
       value: selectedTag,
       decoration: InputDecoration(labelText: "Tag"),
-      items: tags
-          .map((tag) => DropdownMenuItem(value: tag, child: Text(tag)))
-          .toList(),
+      items:
+          tags
+              .map((tag) => DropdownMenuItem(value: tag, child: Text(tag)))
+              .toList(),
       onChanged: (val) => setState(() => selectedTag = val!),
     );
   }

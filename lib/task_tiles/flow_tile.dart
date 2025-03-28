@@ -19,7 +19,7 @@ class _FlowTileState extends BaseTaskTileState<FlowTile> {
   @override
   Widget buildSubtitle() {
     return Text(
-      "Due: ${widget.task["dueDate"] ?? 'N/A'} • Time: ${widget.task["time"] ?? 'N/A'} • Repeat: ${widget.task["repeat"] ?? 'None'}",
+      "${widget.task["dueDate"] ?? 'N/A'} • ${widget.task["time"] ?? 'N/A'} • ${widget.task["repeat"] ?? 'None'}",
       style: TextStyle(fontSize: 14, color: Colors.grey[600]),
     );
   }
