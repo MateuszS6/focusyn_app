@@ -147,6 +147,9 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
+        shape: CircleBorder(),
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.blue[400],
         onPressed: () {
           showDialog(
             context: context,
@@ -173,8 +176,6 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
             },
           );
         },
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.blue[400],
         child: Icon(Icons.add_rounded, size: 40),
       ),
     );

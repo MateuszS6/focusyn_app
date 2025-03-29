@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/pages/profile_page.dart';
+import 'package:focusyn_app/pages/account_page.dart';
 
 import 'pages/focuses_page.dart';
 import 'pages/home_page.dart';
@@ -12,20 +12,18 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
-enum _MainScreenIndex { home, focuses, planner }
-
 class _MainScreenState extends State<MainScreen> {
-  _MainScreenIndex _selectedIndex = _MainScreenIndex.home;
+  final Map<Widget, String> _pages = {
+    HomePage(): 'Dashboard',
+    FocusesPage(): 'Focuses',
+    PlannerPage(): 'Planner',
+  };
 
-  final List<Widget> _pages = <Widget>[
-    HomePage(),
-    FocusesPage(),
-    PlannerPage(),
-  ];
+  int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
     setState(() {
-      _selectedIndex = _MainScreenIndex.values[index];
+      _selectedIndex = index;
     });
   }
 
@@ -35,8 +33,8 @@ class _MainScreenState extends State<MainScreen> {
       appBar: _buildAppBar(),
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: _pages.elementAt(_selectedIndex.index),
+        padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+        child: _pages.keys.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: _buildNavBar(),
     );
@@ -44,12 +42,10 @@ class _MainScreenState extends State<MainScreen> {
 
   /// Builds a dynamic AppBar based on the current page.
   AppBar _buildAppBar() {
-    String title;
     List<Widget> actions = [];
 
     switch (_selectedIndex) {
-      case _MainScreenIndex.home: // Dashboard
-        title = 'Dashboard';
+      case 0: // HomePage
         actions = [
           IconButton(icon: Icon(Icons.notifications_rounded), onPressed: () {}),
           IconButton(
@@ -57,23 +53,17 @@ class _MainScreenState extends State<MainScreen> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const ProfilePage()),
+                MaterialPageRoute(builder: (_) => const AccountPage()),
               );
             },
           ),
         ];
         break;
-      case _MainScreenIndex.focuses: // Focuses
-        title = 'Focuses';
-        break;
-      case _MainScreenIndex.planner: // Planner
-        title = 'Planner';
-        break;
     }
 
     return AppBar(
       title: Text(
-        title,
+        _pages.values.elementAt(_selectedIndex),
         style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w900),
       ),
       actions: actions,
@@ -97,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
           label: 'Planner',
         ),
       ],
-      currentIndex: _selectedIndex.index,
+      currentIndex: _selectedIndex,
       onTap: _onItemTapped,
     );
   }

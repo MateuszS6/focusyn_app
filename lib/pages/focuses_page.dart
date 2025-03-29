@@ -14,13 +14,6 @@ class _FocusesPageState extends State<FocusesPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24.0),
-          child: Text(
-            'Organise your tasks, habits, and events',
-            style: TextStyle(fontSize: 20.0, color: Colors.grey[600]),
-          ),
-        ),
         const FocusCard(
           icon: Icons.category_rounded,
           category: 'Actions',
