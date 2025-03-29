@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AppData {
   static final AppData instance = AppData._internal();
   AppData._internal();
@@ -51,65 +53,65 @@ class AppData {
 
     'Flows': [
       {
-      'title': 'Morning Routine',
-      'date': '2025-03-30',
-      'time': '07:30 AM',
-      'duration': 30,
-      'repeat': 'Daily',
-      'tag': 'Morning',
-      'createdAt': DateTime.now().toIso8601String(),
+        'title': 'Morning Routine',
+        'date': '2025-03-30',
+        'time': '07:30 AM',
+        'duration': 30,
+        'repeat': 'Daily',
+        'tag': 'Morning',
+        'createdAt': DateTime.now().toIso8601String(),
       },
       {
-      'title': 'Evening Routine',
-      'date': '2025-03-31',
-      'time': '09:00 PM',
-      'duration': 30,
-      'repeat': 'Daily',
-      'tag': 'Evening',
-      'createdAt': DateTime.now().toIso8601String(),
+        'title': 'Evening Routine',
+        'date': '2025-03-31',
+        'time': '09:00 PM',
+        'duration': 30,
+        'repeat': 'Daily',
+        'tag': 'Evening',
+        'createdAt': DateTime.now().toIso8601String(),
       },
       {
-      'title': 'Workout Routine',
-      'date': '2025-04-01',
-      'time': '06:00 PM',
-      'duration': 60,
-      'repeat': 'Weekly',
-      'tag': 'Health',
-      'createdAt': DateTime.now().toIso8601String(),
+        'title': 'Workout Routine',
+        'date': '2025-04-01',
+        'time': '06:00 PM',
+        'duration': 60,
+        'repeat': 'Weekly',
+        'tag': 'Health',
+        'createdAt': DateTime.now().toIso8601String(),
       },
       {
-      'title': 'Weekly Review',
-      'date': '2025-04-02',
-      'time': '05:00 PM',
-      'duration': 60,
-      'repeat': 'Weekly',
-      'tag': 'Work',
-      'createdAt': DateTime.now().toIso8601String(),
+        'title': 'Weekly Review',
+        'date': '2025-04-02',
+        'time': '05:00 PM',
+        'duration': 60,
+        'repeat': 'Weekly',
+        'tag': 'Work',
+        'createdAt': DateTime.now().toIso8601String(),
       },
     ],
 
     'Moments': [
       {
-      'title': 'Birthday Party',
-      'date': '2025-04-05',
-      'time': '6:00 PM',
-      'duration': 180,
-      'location': 'John’s House',
-      'tag': 'Home',
-      'createdAt': DateTime.now().toIso8601String(),
+        'title': 'Birthday Party',
+        'date': '2025-04-05',
+        'time': '6:00 PM',
+        'duration': 180,
+        'location': 'John’s House',
+        'tag': 'Home',
+        'createdAt': DateTime.now().toIso8601String(),
       },
       {
-      'title': 'Meeting with Friends',
-      'date': '2025-04-07',
-      'time': '3:00 PM',
-      'duration': 120,
-      'location': 'Café Downtown',
-      'tag': 'Social',
-      'createdAt': DateTime.now().toIso8601String(),
+        'title': 'Meeting with Friends',
+        'date': '2025-04-07',
+        'time': '3:00 PM',
+        'duration': 120,
+        'location': 'Café Downtown',
+        'tag': 'Social',
+        'createdAt': DateTime.now().toIso8601String(),
       },
       {
-      'title': 'Doctor’s Appointment',
-      'date': '2025-04-03',
+        'title': 'Doctor’s Appointment',
+        'date': '2025-04-03',
         'time': '10:30 AM',
         'duration': 60,
         'location': 'Health Clinic',
@@ -151,5 +153,25 @@ class AppData {
     'Flows': {},
     'Moments': {},
     'Thoughts': {},
+  };
+
+  /// A collection of certain app element colours.
+  final Map<String, Map<String, Color?>> colours = {
+    'Actions': {
+      'main': Colors.purple,
+      'task': Colors.purple[50],
+    },
+    'Flows': {
+      'main': Colors.lightGreen,
+      'task': Colors.green[50],
+    },
+    'Moments': {
+      'main': Colors.red,
+      'task': Colors.red[50],
+    },
+    'Thoughts': {
+      'main': Colors.orange,
+      'task': Colors.orange[50],
+    },
   };
 }

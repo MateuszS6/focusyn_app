@@ -32,7 +32,7 @@ class _PlannerPageState extends State<PlannerPage> {
     return Column(
       children: [
         _buildDaySelector(),
-        const Divider(height: 0),
+        const SizedBox(height: 16),
         Expanded(child: _buildTimeline()),
       ],
     );
@@ -90,7 +90,7 @@ class _PlannerPageState extends State<PlannerPage> {
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.only(bottom: 16),
       itemCount: allScheduledTasks.length,
       separatorBuilder: (_, __) => SizedBox(height: 12),
       itemBuilder: (_, i) {
@@ -104,7 +104,7 @@ class _PlannerPageState extends State<PlannerPage> {
         return Container(
           padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isMoment ? Colors.orange[100] : Colors.green[100],
+            color: isMoment ? AppData.instance.colours['Moments']!['task']! : AppData.instance.colours['Flows']!['task']!,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Column(

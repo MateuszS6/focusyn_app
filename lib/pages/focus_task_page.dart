@@ -66,6 +66,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
         child: Column(
           children: [
             FilterRow(
+              category: widget.category,
               filters: _filters,
               hidden: _hidden,
               selected: _selectedFilter,
@@ -104,6 +105,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                           if (widget.category == 'Actions') {
                             return ActionTile(
                               key: ValueKey(task),
+                              color: AppData.instance.colours[widget.category]!['task']!,
                               task: task,
                               onComplete:
                                   () => setState(() => _tasks.remove(task)),
@@ -114,6 +116,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                           } else if (widget.category == 'Flows') {
                             return FlowTile(
                               key: ValueKey(task),
+                              color: AppData.instance.colours[widget.category]!['task']!,
                               task: task,
                               onEdit:
                                   (newTitle) =>
@@ -123,6 +126,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                           } else if (widget.category == 'Moments') {
                             return MomentTile(
                               key: ValueKey(task),
+                              color: AppData.instance.colours[widget.category]!['task']!,
                               task: task,
                               onEdit:
                                   (newTitle) =>
@@ -132,6 +136,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                           } else if (widget.category == 'Thoughts') {
                             return ThoughtTile(
                               key: ValueKey(task),
+                              color: AppData.instance.colours[widget.category]!['task']!,
                               task: task,
                               onEdit:
                                   (newText) =>

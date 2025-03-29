@@ -4,12 +4,14 @@ import 'package:focusyn_app/pages/focus_task_page.dart';
 
 class FocusCard extends StatelessWidget {
   final IconData icon;
+  final Color? color;
   final String category;
   final String description;
 
   const FocusCard({
     super.key,
     required this.icon,
+    this.color = const Color(0xFFE0E0E0), // Equivalent to Colors.grey[300]
     required this.category,
     required this.description,
   });
@@ -30,8 +32,8 @@ class FocusCard extends StatelessWidget {
             child: ListTile(
               leading: CircleAvatar(
                 radius: 30,
-                backgroundColor: Colors.grey[300],
-                child: Icon(icon, size: 30, color: Colors.black),
+                backgroundColor: color,
+                child: Icon(icon, size: 30, color: color != Color(0xFFE0E0E0) ? Colors.white : Colors.black),
               ),
               title: Text(
                 category,

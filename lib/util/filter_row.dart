@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/app_data.dart';
 
 class FilterRow extends StatelessWidget {
+  final String category;
   final List<String> filters;
   final Set<String> hidden;
   final String selected;
@@ -9,6 +11,7 @@ class FilterRow extends StatelessWidget {
 
   const FilterRow({
     super.key,
+    required this.category,
     required this.filters,
     required this.hidden,
     required this.selected,
@@ -35,7 +38,7 @@ class FilterRow extends StatelessWidget {
               shape: StadiumBorder(),
               selected: isSelected,
               onSelected: (_) => onSelect(tag),
-              selectedColor: Colors.blue,
+              selectedColor: AppData.instance.colours[category]!['main']!,
               backgroundColor: Colors.grey[200],
               labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
             );

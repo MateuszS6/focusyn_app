@@ -4,6 +4,7 @@ import 'base_task_tile.dart';
 class ThoughtTile extends BaseTaskTile {
   const ThoughtTile({
     super.key,
+    super.color,
     required super.task,
     required super.onEdit,
   });

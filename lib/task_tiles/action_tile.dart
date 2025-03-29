@@ -6,6 +6,7 @@ class ActionTile extends BaseTaskTile {
 
   const ActionTile({
     super.key,
+    super.color,
     required super.task,
     required super.onEdit,
     required this.onComplete,

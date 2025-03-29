@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 
 abstract class BaseTaskTile extends StatefulWidget {
+  final Color? color;
   final Map<String, dynamic> task;
   final void Function(String newText) onEdit;
 
-  const BaseTaskTile({super.key, required this.task, required this.onEdit});
+  const BaseTaskTile({
+    super.key,
+    this.color,
+    required this.task,
+    required this.onEdit,
+  });
 }
 
 abstract class BaseTaskTileState<T extends BaseTaskTile> extends State<T> {
@@ -44,6 +50,7 @@ abstract class BaseTaskTileState<T extends BaseTaskTile> extends State<T> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      color: widget.color,
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 0,
       child: ListTile(

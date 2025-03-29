@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/app_data.dart';
 import 'package:focusyn_app/util/focus_card.dart';
 
 class FocusesPage extends StatefulWidget {
@@ -14,23 +15,27 @@ class _FocusesPageState extends State<FocusesPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        const FocusCard(
+        FocusCard(
           icon: Icons.category_rounded,
+          color: AppData.instance.colours['Actions']!['main']!,
           category: 'Actions',
           description: 'Your unscheduled to-do list',
         ),
-        const FocusCard(
+        FocusCard(
           icon: Icons.update_rounded,
+          color: AppData.instance.colours['Flows']!['main']!,
           category: 'Flows',
           description: 'Your routines and habits',
         ),
-        const FocusCard(
+        FocusCard(
           icon: Icons.event_rounded,
+          color: AppData.instance.colours['Moments']!['main']!,
           category: 'Moments',
           description: 'Your events and deadlines',
         ),
-        const FocusCard(
+        FocusCard(
           icon: Icons.lightbulb_outline_rounded,
+          color: AppData.instance.colours['Thoughts']!['main']!,
           category: 'Thoughts',
           description: 'Your reflections for later',
         ),

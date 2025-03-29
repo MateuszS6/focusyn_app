@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'base_task_tile.dart';
 
 class FlowTile extends BaseTaskTile {
-  const FlowTile({super.key, required super.task, required super.onEdit});
+  const FlowTile({
+    super.key,
+    super.color,
+    required super.task,
+    required super.onEdit,
+  });
 
   @override
   State<FlowTile> createState() => _FlowTileState();
