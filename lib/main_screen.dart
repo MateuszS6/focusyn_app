@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 
 import 'pages/focuses_page.dart';
-import 'pages/home_page.dart';
+import 'pages/hub_page.dart';
 import 'pages/planner_page.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,11 +13,9 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final Map<Widget, String> _pages = {
-    HomePage(): 'Dashboard',
-    FocusesPage(): 'Focuses',
-    PlannerPage(): 'Planner',
-  };
+  final Set<StatefulWidget> _pages = {HubPage(), FocusesPage(), PlannerPage()};
+
+  final Set<String> _pageTitles = {'Hub', 'Focuses', 'Planner'};
 
   int _selectedIndex = 0;
 
@@ -34,7 +32,7 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
-        child: _pages.keys.elementAt(_selectedIndex),
+        child: _pages.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: _buildNavBar(),
     );
@@ -63,7 +61,7 @@ class _MainScreenState extends State<MainScreen> {
 
     return AppBar(
       title: Text(
-        _pages.values.elementAt(_selectedIndex),
+        _pageTitles.elementAt(_selectedIndex),
         style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w900),
       ),
       actions: actions,
@@ -76,7 +74,7 @@ class _MainScreenState extends State<MainScreen> {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.dashboard_rounded),
-          label: 'Dash',
+          label: 'Hub',
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.view_agenda_rounded),
