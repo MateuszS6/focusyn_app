@@ -2,7 +2,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/app_data.dart';
+import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/task_dialogs/add_action_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_flow_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_moment_dialog.dart';

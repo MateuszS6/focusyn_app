@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/data/brain_points_service.dart';
 import 'base_task_tile.dart';
 
 class ActionTile extends BaseTaskTile {
@@ -21,10 +22,13 @@ class _ActionTileState extends BaseTaskTileState<ActionTile> {
   String getInitialText() => widget.task['title'] ?? '';
 
   @override
-  Widget? buildTrailing() {
+  Widget? buildLeading() {
     return IconButton(
       icon: Icon(Icons.check_rounded),
-      onPressed: widget.onComplete,
+      onPressed: () {
+        BrainPointsService.subtract(widget.task['brainPoints'] ?? 0);
+        widget.onComplete();
+      },
     );
   }
 

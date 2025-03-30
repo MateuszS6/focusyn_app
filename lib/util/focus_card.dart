@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/app_data.dart';
+import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/pages/focus_task_page.dart';
 
 class FocusCard extends StatelessWidget {
