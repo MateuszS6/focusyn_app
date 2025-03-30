@@ -2,8 +2,8 @@ import 'package:hive/hive.dart';
 
 class AppDataInitializer {
   static Future<void> run() async {
-    final taskBox = Hive.box('tasksBox');
-    final filterBox = Hive.box('filtersBox');
+    final taskBox = Hive.box('taskBox');
+    final filterBox = Hive.box('filterBox');
 
     // Only run if empty
     if (taskBox.isEmpty) {

@@ -57,6 +57,10 @@ class _MainScreenState extends State<MainScreen> {
           ),
         ];
         break;
+      case 1:
+        actions = [
+          IconButton(onPressed: () {}, icon: Icon(Icons.edit_rounded))
+        ];
     }
 
     return AppBar(

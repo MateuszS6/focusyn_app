@@ -5,8 +5,8 @@ class AppData {
   static final AppData instance = AppData._internal();
   AppData._internal();
 
-  final _taskBox = Hive.box('tasksBox');
-  final _filterBox = Hive.box('filtersBox');
+  final _taskBox = Hive.box('taskBox');
+  final _filterBox = Hive.box('filterBox');
 
   Map<String, List<Map<String, dynamic>>> get tasks {
     final result = <String, List<Map<String, dynamic>>>{};

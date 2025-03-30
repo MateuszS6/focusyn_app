@@ -7,8 +7,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('appBox');
-  await Hive.openBox('tasksBox');
-  await Hive.openBox('filtersBox');
+  await Hive.openBox('taskBox');
+  await Hive.openBox('filterBox');
   await AppDataInitializer.run();
   runApp(MyApp());
 }
