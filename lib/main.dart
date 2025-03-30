@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/data/app_data_initializer.dart';
 import 'package:focusyn_app/main_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -6,6 +7,9 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await Hive.openBox('appBox');
+  await Hive.openBox('tasksBox');
+  await Hive.openBox('filtersBox');
+  await AppDataInitializer.run();
   runApp(MyApp());
 }
 

@@ -1,177 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class AppData {
   static final AppData instance = AppData._internal();
   AppData._internal();
 
-  /// A list of all the tasks in the app.
-  /// It is a map of task types to a list of tasks.
-  /// Each task is represented as a map with various attributes.
-  /// The task types are:
-  /// - Actions: Tasks that need to be done.
-  /// - Flows: Tasks that are part of a routine or process.
-  /// - Moments: Important events, appointments, or deadlines.
-  /// - Thoughts: Ideas or notes that need to be remembered.
-  final Map<String, List<Map<String, dynamic>>> tasks = {
-    'Actions': [
-      {
-        'title': 'Complete Focusyn App',
-        'priority': 1,
-        'brainPoints': 10,
-        'tag': 'Work',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'title': 'Buy Groceries',
-        'priority': 2,
-        'brainPoints': 5,
-        'tag': 'Home',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'title': 'Call Mom',
-        'priority': 3,
-        'brainPoints': 3,
-        'tag': 'Home',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'title': 'Read a Book',
-        'priority': 2,
-        'brainPoints': 5,
-        'tag': 'Personal',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'title': 'Go for a Run',
-        'priority': 3,
-        'brainPoints': 3,
-        'tag': 'Health',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-    ],
+  final _taskBox = Hive.box('tasksBox');
+  final _filterBox = Hive.box('filtersBox');
 
-    'Flows': [
-      {
-        'title': 'Morning Routine',
-        'date': '2025-03-30',
-        'time': '07:30 AM',
-        'duration': 30,
-        'repeat': 'Daily',
-        'tag': 'Morning',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'title': 'Evening Routine',
-        'date': '2025-03-31',
-        'time': '09:00 PM',
-        'duration': 30,
-        'repeat': 'Daily',
-        'tag': 'Evening',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'title': 'Workout Routine',
-        'date': '2025-04-01',
-        'time': '06:00 PM',
-        'duration': 60,
-        'repeat': 'Weekly',
-        'tag': 'Health',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'title': 'Weekly Review',
-        'date': '2025-04-02',
-        'time': '05:00 PM',
-        'duration': 60,
-        'repeat': 'Weekly',
-        'tag': 'Work',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-    ],
+  Map<String, List<Map<String, dynamic>>> get tasks {
+    final result = <String, List<Map<String, dynamic>>>{};
 
-    'Moments': [
-      {
-        'title': 'Birthday Party',
-        'date': '2025-04-05',
-        'time': '6:00 PM',
-        'duration': 180,
-        'location': 'John’s House',
-        'tag': 'Home',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'title': 'Meeting with Friends',
-        'date': '2025-04-07',
-        'time': '3:00 PM',
-        'duration': 120,
-        'location': 'Café Downtown',
-        'tag': 'Social',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'title': 'Doctor’s Appointment',
-        'date': '2025-04-03',
-        'time': '10:30 AM',
-        'duration': 60,
-        'location': 'Health Clinic',
-        'tag': 'Health',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-    ],
+    for (var key in _taskBox.keys) {
+      final rawList = _taskBox.get(key);
+      if (rawList is List) {
+        result[key] =
+            rawList.map((e) => Map<String, dynamic>.from(e as Map)).toList();
+      }
+    }
+    return result;
+  }
 
-    'Thoughts': [
-      {
-        'text': 'I should start reading more books.',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'text': 'Maybe I’ll build a habit tracker after this.',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-      {
-        'text': 'Think about how to make morning routines easier.',
-        'createdAt': DateTime.now().toIso8601String(),
-      },
-    ],
-  };
+  Map<String, List<String>> get filters {
+    final result = <String, List<String>>{};
 
-  /// A list of all the tags used in the app to filter tasks by tag.
-  /// It is a map of tag names to a list of tasks that have that tag.
-  final Map<String, List<String>> filters = {
-    'Actions': ['All', 'Home', 'Errands', 'Study'],
-    'Flows': ['All', 'Morning', 'Evening', 'Wellness'],
-    'Moments': ['All', 'Events', 'Deadlines', 'Appointments'],
-    'Thoughts': ['All', 'Ideas', 'Journal'],
-  };
+    for (var key in _filterBox.keys) {
+      if (key == 'hidden') continue;
+      final rawList = _filterBox.get(key);
+      if (rawList is List) {
+        result[key] = List<String>.from(rawList);
+      }
+    }
+    return result;
+  }
 
-  /// A list of all the hidden tags in the app.
-  /// It is a map of tag names to a set of hidden tags.
-  /// This is used to filter out tags that are not relevant to the user.
-  final Map<String, Set<String>> hiddenFilters = {
-    'Actions': {},
-    'Flows': {},
-    'Moments': {},
-    'Thoughts': {},
-  };
+  Map<String, Set<String>> get hiddenFilters {
+    final hidden = _filterBox.get('hidden');
+    if (hidden is Map) {
+      return Map<String, Set<String>>.fromEntries(
+        hidden.entries.map(
+          (e) => MapEntry(e.key.toString(), Set<String>.from(e.value)),
+        ),
+      );
+    }
+    return {};
+  }
 
-  /// A collection of certain app element colours.
+  void updateTasks(String category, List<Map<String, dynamic>> list) {
+    _taskBox.put(category, list);
+  }
+
+  void updateFilters(String category, List<String> list) {
+    _filterBox.put(category, list);
+  }
+
+  void updateHidden(String category, Set<String> hidden) {
+    final current = Map<String, dynamic>.from(_filterBox.get('hidden') ?? {});
+    current[category] = hidden.toList();
+    _filterBox.put('hidden', current);
+  }
+
+  // You can keep this in memory
   final Map<String, Map<String, Color?>> colours = {
-    'Actions': {
-      'main': Colors.purple,
-      'task': Colors.purple[50],
-    },
-    'Flows': {
-      'main': Colors.lightGreen,
-      'task': Colors.green[50],
-    },
-    'Moments': {
-      'main': Colors.red,
-      'task': Colors.red[50],
-    },
-    'Thoughts': {
-      'main': Colors.orange,
-      'task': Colors.orange[50],
-    },
+    'Actions': {'main': Colors.purple, 'task': Colors.purple[50]},
+    'Flows': {'main': Colors.lightGreen, 'task': Colors.green[50]},
+    'Moments': {'main': Colors.red, 'task': Colors.red[50]},
+    'Thoughts': {'main': Colors.orange, 'task': Colors.orange[50]},
   };
 }

@@ -1,4 +1,3 @@
-// focus_task_page.dart
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -16,7 +15,6 @@ import 'package:focusyn_app/util/tag_manager_dialog.dart';
 
 class FocusTaskPage extends StatefulWidget {
   final String category;
-
   const FocusTaskPage({super.key, required this.category});
 
   @override
@@ -24,40 +22,43 @@ class FocusTaskPage extends StatefulWidget {
 }
 
 class _FocusTaskPageState extends State<FocusTaskPage> {
-  List<Map<String, dynamic>> get _tasks =>
-      AppData.instance.tasks[widget.category]!;
-  List<String> get _filters => AppData.instance.filters[widget.category]!;
-  Set<String> get _hidden => AppData.instance.hiddenFilters[widget.category]!;
+  late List<Map<String, dynamic>> _tasks;
+  late List<String> _filters;
+  late Set<String> _hidden;
 
   String _selectedFilter = 'All';
-  List<Map<String, dynamic>> get _filteredTasks {
-    if (_selectedFilter == 'All') return _tasks;
-    return _tasks.where((task) => task['tag'] == _selectedFilter).toList();
+
+  List<Map<String, dynamic>> get _filteredTasks =>
+      _selectedFilter == 'All'
+          ? _tasks
+          : _tasks.where((task) => task['tag'] == _selectedFilter).toList();
+
+  @override
+  void initState() {
+    super.initState();
+    _tasks = List<Map<String, dynamic>>.from(
+      AppData.instance.tasks[widget.category]!,
+    );
+    _filters = List<String>.from(AppData.instance.filters[widget.category]!);
+    _hidden = Set<String>.from(
+      AppData.instance.hiddenFilters[widget.category]!,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: BackButton(),
         title: Text(widget.category),
         actions: [
           PopupMenuButton<String>(
             itemBuilder:
-                (context) => [
+                (_) => const [
                   PopupMenuItem(value: 'tags', child: Text("Manage Tags")),
                   PopupMenuItem(value: 'tasks', child: Text("Sort Tasks")),
                 ],
-            onSelected: (val) {
-              if (val == 'tags') {
-                _openTagManagerDialog();
-              } else if (val == 'tasks') {
-                // TODO: Implement task sort
-              }
-            },
+            onSelected: _handleMenuSelection,
           ),
         ],
       ),
@@ -73,135 +74,151 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
               onSelect: (val) => setState(() => _selectedFilter = val),
               onAdd: _openAddTagDialog,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Expanded(
               child:
                   _filteredTasks.isEmpty
-                      ? Center(child: Text("No tasks to show."))
-                      : ReorderableListView.builder(
-                        itemCount: _filteredTasks.length,
-                        onReorder: (oldIndex, newIndex) {
-                          if (newIndex > oldIndex) newIndex--;
-
-                          final visible = _filteredTasks;
-                          final dragged = visible.removeAt(oldIndex);
-                          visible.insert(newIndex, dragged);
-
-                          setState(() {
-                            // Reflect the change in _tasks (master list)
-                            _tasks
-                              ..removeWhere((t) => t == dragged)
-                              ..insert(
-                                _tasks.indexOf(
-                                  visible[min(newIndex, _tasks.length - 1)],
-                                ),
-                                dragged,
-                              );
-                          });
-                        },
-                        itemBuilder: (context, index) {
-                          final task = _filteredTasks[index];
-
-                          if (widget.category == 'Actions') {
-                            return ActionTile(
-                              key: ValueKey(task),
-                              color: AppData.instance.colours[widget.category]!['task']!,
-                              task: task,
-                              onComplete:
-                                  () => setState(() => _tasks.remove(task)),
-                              onEdit:
-                                  (newTitle) =>
-                                      setState(() => task["title"] = newTitle),
-                            );
-                          } else if (widget.category == 'Flows') {
-                            return FlowTile(
-                              key: ValueKey(task),
-                              color: AppData.instance.colours[widget.category]!['task']!,
-                              task: task,
-                              onEdit:
-                                  (newTitle) =>
-                                      setState(() => task["title"] = newTitle),
-                              // Add any other Flow-specific callbacks here
-                            );
-                          } else if (widget.category == 'Moments') {
-                            return MomentTile(
-                              key: ValueKey(task),
-                              color: AppData.instance.colours[widget.category]!['task']!,
-                              task: task,
-                              onEdit:
-                                  (newTitle) =>
-                                      setState(() => task["title"] = newTitle),
-                              // Add any other Moment-specific callbacks here
-                            );
-                          } else if (widget.category == 'Thoughts') {
-                            return ThoughtTile(
-                              key: ValueKey(task),
-                              color: AppData.instance.colours[widget.category]!['task']!,
-                              task: task,
-                              onEdit:
-                                  (newText) =>
-                                      setState(() => task["text"] = newText),
-                            );
-                          } else {
-                            return SizedBox.shrink(); // Fallback
-                          }
-                        },
-                      ),
+                      ? const Center(child: Text("No tasks to show."))
+                      : _buildReorderableList(),
             ),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         foregroundColor: Colors.white,
         backgroundColor: Colors.blue[400],
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) {
-              if (widget.category == 'Actions') {
-                return AddActionDialog(
-                  onAdd: (task) => setState(() => _tasks.add(task)),
-                );
-              } else if (widget.category == 'Flows') {
-                return AddFlowDialog(
-                  onAdd: (task) => setState(() => _tasks.add(task)),
-                );
-              } else if (widget.category == 'Moments') {
-                return AddMomentDialog(
-                  onAdd: (task) => setState(() => _tasks.add(task)),
-                );
-              } else if (widget.category == 'Thoughts') {
-                return AddThoughtDialog(
-                  onAdd: (task) => setState(() => _tasks.add(task)),
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          );
-        },
-        child: Icon(Icons.add_rounded, size: 40),
+        onPressed: _showAddDialog,
+        child: const Icon(Icons.add_rounded, size: 40),
       ),
     );
   }
 
-  /// Opens a dialog to add a new tag.
+  Widget _buildReorderableList() {
+    return ReorderableListView.builder(
+      itemCount: _filteredTasks.length,
+      onReorder: (oldIndex, newIndex) {
+        if (newIndex > oldIndex) newIndex--;
+        final visible = _filteredTasks;
+        final dragged = visible.removeAt(oldIndex);
+        visible.insert(newIndex, dragged);
+
+        setState(() {
+          _tasks
+            ..remove(dragged)
+            ..insert(
+              _tasks.indexOf(visible[min(newIndex, _tasks.length - 1)]),
+              dragged,
+            );
+          AppData.instance.updateTasks(widget.category, _tasks);
+        });
+      },
+      itemBuilder: (_, index) {
+        final task = _filteredTasks[index];
+        final color = AppData.instance.colours[widget.category]!['task']!;
+
+        switch (widget.category) {
+          case 'Actions':
+            return ActionTile(
+              key: ValueKey(task),
+              color: color,
+              task: task,
+              onComplete: () {
+                setState(() => _tasks.remove(task));
+                AppData.instance.updateTasks(widget.category, _tasks);
+              },
+              onEdit: (newTitle) {
+                setState(() => task["title"] = newTitle);
+                AppData.instance.updateTasks(widget.category, _tasks);
+              },
+            );
+          case 'Flows':
+            return FlowTile(
+              key: ValueKey(task),
+              color: color,
+              task: task,
+              onEdit: (newTitle) {
+                setState(() => task["title"] = newTitle);
+                AppData.instance.updateTasks(widget.category, _tasks);
+              },
+            );
+          case 'Moments':
+            return MomentTile(
+              key: ValueKey(task),
+              color: color,
+              task: task,
+              onEdit: (newTitle) {
+                setState(() => task["title"] = newTitle);
+                AppData.instance.updateTasks(widget.category, _tasks);
+              },
+            );
+          case 'Thoughts':
+            return ThoughtTile(
+              key: ValueKey(task),
+              color: color,
+              task: task,
+              onEdit: (newText) {
+                setState(() => task["text"] = newText);
+                AppData.instance.updateTasks(widget.category, _tasks);
+              },
+            );
+          default:
+            return const SizedBox.shrink();
+        }
+      },
+    );
+  }
+
+  void _handleMenuSelection(String val) {
+    if (val == 'tags') {
+      _openTagManagerDialog();
+    } else if (val == 'tasks') {
+      // TODO: Implement task sorting
+    }
+  }
+
+  void _showAddDialog() {
+    showDialog(
+      context: context,
+      builder: (_) {
+        onAdd(Map<String, dynamic> task) {
+          setState(() => _tasks.add(task));
+          AppData.instance.updateTasks(widget.category, _tasks);
+        }
+
+        switch (widget.category) {
+          case 'Actions':
+            return AddActionDialog(onAdd: onAdd);
+          case 'Flows':
+            return AddFlowDialog(onAdd: onAdd);
+          case 'Moments':
+            return AddMomentDialog(onAdd: onAdd);
+          case 'Thoughts':
+            return AddThoughtDialog(onAdd: onAdd);
+          default:
+            return const SizedBox.shrink();
+        }
+      },
+    );
+  }
+
   void _openAddTagDialog() {
     String newTag = "";
     showDialog(
       context: context,
       builder:
-          (context) => AlertDialog(
-            title: Text("Add List"),
+          (_) => AlertDialog(
+            title: const Text("Add List"),
             content: TextField(
-              decoration: InputDecoration(hintText: "Enter new list name"),
+              decoration: const InputDecoration(
+                hintText: "Enter new list name",
+              ),
               onChanged: (val) => newTag = val.trim(),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: Text("Cancel"),
+                child: const Text("Cancel"),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -209,19 +226,19 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                     setState(() {
                       _filters.add(newTag);
                       _hidden.remove(newTag);
-                      // _selectedFilter = newTag;
+                      AppData.instance.updateFilters(widget.category, _filters);
+                      AppData.instance.updateHidden(widget.category, _hidden);
                     });
                   }
                   Navigator.pop(context);
                 },
-                child: Text("Add"),
+                child: const Text("Add"),
               ),
             ],
           ),
     );
   }
 
-  /// Opens the tag manager dialog to manage tags.
   void _openTagManagerDialog() {
     showDialog(
       context: context,
@@ -235,10 +252,11 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 }
                 final index = _filters.indexOf(oldTag);
                 if (index != -1) _filters[index] = newTag;
-
                 if (_hidden.remove(oldTag)) _hidden.add(newTag);
-
                 if (_selectedFilter == oldTag) _selectedFilter = newTag;
+                AppData.instance.updateTasks(widget.category, _tasks);
+                AppData.instance.updateFilters(widget.category, _filters);
+                AppData.instance.updateHidden(widget.category, _hidden);
               });
             },
             onDelete: (tag) {
@@ -247,23 +265,24 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 _hidden.remove(tag);
                 _tasks.removeWhere((task) => task['tag'] == tag);
                 if (_selectedFilter == tag) _selectedFilter = 'All';
+                AppData.instance.updateTasks(widget.category, _tasks);
+                AppData.instance.updateFilters(widget.category, _filters);
+                AppData.instance.updateHidden(widget.category, _hidden);
               });
             },
             onToggleHide: (tag) {
               setState(() {
-                if (_hidden.contains(tag)) {
-                  _hidden.remove(tag);
-                } else {
-                  _hidden.add(tag);
-                  if (_selectedFilter == tag) _selectedFilter = 'All';
-                }
+                _hidden.contains(tag) ? _hidden.remove(tag) : _hidden.add(tag);
+                if (_selectedFilter == tag) _selectedFilter = 'All';
+                AppData.instance.updateFilters(widget.category, _filters);
+                AppData.instance.updateHidden(widget.category, _hidden);
               });
             },
             onReorder: (newOrder) {
               setState(() {
-                AppData.instance.filters[widget.category] = List<String>.from(
-                  newOrder,
-                );
+                AppData.instance.filters[widget.category] = List.from(newOrder);
+                AppData.instance.updateFilters(widget.category, _filters);
+                AppData.instance.updateHidden(widget.category, _hidden);
               });
             },
           ),

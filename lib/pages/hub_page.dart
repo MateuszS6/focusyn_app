@@ -17,16 +17,19 @@ class _HubPageState extends State<HubPage> {
     final today = DateTime.now();
     final dateStr = "${today.day}/${today.month}/${today.year}";
 
-    return ListView(
-      children: [
-        _greetingCard(points),
-        const SizedBox(height: 16),
-        _summaryCard(actions.length),
-        const SizedBox(height: 16),
-        _quoteCard(),
-        const SizedBox(height: 16),
-        _weeklyProgressPlaceholder(),
-      ],
+    return RefreshIndicator(
+      onRefresh: () async => setState(() {}),
+      child: ListView(
+        children: [
+          _greetingCard(points),
+          const SizedBox(height: 16),
+          _summaryCard(actions.length),
+          const SizedBox(height: 16),
+          _quoteCard(),
+          const SizedBox(height: 16),
+          _weeklyProgressPlaceholder(),
+        ],
+      ),
     );
   }
 
