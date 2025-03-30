@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
+import 'package:focusyn_app/util/tap_effect_card.dart';
 
 class HubPage extends StatefulWidget {
   const HubPage({super.key});
@@ -65,10 +66,9 @@ class _HubPageState extends State<HubPage> {
   }
 
   Widget _summaryCard(int actionsCount) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      color: Colors.orange[50],
+    return TapEffectCard(
+      borderRadius: 16,
+      backgroundColor: Colors.orange[50] ?? Colors.orange,
       child: ListTile(
         title: const Text(
           "Today's Tasks",
