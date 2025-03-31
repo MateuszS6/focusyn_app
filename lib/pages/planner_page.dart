@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
+import 'package:focusyn_app/util/my_app_bar.dart';
 
 class PlannerPage extends StatefulWidget {
   const PlannerPage({super.key});
@@ -29,12 +30,18 @@ class _PlannerPageState extends State<PlannerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        _buildDaySelector(),
-        const SizedBox(height: 16),
-        Expanded(child: _buildTimeline()),
-      ],
+    return Scaffold(
+      appBar: MyAppBar(title: 'Planner'),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+        child: Column(
+          children: [
+            _buildDaySelector(),
+            const SizedBox(height: 16),
+            Expanded(child: _buildTimeline()),
+          ],
+        ),
+      ),
     );
   }
 

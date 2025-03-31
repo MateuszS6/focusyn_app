@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
+import 'package:focusyn_app/pages/account_page.dart';
+import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tap_effect_card.dart';
 
 class HubPage extends StatefulWidget {
@@ -18,18 +20,38 @@ class _HubPageState extends State<HubPage> {
     final today = DateTime.now();
     final dateStr = "${today.day}/${today.month}/${today.year}";
 
-    return RefreshIndicator(
-      onRefresh: () async => setState(() {}),
-      child: ListView(
-        children: [
-          _greetingCard(points),
-          const SizedBox(height: 16),
-          _summaryCard(actions.length),
-          const SizedBox(height: 16),
-          _quoteCard(),
-          const SizedBox(height: 16),
-          _weeklyProgressPlaceholder(),
+    return Scaffold(
+      appBar: MyAppBar(
+        title: 'Hub',
+        actions: [
+          IconButton(icon: Icon(Icons.notifications_rounded), onPressed: () {}),
+          IconButton(
+            icon: Icon(Icons.account_circle_rounded),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AccountPage()),
+              );
+            },
+          ),
         ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+        child: RefreshIndicator(
+          onRefresh: () async => setState(() {}),
+          child: ListView(
+            children: [
+              _greetingCard(points),
+              const SizedBox(height: 16),
+              _summaryCard(actions.length),
+              const SizedBox(height: 16),
+              _quoteCard(),
+              const SizedBox(height: 16),
+              _weeklyProgressPlaceholder(),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -67,6 +89,7 @@ class _HubPageState extends State<HubPage> {
 
   Widget _summaryCard(int actionsCount) {
     return TapEffectCard(
+      onTap: () {},
       borderRadius: 16,
       backgroundColor: Colors.orange[50] ?? Colors.orange,
       child: ListTile(
@@ -76,9 +99,6 @@ class _HubPageState extends State<HubPage> {
         ),
         subtitle: Text("$actionsCount actions pending"),
         trailing: const Icon(Icons.chevron_right_rounded),
-        onTap: () {
-          // Optional: navigate to Actions page
-        },
       ),
     );
   }
