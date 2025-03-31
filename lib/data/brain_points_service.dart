@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 
 class BrainPointsService {
-  static final _box = Hive.box('appBox');
+  static final _box = Hive.box('homeBox');
   static const _pointsKey = 'brainPoints';
   static const _dateKey = 'lastReset';
 
