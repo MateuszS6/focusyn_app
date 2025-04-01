@@ -12,7 +12,7 @@ class AddActionDialog extends BaseTaskDialog {
 class _AddActionDialogState extends BaseTaskDialogState<AddActionDialog> {
   String title = "";
   int priority = 1;
-  int brainPoints = 1;
+  int brainPoints = 5;
 
   @override
   Widget buildFields() {

@@ -15,6 +15,7 @@ class _AddFlowDialogState extends BaseTaskDialogState<AddFlowDialog> {
   String time = '';
   int duration = 15;
   String repeat = 'None';
+  int brainPoints = 1;
 
   @override
   Widget buildFields() {
@@ -25,7 +26,9 @@ class _AddFlowDialogState extends BaseTaskDialogState<AddFlowDialog> {
           onChanged: (val) => title = val,
         ),
         TextField(
-          decoration: InputDecoration(labelText: 'Start Date (e.g. 2024-04-01)'),
+          decoration: InputDecoration(
+            labelText: 'Start Date (e.g. 2024-04-01)',
+          ),
           onChanged: (val) => date = val,
         ),
         TextField(
@@ -33,7 +36,9 @@ class _AddFlowDialogState extends BaseTaskDialogState<AddFlowDialog> {
           onChanged: (val) => time = val,
         ),
         TextField(
-          decoration: InputDecoration(labelText: 'Duration (minutes, default 15)'),
+          decoration: InputDecoration(
+            labelText: 'Duration (minutes, default 15)',
+          ),
           keyboardType: TextInputType.number,
           onChanged: (val) => duration = int.tryParse(val) ?? 15,
         ),
@@ -47,6 +52,12 @@ class _AddFlowDialogState extends BaseTaskDialogState<AddFlowDialog> {
           ],
           onChanged: (val) => setState(() => repeat = val!),
         ),
+        TextField(
+          decoration: InputDecoration(labelText: "Brain Points"),
+          keyboardType: TextInputType.number,
+          onChanged: (val) => brainPoints = int.tryParse(val) ?? 1,
+        ),
+
         buildTagDropdown(),
       ],
     );

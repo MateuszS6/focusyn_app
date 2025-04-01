@@ -1,45 +1,75 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
-import 'base_task_tile.dart';
+import 'package:focusyn_app/task_tiles/my_task_tile.dart';
 
-class ActionTile extends BaseTaskTile {
+class ActionTile extends StatefulWidget {
+  final Map<String, dynamic> task;
+  final Color color;
   final VoidCallback onComplete;
+  final Function(String title) onEdit;
 
   const ActionTile({
     super.key,
-    super.color,
-    required super.task,
-    required super.onEdit,
+    required this.task,
+    required this.color,
     required this.onComplete,
+    required this.onEdit,
   });
 
   @override
   State<ActionTile> createState() => _ActionTileState();
 }
 
-class _ActionTileState extends BaseTaskTileState<ActionTile> {
-  @override
-  String getInitialText() => widget.task['title'] ?? '';
+class _ActionTileState extends State<ActionTile> {
+  bool _editing = false;
+  late final TextEditingController _controller;
 
   @override
-  Widget? buildLeading() {
-    return IconButton(
-      icon: Icon(Icons.check_rounded),
-      onPressed: () {
-        BrainPointsService.subtract(widget.task['brainPoints'] ?? 0);
-        widget.onComplete();
-      },
-    );
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.task['title']);
   }
 
   @override
-  Widget buildSubtitle() {
-    final priority = widget.task['priority'];
-    final brainPoints = widget.task['brainPoints'];
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
-    return Text(
-      'Priority: $priority • Brain Points: $brainPoints',
-      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+  @override
+  Widget build(BuildContext context) {
+    final priority = widget.task['priority'] ?? 'Priority?';
+    final brainPoints = widget.task['brainPoints'] ?? '?';
+
+    return MyTaskTile(
+      key: widget.key,
+      color: widget.color,
+      leading: IconButton(
+        icon: const Icon(Icons.check_rounded),
+        onPressed: () {
+          BrainPointsService.subtract(widget.task['brainPoints'] ?? 0);
+          widget.onComplete();
+        },
+      ),
+      title:
+          _editing
+              ? TextField(
+                controller: _controller,
+                onSubmitted: (val) {
+                  if (val.trim().isNotEmpty) widget.onEdit(val.trim());
+                  setState(() => _editing = false);
+                },
+              )
+              : GestureDetector(
+                onTap: () => setState(() => _editing = true),
+                child: Text(
+                  widget.task['title'] ?? '',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
+      subtitle: Text(
+        "Priority: $priority • $brainPoints pts",
+      ),
     );
   }
 }

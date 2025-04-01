@@ -11,6 +11,7 @@ import 'package:focusyn_app/task_tiles/flow_tile.dart';
 import 'package:focusyn_app/task_tiles/moment_tile.dart';
 import 'package:focusyn_app/task_tiles/thought_tile.dart';
 import 'package:focusyn_app/util/filter_row.dart';
+import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tag_manager_dialog.dart';
 
 class FocusTaskPage extends StatefulWidget {
@@ -36,21 +37,17 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
   @override
   void initState() {
     super.initState();
-    _tasks = List<Map<String, dynamic>>.from(
-      AppData.instance.tasks[widget.category]!,
-    );
-    _filters = List<String>.from(AppData.instance.filters[widget.category]!);
-    _hidden = Set<String>.from(
-      AppData.instance.hiddenFilters[widget.category]!,
-    );
+    _tasks = AppData.instance.tasks[widget.category]!;
+    _filters = AppData.instance.filters[widget.category]!;
+    _hidden = AppData.instance.hiddenFilters[widget.category]!;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar: MyAppBar(
         leading: BackButton(),
-        title: Text(widget.category),
+        title: widget.category,
         actions: [
           PopupMenuButton<String>(
             itemBuilder:
@@ -87,7 +84,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
       floatingActionButton: FloatingActionButton(
         shape: const CircleBorder(),
         foregroundColor: Colors.white,
-        backgroundColor: Colors.blue[400],
+        backgroundColor: AppData.instance.colours[widget.category]?['main'],
         onPressed: _showAddDialog,
         child: const Icon(Icons.add_rounded, size: 40),
       ),
@@ -123,12 +120,12 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
               key: ValueKey(task),
               color: color,
               task: task,
-              onComplete: () {
-                setState(() => _tasks.remove(task));
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
               onEdit: (newTitle) {
                 setState(() => task["title"] = newTitle);
+                AppData.instance.updateTasks(widget.category, _tasks);
+              },
+              onComplete: () {
+                setState(() => _tasks.remove(task));
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
             );
@@ -139,6 +136,9 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
               task: task,
               onEdit: (newTitle) {
                 setState(() => task["title"] = newTitle);
+                AppData.instance.updateTasks(widget.category, _tasks);
+              },
+              onUpdate: () {
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
             );

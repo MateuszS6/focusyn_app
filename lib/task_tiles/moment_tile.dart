@@ -1,34 +1,65 @@
 import 'package:flutter/material.dart';
-import 'base_task_tile.dart';
+import 'package:focusyn_app/task_tiles/my_task_tile.dart';
 
-class MomentTile extends BaseTaskTile {
+class MomentTile extends StatefulWidget {
+  final Map<String, dynamic> task;
+  final Color color;
+  final Function(String title) onEdit;
+
   const MomentTile({
     super.key,
-    super.color,
-    required super.task,
-    required super.onEdit,
+    required this.task,
+    required this.color,
+    required this.onEdit,
   });
 
   @override
   State<MomentTile> createState() => _MomentTileState();
 }
 
-class _MomentTileState extends BaseTaskTileState<MomentTile> {
-  @override
-  String getInitialText() => widget.task['title'] ?? '';
+class _MomentTileState extends State<MomentTile> {
+  bool _editing = false;
+  late TextEditingController _controller;
 
   @override
-  Widget buildSubtitle() {
-    final date = widget.task['date'];
-    final time = widget.task['time'];
-    final dur = widget.task['duration'];
-    final duration = dur != null ? '$dur min' : '';
-    final loc = widget.task['location'];
-    final locText = loc != null && loc != '' ? ' • Location: $loc' : '';
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.task['title']);
+  }
 
-    return Text(
-      '$date • $time • $duration$locText',
-      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final date = widget.task['date'] ?? 'Date?';
+    final time = widget.task['time'] ?? 'Time?';
+    final duration = widget.task['duration'] ?? 15;
+    final location = widget.task['location'] ?? 'Nowhere?';
+
+    return MyTaskTile(
+      key: widget.key,
+      color: widget.color,
+      title:
+          _editing
+              ? TextField(
+                controller: _controller,
+                onSubmitted: (val) {
+                  if (val.trim().isNotEmpty) widget.onEdit(val.trim());
+                  setState(() => _editing = false);
+                },
+              )
+              : GestureDetector(
+                onTap: () => setState(() => _editing = true),
+                child: Text(
+                  widget.task['title'] ?? '',
+                  style: const TextStyle(fontSize: 18),
+                ),
+              ),
+      subtitle: Text("$date • $time • $duration mins • $location"),
     );
   }
 }

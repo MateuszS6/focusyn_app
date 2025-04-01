@@ -20,10 +20,11 @@ class AppDataInitializer {
         'Flows': [
           {
             "title": "Morning Routine",
-            "dueDate": "2025-03-30",
+            "date": "2025-03-30",
             "time": "07:30",
             "duration": 15,
             "repeat": "Daily",
+            "brainPoints": 10,
             "tag": "Morning",
             "createdAt": DateTime.now().toIso8601String(),
           },
