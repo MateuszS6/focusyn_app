@@ -1,49 +1,51 @@
+import 'package:focusyn_app/data/keys.dart';
 import 'package:hive/hive.dart';
 
 class AppDataInitializer {
   static Future<void> run() async {
-    final taskBox = Hive.box('taskBox');
-    final filterBox = Hive.box('filterBox');
+    final taskBox = Hive.box(Keys.taskBox);
+    final filterBox = Hive.box(Keys.filterBox);
 
     // Only run if empty
     if (taskBox.isEmpty) {
       taskBox.putAll({
-        'Actions': [
+        Keys.actions: [
           {
-            "title": "Complete Focusyn App",
-            "priority": 1,
-            "brainPoints": 10,
-            "tag": "Work",
-            "createdAt": DateTime.now().toIso8601String(),
+            Keys.title: "Complete Focusyn App",
+            Keys.priority: 1,
+            Keys.brainPoints: 10,
+            Keys.tag: "Work",
+            Keys.createdAt: DateTime.now().toIso8601String(),
           },
         ],
-        'Flows': [
+        Keys.flows: [
           {
-            "title": "Morning Routine",
-            "date": "2025-03-30",
-            "time": "07:30",
-            "duration": 15,
-            "repeat": "Daily",
-            "brainPoints": 10,
-            "tag": "Morning",
-            "createdAt": DateTime.now().toIso8601String(),
+            Keys.title: "Morning Routine",
+            Keys.date: "2025-03-30",
+            Keys.time: "07:30",
+            Keys.duration: 15,
+            Keys.repeat: "Daily",
+            Keys.brainPoints: 10,
+            Keys.history: [],
+            Keys.tag: "Morning",
+            Keys.createdAt: DateTime.now().toIso8601String(),
           },
         ],
-        'Moments': [
+        Keys.moments: [
           {
-            "title": "Doctor’s Appointment",
-            "date": "2025-04-03",
-            "time": "10:30",
-            "duration": 30,
-            "location": "Clinic",
-            "tag": "Health",
-            "createdAt": DateTime.now().toIso8601String(),
+            Keys.title: "Doctor’s Appointment",
+            Keys.date: "2025-04-03",
+            Keys.time: "10:30",
+            Keys.duration: 30,
+            Keys. location: "Clinic",
+            Keys.tag: "Health",
+            Keys.createdAt: DateTime.now().toIso8601String(),
           },
         ],
-        'Thoughts': [
+        Keys.thoughts: [
           {
-            "text": "I should start reading more books",
-            "createdAt": DateTime.now().toIso8601String(),
+            Keys.text: "I should start reading more books",
+            Keys.createdAt: DateTime.now().toIso8601String(),
           }
         ],
       });
@@ -51,15 +53,15 @@ class AppDataInitializer {
 
     if (filterBox.isEmpty) {
       filterBox.putAll({
-        'Actions': ['All', 'Home', 'Errands', 'Work'],
-        'Flows': ['All', 'Morning', 'Wellness'],
-        'Moments': ['All', 'Appointments', 'Social'],
-        'Thoughts': ['All', 'Ideas', 'Journal'],
-        'hidden': {
-          'Actions': [],
-          'Flows': [],
-          'Moments': [],
-          'Thoughts': [],
+        Keys.actions: [Keys.all, 'Home', 'Errands', 'Work'],
+        Keys.flows: [Keys.all, 'Morning', 'Wellness'],
+        Keys.moments: [Keys.all, 'Appointments', 'Social'],
+        Keys.thoughts: [Keys.all, 'Ideas', 'Journal'],
+        Keys.hidden: {
+          Keys.actions: [],
+          Keys.flows: [],
+          Keys.moments: [],
+          Keys.thoughts: [],
         },
       });
     }

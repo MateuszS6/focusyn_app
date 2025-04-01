@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
+import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/task_dialogs/add_action_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_flow_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_moment_dialog.dart';
@@ -27,12 +28,12 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
   late List<String> _filters;
   late Set<String> _hidden;
 
-  String _selectedFilter = 'All';
+  String _selectedFilter = Keys.all;
 
   List<Map<String, dynamic>> get _filteredTasks =>
-      _selectedFilter == 'All'
+      _selectedFilter == Keys.all
           ? _tasks
-          : _tasks.where((task) => task['tag'] == _selectedFilter).toList();
+          : _tasks.where((task) => task[Keys.tag] == _selectedFilter).toList();
 
   @override
   void initState() {
@@ -115,13 +116,13 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
         final color = AppData.instance.colours[widget.category]!['task']!;
 
         switch (widget.category) {
-          case 'Actions':
+          case Keys.actions:
             return ActionTile(
               key: ValueKey(task),
               color: color,
               task: task,
               onEdit: (newTitle) {
-                setState(() => task["title"] = newTitle);
+                setState(() => task[Keys.title] = newTitle);
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
               onComplete: () {
@@ -129,36 +130,36 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
             );
-          case 'Flows':
+          case Keys.flows:
             return FlowTile(
               key: ValueKey(task),
               color: color,
               task: task,
               onEdit: (newTitle) {
-                setState(() => task["title"] = newTitle);
+                setState(() => task[Keys.title] = newTitle);
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
-              onUpdate: () {
+              onComplete: () {
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
             );
-          case 'Moments':
+          case Keys.moments:
             return MomentTile(
               key: ValueKey(task),
               color: color,
               task: task,
               onEdit: (newTitle) {
-                setState(() => task["title"] = newTitle);
+                setState(() => task[Keys.title] = newTitle);
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
             );
-          case 'Thoughts':
+          case Keys.thoughts:
             return ThoughtTile(
               key: ValueKey(task),
               color: color,
               task: task,
               onEdit: (newText) {
-                setState(() => task["text"] = newText);
+                setState(() => task[Keys.text] = newText);
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
             );
@@ -187,13 +188,13 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
         }
 
         switch (widget.category) {
-          case 'Actions':
+          case Keys.actions:
             return AddActionDialog(onAdd: onAdd);
-          case 'Flows':
+          case Keys.flows:
             return AddFlowDialog(onAdd: onAdd);
-          case 'Moments':
+          case Keys.moments:
             return AddMomentDialog(onAdd: onAdd);
-          case 'Thoughts':
+          case Keys.thoughts:
             return AddThoughtDialog(onAdd: onAdd);
           default:
             return const SizedBox.shrink();
@@ -248,7 +249,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
             onRename: (oldTag, newTag) {
               setState(() {
                 for (var task in _tasks) {
-                  if (task['tag'] == oldTag) task['tag'] = newTag;
+                  if (task[Keys.tag] == oldTag) task[Keys.tag] = newTag;
                 }
                 final index = _filters.indexOf(oldTag);
                 if (index != -1) _filters[index] = newTag;
@@ -263,8 +264,8 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
               setState(() {
                 _filters.remove(tag);
                 _hidden.remove(tag);
-                _tasks.removeWhere((task) => task['tag'] == tag);
-                if (_selectedFilter == tag) _selectedFilter = 'All';
+                _tasks.removeWhere((task) => task[Keys.tag] == tag);
+                if (_selectedFilter == tag) _selectedFilter = Keys.all;
                 AppData.instance.updateTasks(widget.category, _tasks);
                 AppData.instance.updateFilters(widget.category, _filters);
                 AppData.instance.updateHidden(widget.category, _hidden);
@@ -273,7 +274,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
             onToggleHide: (tag) {
               setState(() {
                 _hidden.contains(tag) ? _hidden.remove(tag) : _hidden.add(tag);
-                if (_selectedFilter == tag) _selectedFilter = 'All';
+                if (_selectedFilter == tag) _selectedFilter = Keys.all;
                 AppData.instance.updateFilters(widget.category, _filters);
                 AppData.instance.updateHidden(widget.category, _hidden);
               });

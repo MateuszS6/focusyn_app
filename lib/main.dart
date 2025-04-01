@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data_initializer.dart';
+import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/main_screen.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
-  await Hive.openBox('homeBox');
-  await Hive.openBox('taskBox');
-  await Hive.openBox('filterBox');
+  await Hive.openBox(Keys.homeBox);
+  await Hive.openBox(Keys.taskBox);
+  await Hive.openBox(Keys.filterBox);
   await AppDataInitializer.run();
   runApp(MyApp());
 }

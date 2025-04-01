@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/data/keys.dart';
 import 'base_task_dialog.dart';
 
 class AddFlowDialog extends BaseTaskDialog {
@@ -68,11 +69,11 @@ class _AddFlowDialogState extends BaseTaskDialogState<AddFlowDialog> {
 
   @override
   Map<String, dynamic> buildData() => {
-    'title': title,
-    'dueDate': date,
-    'time': time,
-    'duration': duration,
-    'repeat': repeat,
-    'tag': selectedTag,
+    Keys.title: title,
+    Keys.date: date,
+    Keys.time: time,
+    Keys.duration: duration,
+    Keys.repeat: repeat,
+    Keys.tag: selectedTag,
   };
 }

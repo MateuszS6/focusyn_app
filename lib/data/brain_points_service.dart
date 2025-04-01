@@ -1,8 +1,9 @@
+import 'package:focusyn_app/data/keys.dart';
 import 'package:hive/hive.dart';
 
 class BrainPointsService {
-  static final _box = Hive.box('homeBox');
-  static const _pointsKey = 'brainPoints';
+  static final _box = Hive.box(Keys.homeBox);
+  static const _pointsKey = Keys.brainPoints;
   static const _dateKey = 'lastReset';
 
   static int getPoints() {

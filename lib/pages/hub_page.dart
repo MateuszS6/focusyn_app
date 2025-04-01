@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
+import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tap_effect_card.dart';
@@ -16,7 +17,7 @@ class _HubPageState extends State<HubPage> {
   @override
   Widget build(BuildContext context) {
     final points = BrainPointsService.getPoints();
-    final actions = AppData.instance.tasks["Actions"] ?? [];
+    final actions = AppData.instance.tasks[Keys.actions] ?? [];
     final today = DateTime.now();
     final dateStr = "${today.day}/${today.month}/${today.year}";
 

@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
+import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/task_tiles/my_task_tile.dart';
 
 class ActionTile extends StatefulWidget {
   final Map<String, dynamic> task;
   final Color color;
-  final VoidCallback onComplete;
   final Function(String title) onEdit;
+  final VoidCallback onComplete;
 
   const ActionTile({
     super.key,
     required this.task,
     required this.color,
-    required this.onComplete,
     required this.onEdit,
+    required this.onComplete,
   });
 
   @override
@@ -27,7 +28,7 @@ class _ActionTileState extends State<ActionTile> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.task['title']);
+    _controller = TextEditingController(text: widget.task[Keys.title]);
   }
 
   @override
@@ -38,8 +39,8 @@ class _ActionTileState extends State<ActionTile> {
 
   @override
   Widget build(BuildContext context) {
-    final priority = widget.task['priority'] ?? 'Priority?';
-    final brainPoints = widget.task['brainPoints'] ?? '?';
+    final priority = widget.task[Keys.priority] ?? 'Priority?';
+    final brainPoints = widget.task[Keys.brainPoints] ?? 10;
 
     return MyTaskTile(
       key: widget.key,
@@ -47,7 +48,7 @@ class _ActionTileState extends State<ActionTile> {
       leading: IconButton(
         icon: const Icon(Icons.check_rounded),
         onPressed: () {
-          BrainPointsService.subtract(widget.task['brainPoints'] ?? 0);
+          BrainPointsService.subtract(brainPoints);
           widget.onComplete();
         },
       ),
@@ -63,7 +64,7 @@ class _ActionTileState extends State<ActionTile> {
               : GestureDetector(
                 onTap: () => setState(() => _editing = true),
                 child: Text(
-                  widget.task['title'] ?? '',
+                  widget.task[Keys.title] ?? '',
                   style: const TextStyle(fontSize: 18),
                 ),
               ),

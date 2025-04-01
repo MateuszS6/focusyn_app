@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
+import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/task_tiles/my_task_tile.dart';
 
 class FlowTile extends StatefulWidget {
   final Map<String, dynamic> task;
   final Color color;
   final Function(String title) onEdit;
-  final VoidCallback onUpdate;
+  final VoidCallback onComplete;
 
   const FlowTile({
     super.key,
     required this.task,
     required this.color,
     required this.onEdit,
-    required this.onUpdate,
+    required this.onComplete,
   });
 
   @override
@@ -27,7 +28,7 @@ class _FlowTileState extends State<FlowTile> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: widget.task['title']);
+    _controller = TextEditingController(text: widget.task[Keys.title]);
   }
 
   @override
@@ -36,15 +37,13 @@ class _FlowTileState extends State<FlowTile> {
     super.dispose();
   }
 
-  void _markCompleted() {
-    BrainPointsService.subtract(widget.task['brainPoints'] ?? 0);
+  void _updateDate() {
+    final currentDate = widget.task[Keys.date] ?? 'ERROR';
+    final repeat = widget.task[Keys.repeat];
 
-    final current = widget.task['date'];
-    final repeat = widget.task['repeat'] ?? 'None';
-
-    if (current != null && repeat != 'None') {
-      final lastDate = DateTime.tryParse(current) ?? DateTime.now();
+    if (currentDate != null && repeat != null) {
       final now = DateTime.now();
+      final lastDate = DateTime.tryParse(currentDate) ?? now;
       DateTime nextDate = lastDate;
 
       Duration increment;
@@ -67,27 +66,38 @@ class _FlowTileState extends State<FlowTile> {
       }
 
       setState(() {
-        widget.task['date'] = nextDate.toIso8601String().split('T').first;
+        widget.task[Keys.date] = nextDate.toIso8601String().split('T').first;
+
+        // ✅ Append to history
+      final history = widget.task[Keys.history] ?? <String>[];
+      if (history is List<String>) {
+        history.add(DateTime.now().toIso8601String().split('T').first);
+        widget.task[Keys.history] = history;
+      } else {
+        widget.task[Keys.history] = [DateTime.now().toIso8601String().split('T').first];
+      }
       });
     }
-
-    widget.onUpdate(); // This saves Hive
   }
 
   @override
   Widget build(BuildContext context) {
-    final date = widget.task['date'] ?? 'Date?';
-    final time = widget.task['time'] ?? 'Time?';
-    final duration = widget.task['duration'] ?? 15;
-    final repeat = widget.task['repeat'] ?? 'Repeat?';
-    final brainPoints = widget.task['brainPoints'] ?? 10;
+    final date = widget.task[Keys.date] ?? DateTime.now();
+    final time = widget.task[Keys.time] ?? 'time?';
+    final duration = widget.task[Keys.duration] ?? 15;
+    final repeat = widget.task[Keys.repeat] ?? 'repeat?';
+    final brainPoints = widget.task[Keys.brainPoints] ?? 10;
 
     return MyTaskTile(
       key: widget.key,
       color: widget.color,
       leading: IconButton(
         icon: const Icon(Icons.check_rounded),
-        onPressed: _markCompleted,
+        onPressed: () {
+          _updateDate();
+          BrainPointsService.subtract(brainPoints);
+          widget.onComplete(); // This saves Hive
+        },
       ),
       title:
           _editing
@@ -101,7 +111,7 @@ class _FlowTileState extends State<FlowTile> {
               : GestureDetector(
                 onTap: () => setState(() => _editing = true),
                 child: Text(
-                  widget.task['title'] ?? '',
+                  widget.task[Keys.title] ?? '',
                   style: const TextStyle(fontSize: 18),
                 ),
               ),
