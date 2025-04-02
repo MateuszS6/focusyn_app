@@ -47,7 +47,10 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        leading: BackButton(),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_rounded),
+          onPressed: () => Navigator.pop(context),
+        ),
         title: widget.category,
         actions: [
           PopupMenuButton<String>(

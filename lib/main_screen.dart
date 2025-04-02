@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/data/keys.dart';
 
 import 'pages/focuses_page.dart';
 import 'pages/hub_page.dart';
@@ -31,15 +32,15 @@ class _MainScreenState extends State<MainScreen> {
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           icon: Icon(Icons.dashboard_rounded),
-          label: 'Hub',
+          label: Keys.home,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.view_agenda_rounded),
-          label: 'Focuses',
+          label: Keys.focuses,
         ),
         BottomNavigationBarItem(
           icon: Icon(Icons.local_library_rounded),
-          label: 'Planner',
+          label: Keys.planner,
         ),
       ],
       currentIndex: _selectedIndex,

@@ -38,46 +38,52 @@ class _FlowTileState extends State<FlowTile> {
   }
 
   void _updateDate() {
-    final currentDate = widget.task[Keys.date] ?? 'ERROR';
+    final currentDate = widget.task[Keys.date];
     final repeat = widget.task[Keys.repeat];
 
-    if (currentDate != null && repeat != null) {
-      final now = DateTime.now();
-      final lastDate = DateTime.tryParse(currentDate) ?? now;
-      DateTime nextDate = lastDate;
+    if (currentDate == null || repeat == null) return;
 
-      Duration increment;
-      switch (repeat) {
-        case 'Daily':
-          increment = const Duration(days: 1);
-          break;
-        case 'Weekly':
-          increment = const Duration(days: 7);
-          break;
-        case 'Monthly':
-          increment = const Duration(days: 30);
-          break;
-        default:
-          increment = Duration.zero;
-      }
+    final now = DateTime.now();
+    final lastDate = DateTime.tryParse(currentDate) ?? now;
+    DateTime nextDate = lastDate;
 
-      while (nextDate.isBefore(now)) {
-        nextDate = nextDate.add(increment);
-      }
+    Duration increment;
 
-      setState(() {
-        widget.task[Keys.date] = nextDate.toIso8601String().split('T').first;
+    switch (repeat) {
+      case 'Daily':
+        increment = const Duration(days: 1);
+        break;
+      case 'Weekly':
+        increment = const Duration(days: 7);
+        break;
+      case 'Monthly':
+        increment = const Duration(days: 30);
+        break;
+      default:
+        debugPrint("⚠️ Invalid repeat value: $repeat");
+        return; // Exit early to avoid infinite loop
+    }
 
-        // ✅ Append to history
-      final history = widget.task[Keys.history] ?? <String>[];
+    if (increment.inMilliseconds == 0) return;
+
+    // Prevent infinite loop
+    int maxCycles = 100;
+    while (nextDate.isBefore(now) && maxCycles-- > 0) {
+      nextDate = nextDate.add(increment);
+    }
+
+    setState(() {
+      widget.task[Keys.date] = nextDate.toIso8601String().split('T').first;
+
+      final history = widget.task[Keys.history];
       if (history is List<String>) {
         history.add(DateTime.now().toIso8601String().split('T').first);
-        widget.task[Keys.history] = history;
       } else {
-        widget.task[Keys.history] = [DateTime.now().toIso8601String().split('T').first];
+        widget.task[Keys.history] = [
+          DateTime.now().toIso8601String().split('T').first,
+        ];
       }
-      });
-    }
+    });
   }
 
   @override
