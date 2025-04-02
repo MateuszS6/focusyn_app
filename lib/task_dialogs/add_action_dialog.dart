@@ -19,7 +19,7 @@ class AddActionDialog extends StatelessWidget {
     return TaskDialog(
       title: "Add Action",
       onAdd: onAdd,
-      validate: () => title.trim().isNotEmpty,
+      validateInput: () => title.trim().isNotEmpty,
       buildData:
           () => {
             Keys.title: title,

@@ -4,7 +4,7 @@ class TaskDialog extends StatefulWidget {
   final String title;
   final List<Widget> fields;
   final Map<String, dynamic> Function() buildData;
-  final bool Function() validate;
+  final bool Function() validateInput;
   final void Function(Map<String, dynamic>) onAdd;
 
   const TaskDialog({
@@ -12,7 +12,7 @@ class TaskDialog extends StatefulWidget {
     required this.title,
     required this.fields,
     required this.buildData,
-    required this.validate,
+    required this.validateInput,
     required this.onAdd,
   });
 
@@ -35,7 +35,7 @@ class _TaskDialogState extends State<TaskDialog> {
         ),
         ElevatedButton(
           onPressed: () {
-            if (widget.validate()) {
+            if (widget.validateInput()) {
               widget.onAdd(widget.buildData());
               Navigator.pop(context);
             }

@@ -37,7 +37,7 @@ class AppDataInitializer {
             Keys.date: "2025-04-03",
             Keys.time: "10:30",
             Keys.duration: 30,
-            Keys. location: "Clinic",
+            Keys.location: "Clinic",
             Keys.tag: "Health",
             Keys.createdAt: DateTime.now().toIso8601String(),
           },

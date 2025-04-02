@@ -17,7 +17,7 @@ class AddThoughtDialog extends StatelessWidget {
     return TaskDialog(
       title: "Add Thought",
       onAdd: onAdd,
-      validate: () => text.trim().isNotEmpty,
+      validateInput: () => text.trim().isNotEmpty,
       buildData: () => {Keys.text: text, Keys.tag: tag},
       fields: [
         TextField(
