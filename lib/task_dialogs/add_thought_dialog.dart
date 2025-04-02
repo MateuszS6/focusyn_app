@@ -1,33 +1,44 @@
 import 'package:flutter/material.dart';
-import 'base_task_dialog.dart';
+import 'package:focusyn_app/data/app_data.dart';
+import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/task_dialogs/task_dialog.dart';
 
-class AddThoughtDialog extends BaseTaskDialog {
-  const AddThoughtDialog({super.key, required super.onAdd})
-    : super(title: 'New Thought');
+class AddThoughtDialog extends StatelessWidget {
+  final void Function(Map<String, dynamic>) onAdd;
 
-  @override
-  State<AddThoughtDialog> createState() => _AddThoughtDialogState();
-}
-
-class _AddThoughtDialogState extends BaseTaskDialogState<AddThoughtDialog> {
-  String text = "";
+  const AddThoughtDialog({super.key, required this.onAdd});
 
   @override
-  Widget buildFields() {
-    return TextField(
-      decoration: InputDecoration(
-        hintText: 'Write your thought...',
-        border: OutlineInputBorder(),
-      ),
-      minLines: 3,
-      maxLines: 6,
-      onChanged: (val) => text = val,
+  Widget build(BuildContext context) {
+    String text = '';
+    String tag = Keys.all;
+    final tags = AppData.instance.filters[Keys.thoughts] ?? [Keys.all];
+
+    return TaskDialog(
+      title: "Add Thought",
+      onAdd: onAdd,
+      validate: () => text.trim().isNotEmpty,
+      buildData: () => {Keys.text: text, Keys.tag: tag},
+      fields: [
+        TextField(
+          maxLines: 5,
+          minLines: 3,
+          decoration: const InputDecoration(
+            labelText: "Thought / Note",
+            alignLabelWithHint: true,
+          ),
+          onChanged: (val) => text = val,
+        ),
+        DropdownButtonFormField<String>(
+          value: tag,
+          decoration: const InputDecoration(labelText: "Tag"),
+          items:
+              tags
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .toList(),
+          onChanged: (val) => tag = val ?? Keys.all,
+        ),
+      ],
     );
   }
-
-  @override
-  bool validate() => text.trim().isNotEmpty;
-
-  @override
-  Map<String, dynamic> buildData() => {'text': text};
 }

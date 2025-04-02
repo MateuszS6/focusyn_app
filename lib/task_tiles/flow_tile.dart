@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
-import 'package:focusyn_app/task_tiles/my_task_tile.dart';
+import 'package:focusyn_app/task_tiles/task_tile.dart';
 
 class FlowTile extends StatefulWidget {
   final Map<String, dynamic> task;
@@ -94,7 +94,7 @@ class _FlowTileState extends State<FlowTile> {
     final repeat = widget.task[Keys.repeat] ?? 'repeat?';
     final brainPoints = widget.task[Keys.brainPoints] ?? 10;
 
-    return MyTaskTile(
+    return TaskTile(
       key: widget.key,
       color: widget.color,
       leading: IconButton(

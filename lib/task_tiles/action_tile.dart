@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
-import 'package:focusyn_app/task_tiles/my_task_tile.dart';
+import 'package:focusyn_app/task_tiles/task_tile.dart';
 
 class ActionTile extends StatefulWidget {
   final Map<String, dynamic> task;
@@ -42,7 +42,7 @@ class _ActionTileState extends State<ActionTile> {
     final priority = widget.task[Keys.priority] ?? 'Priority?';
     final brainPoints = widget.task[Keys.brainPoints] ?? 10;
 
-    return MyTaskTile(
+    return TaskTile(
       key: widget.key,
       color: widget.color,
       leading: IconButton(

@@ -1,63 +1,61 @@
 import 'package:flutter/material.dart';
-import 'base_task_dialog.dart';
+import 'package:focusyn_app/data/app_data.dart';
+import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/task_dialogs/task_dialog.dart';
 
-class AddMomentDialog extends BaseTaskDialog {
-  const AddMomentDialog({super.key, required super.onAdd})
-    : super(title: 'Add Moment');
+class AddMomentDialog extends StatelessWidget {
+  final void Function(Map<String, dynamic>) onAdd;
 
-  @override
-  State<AddMomentDialog> createState() => _AddMomentDialogState();
-}
-
-class _AddMomentDialogState extends BaseTaskDialogState<AddMomentDialog> {
-  String title = '';
-  String date = '';
-  String time = '';
-  int? duration;
-  String location = '';
+  const AddMomentDialog({super.key, required this.onAdd});
 
   @override
-  Widget buildFields() {
-    return Column(
-      children: [
+  Widget build(BuildContext context) {
+    String title = '';
+    String tag = Keys.all;
+    String location = '';
+    final tags = AppData.instance.filters[Keys.moments] ?? [Keys.all];
+    DateTime date = DateTime.now();
+    TimeOfDay time = TimeOfDay.now();
+    Duration duration = const Duration(minutes: 30);
+
+    return TaskDialog(
+      title: "Add Moment",
+      onAdd: onAdd,
+      validate: () => title.trim().isNotEmpty,
+      buildData:
+          () => {
+            Keys.title: title,
+            Keys.tag: tag,
+            Keys.date: date.toIso8601String().split('T').first,
+            Keys.time: time.format(context),
+            Keys.location: location,
+            Keys.duration: duration.inMinutes,
+          },
+      fields: [
         TextField(
-          decoration: InputDecoration(labelText: 'Event Title'),
+          decoration: const InputDecoration(labelText: "Moment Title"),
           onChanged: (val) => title = val,
         ),
         TextField(
-          decoration: InputDecoration(labelText: 'Date (e.g. 2024-04-01)'),
-          onChanged: (val) => date = val,
-        ),
-        TextField(
-          decoration: InputDecoration(labelText: 'Time (e.g. 10:00 AM)'),
-          onChanged: (val) => time = val,
-        ),
-        TextField(
-          decoration: InputDecoration(
-            labelText: 'Duration (minutes, optional)',
-          ),
-          keyboardType: TextInputType.number,
-          onChanged: (val) => duration = int.tryParse(val.isEmpty ? '0' : val),
-        ),
-        TextField(
-          decoration: InputDecoration(labelText: 'Location (optional)'),
+          decoration: const InputDecoration(labelText: "Location (optional)"),
           onChanged: (val) => location = val,
         ),
-        buildTagDropdown(),
+        TextField(
+          decoration: const InputDecoration(labelText: "Duration (minutes)"),
+          keyboardType: TextInputType.number,
+          onChanged:
+              (val) => duration = Duration(minutes: int.tryParse(val) ?? 30),
+        ),
+        DropdownButtonFormField<String>(
+          value: tag,
+          decoration: const InputDecoration(labelText: "Tag"),
+          items:
+              tags
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .toList(),
+          onChanged: (val) => tag = val ?? Keys.all,
+        ),
       ],
     );
   }
-
-  @override
-  bool validate() => title.trim().isNotEmpty;
-
-  @override
-  Map<String, dynamic> buildData() => {
-    'title': title,
-    'date': date,
-    'time': time,
-    'duration': duration,
-    'location': location,
-    'tag': selectedTag,
-  };
 }

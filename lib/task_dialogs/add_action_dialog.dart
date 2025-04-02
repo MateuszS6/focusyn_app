@@ -1,30 +1,40 @@
 import 'package:flutter/material.dart';
-import 'base_task_dialog.dart';
+import 'package:focusyn_app/data/app_data.dart';
+import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/task_dialogs/task_dialog.dart';
 
-class AddActionDialog extends BaseTaskDialog {
-  const AddActionDialog({super.key, required super.onAdd})
-    : super(title: "Add Action");
+class AddActionDialog extends StatelessWidget {
+  final void Function(Map<String, dynamic>) onAdd;
 
-  @override
-  State<AddActionDialog> createState() => _AddActionDialogState();
-}
-
-class _AddActionDialogState extends BaseTaskDialogState<AddActionDialog> {
-  String title = "";
-  int priority = 1;
-  int brainPoints = 5;
+  const AddActionDialog({super.key, required this.onAdd});
 
   @override
-  Widget buildFields() {
-    return Column(
-      children: [
+  Widget build(BuildContext context) {
+    String title = '';
+    int priority = 1;
+    int brainPoints = 5;
+    String tag = Keys.all;
+    final tags = AppData.instance.filters[Keys.actions] ?? [Keys.all];
+
+    return TaskDialog(
+      title: "Add Action",
+      onAdd: onAdd,
+      validate: () => title.trim().isNotEmpty,
+      buildData:
+          () => {
+            Keys.title: title,
+            Keys.priority: priority,
+            Keys.brainPoints: brainPoints,
+            Keys.tag: tag,
+          },
+      fields: [
         TextField(
-          decoration: InputDecoration(labelText: "Task Title"),
+          decoration: const InputDecoration(labelText: "Title"),
           onChanged: (val) => title = val,
         ),
         DropdownButtonFormField<int>(
           value: priority,
-          decoration: InputDecoration(labelText: "Eisenhower Priority"),
+          decoration: const InputDecoration(labelText: "Priority"),
           items: const [
             DropdownMenuItem(value: 1, child: Text("Urgent & Important")),
             DropdownMenuItem(value: 2, child: Text("Not Urgent but Important")),
@@ -34,26 +44,23 @@ class _AddActionDialogState extends BaseTaskDialogState<AddActionDialog> {
               child: Text("Not Urgent & Not Important"),
             ),
           ],
-          onChanged: (val) => setState(() => priority = val!),
+          onChanged: (val) => priority = val ?? 1,
         ),
         TextField(
-          decoration: InputDecoration(labelText: "Brain Points"),
+          decoration: const InputDecoration(labelText: "Brain Points"),
           keyboardType: TextInputType.number,
-          onChanged: (val) => brainPoints = int.tryParse(val) ?? 1,
+          onChanged: (val) => brainPoints = int.tryParse(val) ?? 5,
         ),
-        buildTagDropdown(),
+        DropdownButtonFormField<String>(
+          value: tag,
+          decoration: const InputDecoration(labelText: "Tag"),
+          items:
+              tags
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .toList(),
+          onChanged: (val) => tag = val ?? Keys.all,
+        ),
       ],
     );
   }
-
-  @override
-  bool validate() => title.trim().isNotEmpty;
-
-  @override
-  Map<String, dynamic> buildData() => {
-    "title": title,
-    "priority": priority,
-    "brainPoints": brainPoints,
-    "tag": selectedTag,
-  };
 }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/task_tiles/my_task_tile.dart';
+import 'package:focusyn_app/task_tiles/task_tile.dart';
 
 class MomentTile extends StatefulWidget {
   final Map<String, dynamic> task;
@@ -40,7 +40,7 @@ class _MomentTileState extends State<MomentTile> {
     final duration = widget.task['duration'] ?? 15;
     final location = widget.task['location'] ?? 'Nowhere?';
 
-    return MyTaskTile(
+    return TaskTile(
       key: widget.key,
       color: widget.color,
       title:

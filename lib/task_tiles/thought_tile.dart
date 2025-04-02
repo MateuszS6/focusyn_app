@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/task_tiles/my_task_tile.dart';
+import 'package:focusyn_app/task_tiles/task_tile.dart';
 
 class ThoughtTile extends StatefulWidget {
   final Map<String, dynamic> task;
@@ -35,7 +35,7 @@ class _ThoughtTileState extends State<ThoughtTile> {
 
   @override
   Widget build(BuildContext context) {
-    return MyTaskTile(
+    return TaskTile(
       key: widget.key,
       color: widget.color,
       title:

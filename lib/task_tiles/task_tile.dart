@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MyTaskTile extends StatelessWidget {
+class TaskTile extends StatelessWidget {
   final Widget? leading;
   final Widget title;
   final Widget? subtitle;
@@ -8,7 +8,7 @@ class MyTaskTile extends StatelessWidget {
   final Color color;
   final EdgeInsets padding;
 
-  const MyTaskTile({
+  const TaskTile({
     super.key,
     this.leading,
     required this.title,

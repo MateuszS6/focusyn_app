@@ -1,79 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/keys.dart';
-import 'base_task_dialog.dart';
+import 'package:focusyn_app/task_dialogs/task_dialog.dart';
 
-class AddFlowDialog extends BaseTaskDialog {
-  const AddFlowDialog({super.key, required super.onAdd})
-    : super(title: 'Add Flow');
+class AddFlowDialog extends StatelessWidget {
+  final void Function(Map<String, dynamic>) onAdd;
 
-  @override
-  State<AddFlowDialog> createState() => _AddFlowDialogState();
-}
-
-class _AddFlowDialogState extends BaseTaskDialogState<AddFlowDialog> {
-  String title = '';
-  String date = '';
-  String time = '';
-  int duration = 15;
-  String repeat = 'None';
-  int brainPoints = 1;
+  const AddFlowDialog({super.key, required this.onAdd});
 
   @override
-  Widget buildFields() {
-    return Column(
-      children: [
+  Widget build(BuildContext context) {
+    String title = '';
+    String tag = Keys.all;
+    final tags = AppData.instance.filters[Keys.flows] ?? [Keys.all];
+    TimeOfDay? time = TimeOfDay.now();
+    String repeat = 'Daily';
+    int brainPoints = 5;
+    Duration duration = const Duration(minutes: 15);
+
+    return TaskDialog(
+      title: "Add Flow",
+      onAdd: onAdd,
+      validate: () => title.trim().isNotEmpty,
+      buildData:
+          () => {
+            Keys.title: title,
+            Keys.tag: tag,
+            Keys.time: time.format(context),
+            Keys.repeat: repeat,
+            Keys.brainPoints: brainPoints,
+            Keys.duration: duration.inMinutes,
+          },
+      fields: [
         TextField(
-          decoration: InputDecoration(labelText: 'Routine Title'),
+          decoration: const InputDecoration(labelText: "Flow Title"),
           onChanged: (val) => title = val,
-        ),
-        TextField(
-          decoration: InputDecoration(
-            labelText: 'Start Date (e.g. 2024-04-01)',
-          ),
-          onChanged: (val) => date = val,
-        ),
-        TextField(
-          decoration: InputDecoration(labelText: 'Time (e.g. 08:00 AM)'),
-          onChanged: (val) => time = val,
-        ),
-        TextField(
-          decoration: InputDecoration(
-            labelText: 'Duration (minutes, default 15)',
-          ),
-          keyboardType: TextInputType.number,
-          onChanged: (val) => duration = int.tryParse(val) ?? 15,
         ),
         DropdownButtonFormField<String>(
           value: repeat,
-          decoration: InputDecoration(labelText: 'Repeat'),
+          decoration: const InputDecoration(labelText: "Repeat"),
           items: const [
-            DropdownMenuItem(value: 'None', child: Text('None')),
-            DropdownMenuItem(value: 'Daily', child: Text('Daily')),
-            DropdownMenuItem(value: 'Weekly', child: Text('Weekly')),
+            DropdownMenuItem(value: 'Daily', child: Text("Daily")),
+            DropdownMenuItem(value: 'Weekly', child: Text("Weekly")),
+            DropdownMenuItem(value: 'Monthly', child: Text("Monthly")),
           ],
-          onChanged: (val) => setState(() => repeat = val!),
+          onChanged: (val) => repeat = val ?? 'Daily',
         ),
         TextField(
-          decoration: InputDecoration(labelText: "Brain Points"),
+          decoration: const InputDecoration(labelText: "Brain Points"),
           keyboardType: TextInputType.number,
-          onChanged: (val) => brainPoints = int.tryParse(val) ?? 1,
+          onChanged: (val) => brainPoints = int.tryParse(val) ?? 5,
         ),
-
-        buildTagDropdown(),
+        TextField(
+          decoration: const InputDecoration(labelText: "Duration (minutes)"),
+          keyboardType: TextInputType.number,
+          onChanged:
+              (val) => duration = Duration(minutes: int.tryParse(val) ?? 15),
+        ),
+        DropdownButtonFormField<String>(
+          value: tag,
+          decoration: const InputDecoration(labelText: "Tag"),
+          items:
+              tags
+                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .toList(),
+          onChanged: (val) => tag = val ?? Keys.all,
+        ),
       ],
     );
   }
-
-  @override
-  bool validate() => title.trim().isNotEmpty;
-
-  @override
-  Map<String, dynamic> buildData() => {
-    Keys.title: title,
-    Keys.date: date,
-    Keys.time: time,
-    Keys.duration: duration,
-    Keys.repeat: repeat,
-    Keys.tag: selectedTag,
-  };
 }
