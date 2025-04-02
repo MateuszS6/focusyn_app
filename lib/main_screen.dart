@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/keys.dart';
 
 import 'pages/focuses_page.dart';
-import 'pages/hub_page.dart';
+import 'pages/home_page.dart';
 import 'pages/planner_page.dart';
 
 class MainScreen extends StatefulWidget {
@@ -13,7 +13,7 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  final Set<StatefulWidget> _pages = {HubPage(), FocusesPage(), PlannerPage()};
+  final Set<StatefulWidget> _pages = {HomePage(), FocusesPage(), PlannerPage()};
 
   int _selectedIndex = 0;
 
@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.dashboard_rounded),
+          icon: Icon(Icons.home_rounded),
           label: Keys.home,
         ),
         BottomNavigationBarItem(

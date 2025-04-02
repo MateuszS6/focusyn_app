@@ -6,14 +6,14 @@ import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tap_effect_card.dart';
 
-class HubPage extends StatefulWidget {
-  const HubPage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<HubPage> createState() => _HubPageState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _HubPageState extends State<HubPage> {
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final points = BrainPointsService.getPoints();
