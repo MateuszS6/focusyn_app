@@ -5,6 +5,7 @@ import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tap_effect_card.dart';
+import 'package:hive/hive.dart';
 
 class HubPage extends StatefulWidget {
   const HubPage({super.key});
@@ -18,8 +19,6 @@ class _HubPageState extends State<HubPage> {
   Widget build(BuildContext context) {
     final points = BrainPointsService.getPoints();
     final actions = AppData.instance.tasks[Keys.actions] ?? [];
-
-    final streak = _calculateStreak(_getFlowCompletions());
 
     return Scaffold(
       appBar: MyAppBar(
@@ -45,31 +44,14 @@ class _HubPageState extends State<HubPage> {
             children: [
               _greetingCard(points),
               const SizedBox(height: 16),
+              _brainPointChart(),
+              const SizedBox(height: 16),
               _quoteCard(),
               const SizedBox(height: 16),
               _summaryCard(actions.length),
               const SizedBox(height: 16),
-
-              TapEffectCard(
-                backgroundColor: Colors.teal[50]!,
-                borderRadius: 16,
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "🔥 Flow Streak",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      "You've completed flows $streak day${streak == 1 ? '' : 's'} in a row.",
-                    ),
-                  ],
-                ),
-              ),
+              _flowStreakCard(),
               const SizedBox(height: 16),
-
               _weeklyProgressChart(),
             ],
           ),
@@ -111,11 +93,14 @@ class _HubPageState extends State<HubPage> {
     return completions;
   }
 
+  bool _isSameDate(DateTime a, DateTime b) =>
+      a.year == b.year && a.month == b.month && a.day == b.day;
+
   Widget _greetingCard(int points) {
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       color: Colors.blue[50],
       child: Padding(
         padding: const EdgeInsets.all(20),
@@ -143,8 +128,67 @@ class _HubPageState extends State<HubPage> {
     );
   }
 
-  bool _isSameDate(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
+  Widget _brainPointChart() {
+    final box = Hive.box(Keys.homeBox);
+    final rawLog = box.get('dailyLog', defaultValue: <String, int>{}) as Map;
+    final now = DateTime.now();
+
+    final last7Days = List.generate(
+      7,
+      (i) => now.subtract(Duration(days: 6 - i)),
+    );
+    final usagePerDay =
+        last7Days.map((day) {
+          final key = day.toIso8601String().split('T').first;
+          return rawLog[key] ?? 0;
+        }).toList();
+
+    return Card(
+      margin: EdgeInsets.all(0),
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      color: Colors.blue[50],
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Brain Points Used (Last 7 Days)",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: List.generate(7, (i) {
+                  final label =
+                      ['S', 'M', 'T', 'W', 'T', 'F', 'S'][last7Days[i].weekday %
+                          7];
+                  return Column(
+                    children: [
+                      Text(label),
+                      const SizedBox(height: 4),
+                      Container(
+                        width: 10,
+                        height: usagePerDay[i].toDouble().clamp(0, 50),
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
   Widget _quoteCard() {
     final quote = _randomQuote();
@@ -198,7 +242,6 @@ class _HubPageState extends State<HubPage> {
   Widget _summaryCard(int actionsCount) {
     return TapEffectCard(
       onTap: () {},
-      borderRadius: 16,
       backgroundColor: Colors.orange[50] ?? Colors.orange,
       child: ListTile(
         title: const Text(
@@ -207,6 +250,28 @@ class _HubPageState extends State<HubPage> {
         ),
         subtitle: Text("$actionsCount actions pending"),
         trailing: const Icon(Icons.chevron_right_rounded),
+      ),
+    );
+  }
+
+  Widget _flowStreakCard() {
+    final streak = _calculateStreak(_getFlowCompletions());
+    return TapEffectCard(
+      backgroundColor: Colors.teal[50]!,
+      borderRadius: 16,
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            "🔥 Flow Streak",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "You've completed flows $streak day${streak == 1 ? '' : 's'} in a row.",
+          ),
+        ],
       ),
     );
   }
