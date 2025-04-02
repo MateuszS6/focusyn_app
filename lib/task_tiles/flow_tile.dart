@@ -122,7 +122,7 @@ class _FlowTileState extends State<FlowTile> {
                 ),
               ),
       subtitle: Text(
-        "$date • $time • $duration mins • $repeat • $brainPoints pts",
+        [date, time, '$duration mins', repeat, '$brainPoints pts'].join(" • "),
       ),
     );
   }

@@ -59,7 +59,9 @@ class _MomentTileState extends State<MomentTile> {
                   style: const TextStyle(fontSize: 18),
                 ),
               ),
-      subtitle: Text("$date • $time • $duration mins • $location"),
+      subtitle: Text(
+        [date, time, '$duration mins', if (location.isNotEmpty) location].join(" • "),
+      ),
     );
   }
 }

@@ -69,7 +69,7 @@ class _ActionTileState extends State<ActionTile> {
                 ),
               ),
       subtitle: Text(
-        "Priority: $priority • $brainPoints pts",
+        ['Priority: $priority', '$brainPoints pts'].join(' • '),
       ),
     );
   }
