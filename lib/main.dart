@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Focusyn (Beta)',
       debugShowCheckedModeBanner: false,
+      // showPerformanceOverlay: true,
       home: MainScreen(),
 
       theme: ThemeData(

@@ -5,7 +5,6 @@ import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tap_effect_card.dart';
-import 'package:hive/hive.dart';
 
 class HubPage extends StatefulWidget {
   const HubPage({super.key});
@@ -43,8 +42,6 @@ class _HubPageState extends State<HubPage> {
           child: ListView(
             children: [
               _greetingCard(points),
-              const SizedBox(height: 16),
-              _brainPointChart(),
               const SizedBox(height: 16),
               _quoteCard(),
               const SizedBox(height: 16),
@@ -121,68 +118,6 @@ class _HubPageState extends State<HubPage> {
               value: points / 100,
               color: Colors.blue,
               backgroundColor: Colors.grey[300],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _brainPointChart() {
-    final box = Hive.box(Keys.homeBox);
-    final rawLog = box.get('dailyLog', defaultValue: <String, int>{}) as Map;
-    final now = DateTime.now();
-
-    final last7Days = List.generate(
-      7,
-      (i) => now.subtract(Duration(days: 6 - i)),
-    );
-    final usagePerDay =
-        last7Days.map((day) {
-          final key = day.toIso8601String().split('T').first;
-          return rawLog[key] ?? 0;
-        }).toList();
-
-    return Card(
-      margin: EdgeInsets.all(0),
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      color: Colors.blue[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Brain Points Used (Last 7 Days)",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: List.generate(7, (i) {
-                  final label =
-                      ['S', 'M', 'T', 'W', 'T', 'F', 'S'][last7Days[i].weekday %
-                          7];
-                  return Column(
-                    children: [
-                      Text(label),
-                      const SizedBox(height: 4),
-                      Container(
-                        width: 10,
-                        height: usagePerDay[i].toDouble().clamp(0, 50),
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-              ),
             ),
           ],
         ),
