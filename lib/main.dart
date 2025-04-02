@@ -31,10 +31,14 @@ class MyApp extends StatelessWidget {
 
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
           iconTheme: IconThemeData(
-            size: 28.0,
+            size: 28,
           ),
+          titleTextStyle: TextStyle(
+            color: Colors.black,
+            fontSize: 32,
+            fontWeight: FontWeight.w900,
+          )
         ),
 
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(

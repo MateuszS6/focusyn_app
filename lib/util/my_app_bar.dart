@@ -18,15 +18,17 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(
-        title,
-        style: TextStyle(fontSize: 32.0, fontWeight: FontWeight.w900),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: AppBar(
+        leading: leading,
+        titleSpacing: 8,
+        title: Text(title),
+        actions: actions,
+        backgroundColor: backgroundColor,
+        elevation: elevation,
+        scrolledUnderElevation: 0,
       ),
-      actions: actions,
-      leading: leading,
-      backgroundColor: backgroundColor,
-      elevation: elevation,
     );
   }
 

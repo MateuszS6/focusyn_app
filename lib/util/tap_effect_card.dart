@@ -33,7 +33,12 @@ class TapEffectCard extends StatelessWidget {
           onTap: onTap,
           containedInkWell: true,
           borderRadius: BorderRadius.circular(borderRadius),
-          child: Container(alignment: alignment, height: height, padding: padding, child: child),
+          child: Container(
+            alignment: alignment,
+            height: height,
+            padding: padding,
+            child: child,
+          ),
         ),
       ),
     );
