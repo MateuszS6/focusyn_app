@@ -3,11 +3,12 @@ import 'package:focusyn_app/data/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/task_tiles/task_tile.dart';
 
-class ActionTile extends StatefulWidget {
+class ActionTile extends StatelessWidget {
   final Map<String, dynamic> task;
   final Color color;
   final Function(String title) onEdit;
   final VoidCallback onComplete;
+  final VoidCallback onDelete;
 
   const ActionTile({
     super.key,
@@ -15,61 +16,28 @@ class ActionTile extends StatefulWidget {
     required this.color,
     required this.onEdit,
     required this.onComplete,
+    required this.onDelete,
   });
 
   @override
-  State<ActionTile> createState() => _ActionTileState();
-}
-
-class _ActionTileState extends State<ActionTile> {
-  bool _editing = false;
-  late final TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.task[Keys.title]);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final priority = widget.task[Keys.priority] ?? 'Priority?';
-    final brainPoints = widget.task[Keys.brainPoints] ?? 10;
+    final priority = task[Keys.priority] ?? 1;
+    final brainPoints = task[Keys.brainPoints] ?? 0;
+    final tag = task[Keys.tag] ?? 'All';
 
     return TaskTile(
-      key: widget.key,
-      color: widget.color,
+      key: key,
+      color: color,
+      text: task[Keys.title] ?? '',
+      subtitle: "Priority $priority • $brainPoints BP • $tag",
+      onInlineEdit: onEdit,
+      onDelete: onDelete,
       leading: IconButton(
         icon: const Icon(Icons.check_rounded),
         onPressed: () {
           BrainPointsService.subtract(brainPoints);
-          widget.onComplete();
+          onComplete();
         },
-      ),
-      title:
-          _editing
-              ? TextField(
-                controller: _controller,
-                onSubmitted: (val) {
-                  if (val.trim().isNotEmpty) widget.onEdit(val.trim());
-                  setState(() => _editing = false);
-                },
-              )
-              : GestureDetector(
-                onTap: () => setState(() => _editing = true),
-                child: Text(
-                  widget.task[Keys.title] ?? '',
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ),
-      subtitle: Text(
-        ['Priority: $priority', '$brainPoints pts'].join(' • '),
       ),
     );
   }

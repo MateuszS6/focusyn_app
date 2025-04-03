@@ -1,67 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/task_tiles/task_tile.dart';
 
-class MomentTile extends StatefulWidget {
+class MomentTile extends StatelessWidget {
   final Map<String, dynamic> task;
   final Color color;
   final Function(String title) onEdit;
+  final VoidCallback onDelete;
 
   const MomentTile({
     super.key,
     required this.task,
     required this.color,
     required this.onEdit,
+    required this.onDelete,
   });
 
   @override
-  State<MomentTile> createState() => _MomentTileState();
-}
-
-class _MomentTileState extends State<MomentTile> {
-  bool _editing = false;
-  late TextEditingController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = TextEditingController(text: widget.task['title']);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final date = widget.task['date'] ?? 'Date?';
-    final time = widget.task['time'] ?? 'Time?';
-    final duration = widget.task['duration'] ?? 15;
-    final location = widget.task['location'] ?? 'Nowhere?';
+    final title = task[Keys.title] ?? '';
+    final location = task[Keys.location] ?? '';
+    final tag = task[Keys.tag] ?? '';
+    final date = task[Keys.date] ?? '';
+    final time = task[Keys.time] ?? '';
+
+    final subtitle = [
+      if (date.isNotEmpty) date,
+      if (time.isNotEmpty) time,
+      if (location.isNotEmpty) location,
+      if (tag.isNotEmpty) tag,
+    ].join(" • ");
 
     return TaskTile(
-      key: widget.key,
-      color: widget.color,
-      title:
-          _editing
-              ? TextField(
-                controller: _controller,
-                onSubmitted: (val) {
-                  if (val.trim().isNotEmpty) widget.onEdit(val.trim());
-                  setState(() => _editing = false);
-                },
-              )
-              : GestureDetector(
-                onTap: () => setState(() => _editing = true),
-                child: Text(
-                  widget.task['title'] ?? '',
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ),
-      subtitle: Text(
-        [date, time, '$duration mins', if (location.isNotEmpty) location].join(" • "),
-      ),
+      key: key,
+      color: color,
+      text: title,
+      subtitle: subtitle,
+      onInlineEdit: onEdit,
+      onDelete: onDelete,
     );
   }
 }

@@ -132,6 +132,9 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 setState(() => _tasks.remove(task));
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
+              onDelete: () {
+                
+              },
             );
           case Keys.flows:
             return FlowTile(
@@ -145,6 +148,9 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
               onComplete: () {
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
+              onDelete: () {
+                
+              },
             );
           case Keys.moments:
             return MomentTile(
@@ -155,6 +161,9 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 setState(() => task[Keys.title] = newTitle);
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
+              onDelete: () {
+                
+              },
             );
           case Keys.thoughts:
             return ThoughtTile(
@@ -164,6 +173,9 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
               onEdit: (newText) {
                 setState(() => task[Keys.text] = newText);
                 AppData.instance.updateTasks(widget.category, _tasks);
+              },
+              onDelete: () {
+                
               },
             );
           default:
