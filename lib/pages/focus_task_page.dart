@@ -133,7 +133,8 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
               onDelete: () {
-                
+                setState(() => _tasks.remove(task));
+                AppData.instance.updateTasks(widget.category, _tasks);
               },
             );
           case Keys.flows:
@@ -149,7 +150,8 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
               onDelete: () {
-                
+                setState(() => _tasks.remove(task));
+                AppData.instance.updateTasks(widget.category, _tasks);
               },
             );
           case Keys.moments:
@@ -162,7 +164,8 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
               onDelete: () {
-                
+                setState(() => _tasks.remove(task));
+                AppData.instance.updateTasks(widget.category, _tasks);
               },
             );
           case Keys.thoughts:
@@ -175,7 +178,8 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
               onDelete: () {
-                
+                setState(() => _tasks.remove(task));
+                AppData.instance.updateTasks(widget.category, _tasks);
               },
             );
           default:

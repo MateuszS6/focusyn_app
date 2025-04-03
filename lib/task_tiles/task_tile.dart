@@ -61,7 +61,7 @@ class _TaskTileState extends State<TaskTile> {
               ),
               if (widget.onDelete != null)
                 IconButton(
-                  icon: const Icon(Icons.delete_outline_rounded),
+                  icon: const Icon(Icons.delete_rounded),
                   onPressed: widget.onDelete,
                 ),
             ],
