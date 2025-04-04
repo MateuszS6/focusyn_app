@@ -49,9 +49,28 @@ class FlowTile extends StatelessWidget {
         icon: const Icon(Icons.check_rounded),
         onPressed: () {
           BrainPointsService.subtract(bp);
+
+          // Update to next scheduled date
+          final repeat = task[Keys.repeat] ?? 'Daily';
+          final nextDate = _calculateNextDate(repeat);
+          task[Keys.date] = nextDate.toIso8601String().split('T').first;
+
           onComplete();
         },
       ),
     );
+  }
+
+  DateTime _calculateNextDate(String repeat) {
+    final now = DateTime.now();
+    switch (repeat.toLowerCase()) {
+      case 'weekly':
+        return now.add(const Duration(days: 7));
+      case 'monthly':
+        return DateTime(now.year, now.month + 1, now.day);
+      case 'daily':
+      default:
+        return now.add(const Duration(days: 1));
+    }
   }
 }
