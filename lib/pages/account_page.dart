@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/pages/login_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 
 class AccountPage extends StatelessWidget {
@@ -7,6 +9,8 @@ class AccountPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = FirebaseAuth.instance.currentUser;
+
     return Scaffold(
       appBar: MyAppBar(
         title: Keys.account,
@@ -22,7 +26,7 @@ class AccountPage extends StatelessWidget {
           SizedBox(height: 12),
           Center(
             child: Text(
-              "Mateusz",
+              user?.email ?? "User",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
           ),
@@ -68,7 +72,14 @@ class AccountPage extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout_rounded),
             title: Text("Log Out"),
-            onTap: () {},
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              if (!context.mounted) return;
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (_) => const LoginPage()),
+                (route) => false,
+              );
+            },
           ),
         ],
       ),
