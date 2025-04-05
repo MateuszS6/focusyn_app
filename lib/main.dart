@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data_initializer.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/main_screen.dart';
+import 'package:focusyn_app/pages/login_page.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,9 +16,7 @@ void main() async {
   await Hive.openBox(Keys.taskBox);
   await Hive.openBox(Keys.filterBox);
   await AppDataInitializer.run();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MyApp());
 }
 
@@ -28,7 +29,10 @@ class MyApp extends StatelessWidget {
       title: 'Focusyn (Beta)',
       debugShowCheckedModeBanner: false,
       // showPerformanceOverlay: true,
-      home: MainScreen(),
+      home:
+          FirebaseAuth.instance.currentUser == null
+              ? const LoginPage()
+              : const MainScreen(),
 
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -37,14 +41,12 @@ class MyApp extends StatelessWidget {
 
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(
-            size: 28,
-          ),
+          iconTheme: IconThemeData(size: 28),
           titleTextStyle: TextStyle(
             color: Colors.black,
             fontSize: 32,
             fontWeight: FontWeight.w900,
-          )
+          ),
         ),
 
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
@@ -53,7 +55,7 @@ class MyApp extends StatelessWidget {
           unselectedItemColor: Colors.grey,
         ),
       ),
-      
+
       darkTheme: ThemeData(
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
