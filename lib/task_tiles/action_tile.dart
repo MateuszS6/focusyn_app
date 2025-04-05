@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
-import 'package:focusyn_app/task_tiles/task_tile.dart';
+import 'package:focusyn_app/util/task_tile.dart';
 
 class ActionTile extends StatelessWidget {
   final Map<String, dynamic> task;

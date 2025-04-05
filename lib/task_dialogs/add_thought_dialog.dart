@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/keys.dart';
-import 'package:focusyn_app/task_dialogs/task_dialog.dart';
+import 'package:focusyn_app/util/task_dialog.dart';
 
 class AddThoughtDialog extends StatelessWidget {
   final void Function(Map<String, dynamic>) onAdd;
