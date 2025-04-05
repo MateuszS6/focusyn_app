@@ -7,7 +7,13 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(title: 'Settings'),
+      appBar: MyAppBar(
+        title: 'Settings',
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_rounded),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: const Center(child: Text("Settings page content coming soon")),
     );
   }

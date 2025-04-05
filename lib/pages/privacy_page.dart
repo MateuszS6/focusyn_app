@@ -7,7 +7,13 @@ class PrivacyPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(title: 'Privacy & Security'),
+      appBar: MyAppBar(
+        title: 'Privacy & Security',
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios_rounded),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: const Padding(
         padding: EdgeInsets.all(16),
         child: Text(

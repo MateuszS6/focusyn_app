@@ -39,9 +39,10 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         scaffoldBackgroundColor: Colors.white,
 
+      iconTheme: const IconThemeData(size: 28),
         appBarTheme: const AppBarTheme(
           backgroundColor: Colors.white,
-          iconTheme: IconThemeData(size: 28),
+          iconTheme: IconThemeData(size: 24),
           titleTextStyle: TextStyle(
             color: Colors.black,
             fontSize: 32,
