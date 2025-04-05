@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "300828025223",
+    "project_id": "focusyn-app",
+    "storage_bucket": "focusyn-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300828025223:android:3196bb2f9b35773875b322",
+        "android_client_info": {
+          "package_name": "com.example.focusyn"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZz3x6mywSc5cP4VArj7Zvpi2UoEdyCZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

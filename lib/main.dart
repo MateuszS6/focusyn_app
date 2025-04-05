@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data_initializer.dart';
 import 'package:focusyn_app/data/keys.dart';
@@ -11,6 +13,9 @@ void main() async {
   await Hive.openBox(Keys.taskBox);
   await Hive.openBox(Keys.filterBox);
   await AppDataInitializer.run();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyApp());
 }
 
