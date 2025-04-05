@@ -16,14 +16,14 @@ class _FocusesPageState extends State<FocusesPage> {
     return Scaffold(
       appBar: MyAppBar(
         title: 'Focuses',
-        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.edit_rounded))],
+        actions: [IconButton(onPressed: () {}, icon: Icon(Icons.more_vert))],
       ),
       body: Padding(
         padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
         child: ListView(
           children: <Widget>[
             FocusCard(
-              icon: Icons.whatshot,
+              icon: Icons.whatshot_rounded,
               color: AppData.instance.colours['Actions']!['main']!,
               category: 'Actions',
               description: 'Your unscheduled to-do list',

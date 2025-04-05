@@ -21,7 +21,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: AppBar(
-        leading: leading,
+        leading: leading ?? IconButton(
+                icon: const Icon(Icons.arrow_back_ios_rounded),
+                onPressed: () => Navigator.pop(context),
+              ),
         titleSpacing: 8,
         title: Text(title),
         actions: actions,
