@@ -29,9 +29,8 @@ class TapEffectCard extends StatelessWidget {
       child: Material(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(borderRadius),
-        child: InkResponse(
+        child: InkWell(
           onTap: onTap,
-          containedInkWell: true,
           borderRadius: BorderRadius.circular(borderRadius),
           child: Container(
             alignment: alignment,

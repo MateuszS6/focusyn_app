@@ -23,13 +23,13 @@ class _FocusesPageState extends State<FocusesPage> {
         child: ListView(
           children: <Widget>[
             FocusCard(
-              icon: Icons.category_rounded,
+              icon: Icons.whatshot,
               color: AppData.instance.colours['Actions']!['main']!,
               category: 'Actions',
               description: 'Your unscheduled to-do list',
             ),
             FocusCard(
-              icon: Icons.update_rounded,
+              icon: Icons.event_repeat,
               color: AppData.instance.colours['Flows']!['main']!,
               category: 'Flows',
               description: 'Your routines and habits',
@@ -41,7 +41,7 @@ class _FocusesPageState extends State<FocusesPage> {
               description: 'Your events and deadlines',
             ),
             FocusCard(
-              icon: Icons.lightbulb_outline_rounded,
+              icon: Icons.lightbulb_rounded,
               color: AppData.instance.colours['Thoughts']!['main']!,
               category: 'Thoughts',
               description: 'Your reflections for later',
