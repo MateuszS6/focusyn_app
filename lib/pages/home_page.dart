@@ -161,9 +161,42 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "Brain Points",
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
+                    Row(
+                      children: [
+                        const Text(
+                          "Brain Points",
+                          style: TextStyle(fontSize: 14, color: Colors.black54),
+                        ),
+                        const SizedBox(width: 4),
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder:
+                                  (context) => AlertDialog(
+                                    title: const Text("About Brain Points"),
+                                    content: const Text(
+                                      "Brain Points are an approximate measure of your mental energy. "
+                                      "Since they can't be measured precisely, you can manually adjust them "
+                                      "to better reflect your current state. This helps maintain a more "
+                                      "accurate representation of your mental capacity throughout the day.",
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text("Got it"),
+                                      ),
+                                    ],
+                                  ),
+                            );
+                          },
+                          child: Icon(
+                            Icons.info_outline,
+                            size: 16,
+                            color: Colors.blue[700],
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 4),
                     Text(
