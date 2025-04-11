@@ -114,6 +114,36 @@ class _HomePageState extends State<HomePage> {
       a.year == b.year && a.month == b.month && a.day == b.day;
 
   Widget _greetingCard(int points) {
+    final now = DateTime.now();
+    final hour = now.hour;
+    String greeting;
+    String message;
+    Color messageColor;
+
+    // Determine greeting based on time of day
+    if (hour < 12) {
+      greeting = "Good morning";
+    } else if (hour < 17) {
+      greeting = "Good afternoon";
+    } else {
+      greeting = "Good evening";
+    }
+
+    // Determine message and color based on brain points
+    if (points >= 80) {
+      message = "You're at peak performance!";
+      messageColor = Colors.green;
+    } else if (points >= 50) {
+      message = "You're doing great!";
+      messageColor = Colors.blue;
+    } else if (points >= 20) {
+      message = "Time for a break?";
+      messageColor = Colors.orange;
+    } else {
+      message = "Consider taking a rest";
+      messageColor = Colors.red;
+    }
+
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
@@ -124,20 +154,105 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Good day, Mateusz 👋",
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "$greeting, Mateusz 👋",
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      message,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: messageColor,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.add_circle_outline,
+                    color: Colors.blue[700],
+                    size: 28,
+                  ),
+                  onPressed: () {
+                    // TODO: Implement add brain points functionality
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Add brain points feature coming soon!'),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            Text(
-              "You have $points / 100 brain points left",
-              style: TextStyle(fontSize: 16),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Brain Points",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blue[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "$points / 100",
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: 60,
+                  height: 60,
+                  decoration: BoxDecoration(
+                    color: Colors.blue[100],
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(
+                    child: Text(
+                      "${(points / 100 * 100).round()}%",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[700],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
-            LinearProgressIndicator(
-              value: points / 100,
-              color: Colors.blue,
-              backgroundColor: Colors.grey[300],
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: LinearProgressIndicator(
+                value: points / 100,
+                minHeight: 8,
+                backgroundColor: Colors.blue[100],
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  points >= 50 ? Colors.blue : Colors.orange,
+                ),
+              ),
             ),
           ],
         ),
