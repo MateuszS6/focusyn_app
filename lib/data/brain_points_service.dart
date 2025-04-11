@@ -5,42 +5,47 @@ class BrainPointsService {
   static final _box = Hive.box(Keys.homeBox);
   static const _pointsKey = Keys.brainPoints;
   static const _dateKey = 'lastReset';
+  static const int _maxPoints = 100;
 
   static int getPoints() {
     _checkReset();
-    return _box.get(_pointsKey, defaultValue: 100);
+    return _box.get(_pointsKey, defaultValue: _maxPoints);
   }
 
   static void setPoints(int value) {
-    _box.put(_pointsKey, value);
+    _box.put(_pointsKey, value.clamp(0, _maxPoints));
   }
 
-  static void add(int value) {
+  static void addPoints(int value) {
     _checkReset();
     final current = getPoints();
-    _box.put(_pointsKey, current + value);
+    setPoints(current + value);
   }
 
-  static void subtract(int value) {
+  static void subtractPoints(int value) {
     _checkReset();
     final current = getPoints();
-    _box.put(_pointsKey, current - value);
+    setPoints(current - value);
   }
 
   static void reset() {
-    _box.put(_pointsKey, 100);
+    _box.put(_pointsKey, _maxPoints);
     _box.put(_dateKey, DateTime.now().toIso8601String());
   }
 
   static void _checkReset() {
-    final last = _box.get(_dateKey);
-    final today = DateTime.now();
-    if (last == null || !_isSameDay(DateTime.parse(last), today)) {
+    final lastReset = _box.get(_dateKey) as String?;
+    if (lastReset == null) {
+      reset();
+      return;
+    }
+
+    final lastResetDate = DateTime.parse(lastReset);
+    final now = DateTime.now();
+    if (now.year > lastResetDate.year ||
+        now.month > lastResetDate.month ||
+        now.day > lastResetDate.day) {
       reset();
     }
-  }
-
-  static bool _isSameDay(DateTime a, DateTime b) {
-    return a.year == b.year && a.month == b.month && a.day == b.day;
   }
 }
