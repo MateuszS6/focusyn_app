@@ -11,7 +11,7 @@ class AddThoughtDialog extends StatelessWidget {
   static const String _textLabel = "Text";
   static const String _tagLabel = "Tag";
 
-  final void Function(TaskModel) onAdd;
+  final void Function(Task) onAdd;
 
   const AddThoughtDialog({super.key, required this.onAdd});
 
@@ -25,12 +25,7 @@ class AddThoughtDialog extends StatelessWidget {
       title: _dialogTitle,
       onAdd: onAdd,
       validateInput: () => text.trim().isNotEmpty,
-      buildTask:
-          () => TaskModel(
-            title: text.substring(0, min(text.length, 20)),
-            text: text,
-            tag: tag,
-          ),
+      buildTask: () => Task(title: text, tag: tag, text: text),
       fields: [
         TextField(
           decoration: const InputDecoration(labelText: _textLabel),

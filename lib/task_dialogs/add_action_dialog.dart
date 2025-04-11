@@ -11,7 +11,7 @@ class AddActionDialog extends StatelessWidget {
   static const String _brainPointsLabel = "Brain Points";
   static const String _tagLabel = "Tag";
 
-  final void Function(TaskModel) onAdd;
+  final void Function(Task) onAdd;
 
   const AddActionDialog({super.key, required this.onAdd});
 
@@ -28,7 +28,7 @@ class AddActionDialog extends StatelessWidget {
       onAdd: onAdd,
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
-          () => TaskModel(
+          () => Task(
             title: title,
             priority: priority,
             brainPoints: brainPoints,

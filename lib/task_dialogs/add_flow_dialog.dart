@@ -9,7 +9,7 @@ class AddFlowDialog extends StatelessWidget {
   static const String _titleLabel = "Title";
   static const String _tagLabel = "Tag";
 
-  final void Function(TaskModel) onAdd;
+  final void Function(Task) onAdd;
 
   const AddFlowDialog({super.key, required this.onAdd});
 
@@ -29,7 +29,7 @@ class AddFlowDialog extends StatelessWidget {
       onAdd: onAdd,
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
-          () => TaskModel(
+          () => Task(
             title: title,
             tag: tag,
             brainPoints: brainPoints,

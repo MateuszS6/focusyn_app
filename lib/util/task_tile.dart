@@ -25,6 +25,20 @@ class TaskTile extends StatefulWidget {
 }
 
 class _TaskTileState extends State<TaskTile> {
+  late final TextEditingController _editController;
+
+  @override
+  void initState() {
+    super.initState();
+    _editController = TextEditingController(text: widget.text);
+  }
+
+  @override
+  void dispose() {
+    _editController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -56,17 +70,13 @@ class _TaskTileState extends State<TaskTile> {
   }
 
   void _showEditDialog() {
-    String updated = widget.text;
+    _editController.text = widget.text;
     showDialog(
       context: context,
       builder:
           (_) => AlertDialog(
             title: const Text("Edit"),
-            content: TextField(
-              controller: TextEditingController(text: updated),
-              onChanged: (val) => updated = val,
-              autofocus: true,
-            ),
+            content: TextField(controller: _editController, autofocus: true),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
@@ -74,8 +84,9 @@ class _TaskTileState extends State<TaskTile> {
               ),
               ElevatedButton(
                 onPressed: () {
+                  if (!mounted) return;
                   Navigator.pop(context);
-                  widget.onInlineEdit(updated.trim());
+                  widget.onInlineEdit(_editController.text.trim());
                 },
                 child: const Text("Save"),
               ),

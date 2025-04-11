@@ -9,7 +9,7 @@ class AddMomentDialog extends StatelessWidget {
   static const String _titleLabel = "Title";
   static const String _tagLabel = "Tag";
 
-  final void Function(TaskModel) onAdd;
+  final void Function(Task) onAdd;
 
   const AddMomentDialog({super.key, required this.onAdd});
 
@@ -23,7 +23,7 @@ class AddMomentDialog extends StatelessWidget {
       title: _dialogTitle,
       onAdd: onAdd,
       validateInput: () => title.trim().isNotEmpty,
-      buildTask: () => TaskModel(title: title, tag: tag),
+      buildTask: () => Task(title: title, tag: tag),
       fields: [
         TextField(
           decoration: const InputDecoration(labelText: _titleLabel),

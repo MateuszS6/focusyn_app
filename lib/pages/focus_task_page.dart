@@ -124,9 +124,9 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
             return ActionTile(
               key: ValueKey(task),
               color: color,
-              task: task,
-              onEdit: (newTitle) {
-                setState(() => task[Keys.title] = newTitle);
+              task: Task.fromMap(task),
+              onEdit: () {
+                setState(() => task[Keys.title] = task[Keys.title]);
                 AppData.instance.updateTasks(widget.category, _tasks);
               },
               onComplete: () {
@@ -202,7 +202,7 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
     showDialog(
       context: context,
       builder: (_) {
-        onAdd(TaskModel task) {
+        onAdd(Task task) {
           setState(() => _tasks.add(task.toMap()));
           AppData.instance.updateTasks(widget.category, _tasks);
         }

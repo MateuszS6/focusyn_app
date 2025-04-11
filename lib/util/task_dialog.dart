@@ -9,9 +9,9 @@ class TaskDialog extends StatefulWidget {
 
   final String title;
   final List<Widget> fields;
-  final TaskModel Function() buildTask;
+  final Task Function() buildTask;
   final bool Function() validateInput;
-  final void Function(TaskModel) onAdd;
+  final void Function(Task) onAdd;
 
   const TaskDialog({
     super.key,

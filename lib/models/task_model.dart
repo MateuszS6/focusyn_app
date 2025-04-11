@@ -1,6 +1,6 @@
 import 'package:focusyn_app/data/keys.dart';
 
-class TaskModel {
+class Task {
   final String title;
   final int priority;
   final int brainPoints;
@@ -14,11 +14,11 @@ class TaskModel {
   final String? history;
   final DateTime createdAt;
 
-  TaskModel({
+  Task({
     required this.title,
     this.priority = 1,
-    this.brainPoints = 5,
-    this.tag = Keys.all,
+    this.brainPoints = 0,
+    this.tag = 'All',
     this.text,
     this.date,
     this.time,
@@ -31,10 +31,10 @@ class TaskModel {
 
   Map<String, dynamic> toMap() {
     return {
-      Keys.title: title,
-      Keys.priority: priority,
-      Keys.brainPoints: brainPoints,
-      Keys.tag: tag,
+      'title': title,
+      'priority': priority,
+      'brainPoints': brainPoints,
+      'tag': tag,
       if (text != null) Keys.text: text,
       if (date != null) Keys.date: date,
       if (time != null) Keys.time: time,
@@ -46,12 +46,12 @@ class TaskModel {
     };
   }
 
-  factory TaskModel.fromMap(Map<String, dynamic> map) {
-    return TaskModel(
-      title: map[Keys.title] as String,
-      priority: map[Keys.priority] as int? ?? 1,
-      brainPoints: map[Keys.brainPoints] as int? ?? 5,
-      tag: map[Keys.tag] as String? ?? Keys.all,
+  factory Task.fromMap(Map<String, dynamic> map) {
+    return Task(
+      title: map['title'] ?? '',
+      priority: map['priority'] ?? 1,
+      brainPoints: map['brainPoints'] ?? 0,
+      tag: map['tag'] ?? 'All',
       text: map[Keys.text] as String?,
       date: map[Keys.date] as String?,
       time: map[Keys.time] as String?,
