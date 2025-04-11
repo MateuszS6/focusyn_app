@@ -3,6 +3,7 @@ import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/pages/account_page.dart';
+import 'package:focusyn_app/pages/focus_task_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tap_effect_card.dart';
 
@@ -89,8 +90,18 @@ class _HomePageState extends State<HomePage> {
       final history = task[Keys.history];
       if (history is List) {
         for (final date in history) {
-          final parsed = DateTime.tryParse(date);
-          if (parsed != null) completions.add(parsed);
+          if (date is String) {
+            final parsed = DateTime.tryParse(date);
+            if (parsed != null) {
+              // Only add dates from the last 7 days
+              final now = DateTime.now();
+              final sevenDaysAgo = now.subtract(const Duration(days: 7));
+              if (parsed.isAfter(sevenDaysAgo) ||
+                  _isSameDate(parsed, sevenDaysAgo)) {
+                completions.add(parsed);
+              }
+            }
+          }
         }
       }
     }
@@ -183,16 +194,199 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _summaryCard(int actionsCount) {
-    return TapEffectCard(
-      onTap: () {},
-      backgroundColor: Colors.orange[50] ?? Colors.orange,
-      child: ListTile(
-        title: const Text(
-          "Today's Tasks",
-          style: TextStyle(fontWeight: FontWeight.bold),
+    final today = DateTime.now();
+    final formattedDate =
+        "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
+
+    final flows = AppData.instance.tasks[Keys.flows] ?? [];
+    final moments = AppData.instance.tasks[Keys.moments] ?? [];
+
+    final todayFlows =
+        flows.where((flow) => flow[Keys.date] == formattedDate).toList();
+    final todayMoments =
+        moments.where((moment) => moment[Keys.date] == formattedDate).toList();
+
+    final totalBrainPoints =
+        todayFlows.fold<int>(
+          0,
+          (sum, flow) => sum + ((flow[Keys.brainPoints] as int?) ?? 0),
+        ) +
+        todayMoments.fold<int>(
+          0,
+          (sum, moment) => sum + ((moment[Keys.brainPoints] as int?) ?? 0),
+        );
+
+    final nextFlow = todayFlows.isNotEmpty ? todayFlows.first : null;
+    final nextMoment = todayMoments.isNotEmpty ? todayMoments.first : null;
+
+    return Card(
+      margin: EdgeInsets.zero,
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      color: Colors.orange[50] ?? Colors.orange,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Today's Tasks",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "$totalBrainPoints BP",
+                  style: TextStyle(
+                    color: Colors.orange[700],
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildTaskType(
+                  icon: Icons.whatshot_rounded,
+                  count: actionsCount,
+                  label: "Actions",
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => FocusTaskPage(category: Keys.actions),
+                        ),
+                      ),
+                ),
+                _buildTaskType(
+                  icon: Icons.event_repeat,
+                  count: todayFlows.length,
+                  label: "Flows",
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => FocusTaskPage(category: Keys.flows),
+                        ),
+                      ),
+                ),
+                _buildTaskType(
+                  icon: Icons.event_rounded,
+                  count: todayMoments.length,
+                  label: "Moments",
+                  onTap:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => FocusTaskPage(category: Keys.moments),
+                        ),
+                      ),
+                ),
+              ],
+            ),
+            if (nextFlow != null || nextMoment != null) ...[
+              const SizedBox(height: 16),
+              const Text(
+                "Next Up",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 8),
+              if (nextFlow != null)
+                _buildNextTask(
+                  icon: Icons.event_repeat,
+                  title: nextFlow[Keys.title],
+                  time: nextFlow[Keys.time],
+                ),
+              if (nextMoment != null)
+                _buildNextTask(
+                  icon: Icons.event_rounded,
+                  title: nextMoment[Keys.title],
+                  time: nextMoment[Keys.time],
+                ),
+            ],
+          ],
         ),
-        subtitle: Text("$actionsCount actions pending"),
-        trailing: const Icon(Icons.chevron_right_rounded),
+      ),
+    );
+  }
+
+  Widget _buildTaskType({
+    required IconData icon,
+    required int count,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          Stack(
+            children: [
+              Icon(icon, size: 32, color: Colors.orange[700]),
+              if (count > 0) ...[
+                Positioned(
+                  right: 0,
+                  top: 0,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: Colors.orange[700],
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      count.toString(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.orange[700],
+              fontWeight: count > 0 ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNextTask({
+    required IconData icon,
+    required String title,
+    required String time,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        children: [
+          Icon(icon, size: 16, color: Colors.orange[700]),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              title,
+              style: const TextStyle(fontSize: 14),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Text(time, style: TextStyle(fontSize: 12, color: Colors.orange[700])),
+        ],
       ),
     );
   }

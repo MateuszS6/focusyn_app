@@ -11,7 +11,7 @@ class Task {
   final String? duration;
   final String? location;
   final String? repeat;
-  final String? history;
+  final List<String> history;
   final DateTime createdAt;
 
   Task({
@@ -25,9 +25,10 @@ class Task {
     this.duration,
     this.location,
     this.repeat,
-    this.history,
+    List<String>? history,
     DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
+  }) : history = history ?? [],
+       createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {
@@ -41,7 +42,7 @@ class Task {
       if (duration != null) Keys.duration: duration,
       if (location != null) Keys.location: location,
       if (repeat != null) Keys.repeat: repeat,
-      if (history != null) Keys.history: history,
+      Keys.history: history,
       Keys.createdAt: createdAt.toIso8601String(),
     };
   }
@@ -58,7 +59,11 @@ class Task {
       duration: map[Keys.duration] as String?,
       location: map[Keys.location] as String?,
       repeat: map[Keys.repeat] as String?,
-      history: map[Keys.history] as String?,
+      history:
+          (map[Keys.history] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       createdAt: DateTime.parse(map[Keys.createdAt] as String),
     );
   }
