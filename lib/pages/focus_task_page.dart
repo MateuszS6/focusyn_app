@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/task_dialogs/add_action_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_flow_dialog.dart';
 import 'package:focusyn_app/task_dialogs/add_moment_dialog.dart';
@@ -201,8 +202,8 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
     showDialog(
       context: context,
       builder: (_) {
-        onAdd(Map<String, dynamic> task) {
-          setState(() => _tasks.add(task));
+        onAdd(TaskModel task) {
+          setState(() => _tasks.add(task.toMap()));
           AppData.instance.updateTasks(widget.category, _tasks);
         }
 

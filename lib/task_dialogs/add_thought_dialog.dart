@@ -1,10 +1,17 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/util/task_dialog.dart';
 
 class AddThoughtDialog extends StatelessWidget {
-  final void Function(Map<String, dynamic>) onAdd;
+  static const String _dialogTitle = "Add Thought";
+  static const String _textLabel = "Text";
+  static const String _tagLabel = "Tag";
+
+  final void Function(TaskModel) onAdd;
 
   const AddThoughtDialog({super.key, required this.onAdd});
 
@@ -15,23 +22,24 @@ class AddThoughtDialog extends StatelessWidget {
     final tags = AppData.instance.filters[Keys.thoughts] ?? [Keys.all];
 
     return TaskDialog(
-      title: "Add Thought",
+      title: _dialogTitle,
       onAdd: onAdd,
       validateInput: () => text.trim().isNotEmpty,
-      buildData: () => {Keys.text: text, Keys.tag: tag},
+      buildTask:
+          () => TaskModel(
+            title: text.substring(0, min(text.length, 20)),
+            text: text,
+            tag: tag,
+          ),
       fields: [
         TextField(
+          decoration: const InputDecoration(labelText: _textLabel),
           maxLines: 5,
-          minLines: 3,
-          decoration: const InputDecoration(
-            labelText: "Thought / Note",
-            alignLabelWithHint: true,
-          ),
           onChanged: (val) => text = val,
         ),
         DropdownButtonFormField<String>(
           value: tag,
-          decoration: const InputDecoration(labelText: "Tag"),
+          decoration: const InputDecoration(labelText: _tagLabel),
           items:
               tags
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))

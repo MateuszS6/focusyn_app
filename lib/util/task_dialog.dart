@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/models/task_model.dart';
 
 class TaskDialog extends StatefulWidget {
+  static const double _dialogWidth = 400.0;
+  static const double _dialogHeight = 500.0;
+  static const double _fieldSpacing = 16.0;
+  static const double _buttonSpacing = 8.0;
+
   final String title;
   final List<Widget> fields;
-  final Map<String, dynamic> Function() buildData;
+  final TaskModel Function() buildTask;
   final bool Function() validateInput;
-  final void Function(Map<String, dynamic>) onAdd;
+  final void Function(TaskModel) onAdd;
 
   const TaskDialog({
     super.key,
     required this.title,
     required this.fields,
-    required this.buildData,
+    required this.buildTask,
     required this.validateInput,
     required this.onAdd,
   });
@@ -25,18 +31,35 @@ class _TaskDialogState extends State<TaskDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: Text(widget.title),
-      content: SingleChildScrollView(
-        child: Column(mainAxisSize: MainAxisSize.min, children: widget.fields),
+      content: SizedBox(
+        width: TaskDialog._dialogWidth,
+        height: TaskDialog._dialogHeight,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...widget.fields.map(
+                (field) => Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: TaskDialog._fieldSpacing,
+                  ),
+                  child: field,
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: const Text("Cancel"),
         ),
+        const SizedBox(width: TaskDialog._buttonSpacing),
         ElevatedButton(
           onPressed: () {
             if (widget.validateInput()) {
-              widget.onAdd(widget.buildData());
+              widget.onAdd(widget.buildTask());
               Navigator.pop(context);
             }
           },

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/util/task_dialog.dart';
 
 class AddFlowDialog extends StatelessWidget {
-  final void Function(Map<String, dynamic>) onAdd;
+  static const String _dialogTitle = "Add Flow";
+  static const String _titleLabel = "Title";
+  static const String _tagLabel = "Tag";
+
+  final void Function(TaskModel) onAdd;
 
   const AddFlowDialog({super.key, required this.onAdd});
 
@@ -20,22 +25,19 @@ class AddFlowDialog extends StatelessWidget {
     final tags = AppData.instance.filters[Keys.flows] ?? [Keys.all];
 
     return TaskDialog(
-      title: "Add Flow",
+      title: _dialogTitle,
       onAdd: onAdd,
       validateInput: () => title.trim().isNotEmpty,
-      buildData:
-          () => {
-            Keys.title: title,
-            Keys.date: selectedDate.toIso8601String().split('T').first,
-            Keys.time: selectedTime.format(context),
-            Keys.duration: duration.inMinutes,
-            Keys.repeat: repeat,
-            Keys.brainPoints: brainPoints,
-            Keys.tag: tag,
-          },
+      buildTask:
+          () => TaskModel(
+            title: title,
+            tag: tag,
+            brainPoints: brainPoints,
+            duration: duration.inMinutes.toString(),
+          ),
       fields: [
         TextField(
-          decoration: const InputDecoration(labelText: "Flow Title"),
+          decoration: const InputDecoration(labelText: _titleLabel),
           onChanged: (val) => title = val,
         ),
         ListTile(
@@ -85,7 +87,7 @@ class AddFlowDialog extends StatelessWidget {
         ),
         DropdownButtonFormField<String>(
           value: tag,
-          decoration: const InputDecoration(labelText: "Tag"),
+          decoration: const InputDecoration(labelText: _tagLabel),
           items:
               tags
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
