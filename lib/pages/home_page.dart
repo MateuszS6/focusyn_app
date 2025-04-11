@@ -58,18 +58,26 @@ class _HomePageState extends State<HomePage> {
   }
 
   int _calculateStreak(List<DateTime> dates) {
+    if (dates.isEmpty) return 0;
+
     final today = DateTime.now();
     final sorted = dates.toSet().toList()..sort((a, b) => b.compareTo(a));
 
-    int streak = 0;
-    for (int i = 0; i < sorted.length; i++) {
-      final expected = today.subtract(Duration(days: i));
-      if (sorted.any((d) => _isSameDate(d, expected))) {
+    // If the last completion was not today, streak is broken
+    if (!_isSameDate(sorted.first, today)) return 0;
+
+    int streak = 1;
+    DateTime currentDate = today;
+
+    for (int i = 1; i < sorted.length; i++) {
+      currentDate = currentDate.subtract(const Duration(days: 1));
+      if (_isSameDate(sorted[i], currentDate)) {
         streak++;
       } else {
         break;
       }
     }
+
     return streak;
   }
 
@@ -191,6 +199,11 @@ class _HomePageState extends State<HomePage> {
 
   Widget _flowStreakCard() {
     final streak = _calculateStreak(_getFlowCompletions());
+    final streakText =
+        streak == 0
+            ? "Complete a flow today to start your streak!"
+            : "You've completed flows $streak day${streak == 1 ? '' : 's'} in a row.";
+
     return TapEffectCard(
       backgroundColor: Colors.teal[50]!,
       borderRadius: 16,
@@ -198,14 +211,27 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            "🔥 Flow Streak",
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              const Text(
+                "🔥 Flow Streak",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              if (streak > 0) ...[
+                const SizedBox(width: 8),
+                Text(
+                  streak.toString(),
+                  style: TextStyle(
+                    color: Colors.teal[700],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ],
           ),
           const SizedBox(height: 8),
-          Text(
-            "You've completed flows $streak day${streak == 1 ? '' : 's'} in a row.",
-          ),
+          Text(streakText),
         ],
       ),
     );

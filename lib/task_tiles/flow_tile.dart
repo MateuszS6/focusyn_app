@@ -50,6 +50,11 @@ class FlowTile extends StatelessWidget {
         onPressed: () {
           BrainPointsService.subtract(bp);
 
+          // Record completion
+          final history = (task[Keys.history] as List<dynamic>?) ?? [];
+          history.add(DateTime.now().toIso8601String());
+          task[Keys.history] = history;
+
           // Update to next scheduled date
           final repeat = task[Keys.repeat] ?? 'Daily';
           final nextDate = _calculateNextDate(repeat);
@@ -63,14 +68,15 @@ class FlowTile extends StatelessWidget {
 
   DateTime _calculateNextDate(String repeat) {
     final now = DateTime.now();
-    switch (repeat.toLowerCase()) {
-      case 'weekly':
-        return now.add(const Duration(days: 7));
-      case 'monthly':
-        return DateTime(now.year, now.month + 1, now.day);
-      case 'daily':
-      default:
+    switch (repeat) {
+      case 'Daily':
         return now.add(const Duration(days: 1));
+      case 'Weekly':
+        return now.add(const Duration(days: 7));
+      case 'Monthly':
+        return DateTime(now.year, now.month + 1, now.day);
+      default:
+        return now;
     }
   }
 }
