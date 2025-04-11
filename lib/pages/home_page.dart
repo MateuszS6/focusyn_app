@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/data/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/pages/focus_task_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
@@ -145,7 +146,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _quoteCard() {
-    final quote = _randomQuote();
+    final quote = Quotes.getRandomQuote();
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
@@ -154,16 +155,59 @@ class _HomePageState extends State<HomePage> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  quote.category,
+                  style: TextStyle(
+                    color: Colors.purple[700],
+                    fontWeight: FontWeight.bold,
+                    fontSize: 12,
+                  ),
+                ),
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.refresh,
+                        size: 20,
+                        color: Colors.purple[700],
+                      ),
+                      onPressed: () => setState(() {}),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.bookmark_border,
+                        size: 20,
+                        color: Colors.purple[700],
+                      ),
+                      onPressed: () => _saveQuote(quote),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.share,
+                        size: 20,
+                        color: Colors.purple[700],
+                      ),
+                      onPressed: () => _shareQuote(quote),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
             Text(
-              '"${quote["text"]}"',
+              '"${quote.text}"',
               style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
             ),
             const SizedBox(height: 8),
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
-                "― ${quote["author"]}",
+                "― ${quote.author}",
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -176,21 +220,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Map<String, String> _randomQuote() {
-    final quotes = [
-      {
-        "text":
-            "Discipline is choosing between what you want now and what you want most.",
-        "author": "Abraham Lincoln",
-      },
-      {"text": "Small progress is still progress.", "author": "Unknown"},
-      {
-        "text": "Do one thing at a time, and do it well.",
-        "author": "Steve Jobs",
-      },
-    ];
-    quotes.shuffle();
-    return quotes.first;
+  void _saveQuote(Quote quote) {
+    // TODO: Implement quote saving functionality
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Quote saved: "${quote.text}"'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _shareQuote(Quote quote) {
+    // TODO: Implement quote sharing functionality
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Sharing quote: "${quote.text}"'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   Widget _summaryCard(int actionsCount) {
