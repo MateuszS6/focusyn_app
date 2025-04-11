@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/data/brain_points_service.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/util/task_tile.dart';
 
@@ -18,14 +19,39 @@ class ActionTile extends StatelessWidget {
     required this.onDelete,
   });
 
+  String _getPriorityText(int priority) {
+    switch (priority) {
+      case 1:
+        return 'Urgent & Important';
+      case 2:
+        return 'Not Urgent but Important';
+      case 3:
+        return 'Urgent but Not Important';
+      case 4:
+        return 'Not Urgent & Not Important';
+      default:
+        return 'Unknown Priority';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final subtitle = [
+      _getPriorityText(task.priority),
+      '${task.brainPoints} BP',
+      if (task.tag != 'All') task.tag,
+    ].join(' • ');
+
     return TaskTile(
       leading: IconButton(
         icon: const Icon(Icons.check_circle_outline),
-        onPressed: onComplete,
+        onPressed: () {
+          BrainPointsService.subtract(task.brainPoints);
+          onComplete();
+        },
       ),
       text: task.title,
+      subtitle: subtitle,
       onInlineEdit: (newTitle) {
         if (newTitle.isNotEmpty) {
           onEdit();
