@@ -240,14 +240,23 @@ class _HomePageState extends State<HomePage> {
   Widget _weeklyProgressChart() {
     final completions = _getFlowCompletions();
     final today = DateTime.now();
+    final flows = AppData.instance.tasks[Keys.flows] ?? [];
+    final totalFlows = flows.length;
+    const maxBarHeight = 100.0;
 
     final last7Days = List.generate(
       7,
       (i) => today.subtract(Duration(days: 6 - i)),
     );
+
     final completedPerDay =
         last7Days.map((day) {
-          return completions.where((d) => _isSameDate(d, day)).length;
+          final dayCompletions =
+              completions.where((d) => _isSameDate(d, day)).length;
+          return {
+            'count': dayCompletions,
+            'percentage': totalFlows > 0 ? dayCompletions / totalFlows : 0.0,
+          };
         }).toList();
 
     return Card(
@@ -261,9 +270,18 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Weekly Flow Completion",
-              style: TextStyle(fontWeight: FontWeight.bold),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  "Weekly Flow Completion",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  "Total: $totalFlows flows",
+                  style: TextStyle(color: Colors.green[700], fontSize: 12),
+                ),
+              ],
             ),
             const SizedBox(height: 12),
             Padding(
@@ -275,22 +293,59 @@ class _HomePageState extends State<HomePage> {
                   final dayLabel =
                       ['S', 'M', 'T', 'W', 'T', 'F', 'S'][last7Days[i].weekday %
                           7];
+                  final dayData = completedPerDay[i];
+                  final height = (dayData['percentage']! * maxBarHeight).clamp(
+                    0.0,
+                    maxBarHeight,
+                  );
+
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        width: 10,
-                        height: completedPerDay[i] * 10.0,
+                        width: 20,
+                        height: height,
                         decoration: BoxDecoration(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(4),
                         ),
+                        child: Center(
+                          child: Text(
+                            dayData['count'].toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 4),
-                      Text(dayLabel),
+                      Text(
+                        dayLabel,
+                        style: TextStyle(
+                          color:
+                              _isSameDate(last7Days[i], today)
+                                  ? Colors.green[700]
+                                  : Colors.black54,
+                          fontWeight:
+                              _isSameDate(last7Days[i], today)
+                                  ? FontWeight.bold
+                                  : FontWeight.normal,
+                        ),
+                      ),
                     ],
                   );
                 }),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "Shows percentage of total flows completed each day",
+              style: TextStyle(
+                color: Colors.grey[600],
+                fontSize: 12,
+                fontStyle: FontStyle.italic,
               ),
             ),
           ],
