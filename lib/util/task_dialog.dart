@@ -6,6 +6,9 @@ class TaskDialog extends StatefulWidget {
   static const double _dialogHeight = 500.0;
   static const double _fieldSpacing = 16.0;
   static const double _buttonSpacing = 8.0;
+  static const EdgeInsets _fieldPadding = EdgeInsets.only(
+    bottom: _fieldSpacing,
+  );
 
   final String title;
   final List<Widget> fields;
@@ -37,16 +40,15 @@ class _TaskDialogState extends State<TaskDialog> {
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              ...widget.fields.map(
-                (field) => Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: TaskDialog._fieldSpacing,
-                  ),
-                  child: field,
-                ),
-              ),
-            ],
+            children:
+                widget.fields
+                    .map(
+                      (field) => Padding(
+                        padding: TaskDialog._fieldPadding,
+                        child: field,
+                      ),
+                    )
+                    .toList(),
           ),
         ),
       ),
