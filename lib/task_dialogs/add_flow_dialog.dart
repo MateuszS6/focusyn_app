@@ -34,6 +34,9 @@ class AddFlowDialog extends StatelessWidget {
             tag: tag,
             brainPoints: brainPoints,
             duration: duration.inMinutes.toString(),
+            date: selectedDate.toIso8601String().split('T')[0],
+            time: selectedTime.format(context),
+            repeat: repeat,
           ),
       fields: [
         TextField(
