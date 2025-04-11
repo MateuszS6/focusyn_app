@@ -1,23 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/data/app_data_initializer.dart';
-import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/constants/theme_constants.dart';
+import 'package:focusyn_app/initialization/app_initializer.dart';
 import 'package:focusyn_app/main_screen.dart';
 import 'package:focusyn_app/pages/login_page.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-
-import 'firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Hive.initFlutter();
-  await Hive.openBox(Keys.homeBox);
-  await Hive.openBox(Keys.taskBox);
-  await Hive.openBox(Keys.filterBox);
-  await AppDataInitializer.run();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(MyApp());
+  await AppInitializer.initialize();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -34,36 +24,42 @@ class MyApp extends StatelessWidget {
               ? const LoginPage()
               : const MainScreen(),
 
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        scaffoldBackgroundColor: Colors.white,
+      theme: _buildLightTheme(),
 
-      iconTheme: const IconThemeData(size: 28),
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(size: 24),
-          titleTextStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 32,
-            fontWeight: FontWeight.w900,
-          ),
-        ),
+      darkTheme: _buildDarkTheme(),
+    );
+  }
 
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: Colors.white,
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
+  ThemeData _buildLightTheme() {
+    return ThemeData(
+      primarySwatch: Colors.blue,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+      scaffoldBackgroundColor: ThemeConstants.scaffoldBackgroundColor,
+      iconTheme: const IconThemeData(size: ThemeConstants.iconSize),
+      appBarTheme: AppBarTheme(
+        backgroundColor: ThemeConstants.appBarBackgroundColor,
+        iconTheme: const IconThemeData(size: ThemeConstants.appBarIconSize),
+        titleTextStyle: TextStyle(
+          color: ThemeConstants.appBarTextColor,
+          fontSize: ThemeConstants.appBarFontSize,
+          fontWeight: ThemeConstants.appBarFontWeight,
         ),
       ),
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: ThemeConstants.scaffoldBackgroundColor,
+        selectedItemColor: ThemeConstants.selectedItemColor,
+        unselectedItemColor: ThemeConstants.unselectedItemColor,
+      ),
+    );
+  }
 
-      darkTheme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-        ),
+  ThemeData _buildDarkTheme() {
+    return ThemeData(
+      primarySwatch: Colors.blue,
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        selectedItemColor: ThemeConstants.selectedItemColor,
+        unselectedItemColor: ThemeConstants.unselectedItemColor,
       ),
     );
   }
