@@ -72,10 +72,12 @@ class _AccountPageState extends State<AccountPage> {
     );
     if (result != null && result.length >= 6) {
       await user?.updatePassword(result);
+      if (!mounted) return;
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Password updated.")));
     } else if (result != null) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Password must be at least 6 characters."),
