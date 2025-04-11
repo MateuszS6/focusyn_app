@@ -194,7 +194,21 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
     if (val == 'tags') {
       _openTagManagerDialog();
     } else if (val == 'tasks') {
-      // TODO: Implement task sorting
+      setState(() {
+        _tasks.sort((a, b) {
+          // Sort by priority first
+          final priorityCompare = (a['priority'] ?? 1).compareTo(
+            b['priority'] ?? 1,
+          );
+          if (priorityCompare != 0) return priorityCompare;
+
+          // Then by creation date
+          final aDate = DateTime.parse(a[Keys.createdAt] as String);
+          final bDate = DateTime.parse(b[Keys.createdAt] as String);
+          return aDate.compareTo(bDate);
+        });
+        AppData.instance.updateTasks(widget.category, _tasks);
+      });
     }
   }
 
