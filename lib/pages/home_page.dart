@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
-import 'package:focusyn_app/data/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/pages/focus_task_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
@@ -114,34 +113,28 @@ class _HomePageState extends State<HomePage> {
       a.year == b.year && a.month == b.month && a.day == b.day;
 
   Widget _greetingCard(int points) {
-    final now = DateTime.now();
-    final hour = now.hour;
-    String greeting;
-    String message;
-    Color messageColor;
+    final hour = DateTime.now().hour;
+    final greeting =
+        hour < 12
+            ? "Good morning"
+            : hour < 17
+            ? "Good afternoon"
+            : "Good evening";
 
-    // Determine greeting based on time of day
-    if (hour < 12) {
-      greeting = "Good morning";
-    } else if (hour < 17) {
-      greeting = "Good afternoon";
-    } else {
-      greeting = "Good evening";
-    }
-
-    // Determine message and color based on brain points
+    String statusMessage;
+    Color statusColor;
     if (points >= 80) {
-      message = "You're at peak performance!";
-      messageColor = Colors.green;
+      statusMessage = "You're at peak mental energy!";
+      statusColor = Colors.green;
     } else if (points >= 50) {
-      message = "You're doing great!";
-      messageColor = Colors.blue;
+      statusMessage = "You're doing great!";
+      statusColor = Colors.blue;
     } else if (points >= 20) {
-      message = "Time for a break?";
-      messageColor = Colors.orange;
+      statusMessage = "Time for a quick break?";
+      statusColor = Colors.orange;
     } else {
-      message = "Consider taking a rest";
-      messageColor = Colors.red;
+      statusMessage = "Consider taking a rest";
+      statusColor = Colors.red;
     }
 
     return Card(
@@ -150,94 +143,52 @@ class _HomePageState extends State<HomePage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       color: Colors.blue[50],
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "$greeting, Mateusz 👋",
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      message,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: messageColor,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.add_circle_outline,
-                    color: Colors.blue[700],
-                    size: 28,
-                  ),
-                  onPressed: () {
-                    // TODO: Implement add brain points functionality
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Add brain points feature coming soon!'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
-                  },
-                ),
-              ],
+            Text(
+              "$greeting, Mateusz 👋",
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.5,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              statusMessage,
+              style: TextStyle(
+                fontSize: 16,
+                color: statusColor,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.3,
+              ),
             ),
             const SizedBox(height: 16),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Brain Points",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.blue[700],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "$points / 100",
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                Text(
+                  "$points / 100 brain points",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.3,
                   ),
                 ),
-                Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.blue[100],
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      "${(points / 100 * 100).round()}%",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue[700],
-                      ),
+                TextButton.icon(
+                  onPressed: _showAddBrainPointsDialog,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text(
+                    "Add",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontWeight: FontWeight.bold,
                     ),
+                  ),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                   ),
                 ),
               ],
@@ -247,11 +198,9 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(8),
               child: LinearProgressIndicator(
                 value: points / 100,
-                minHeight: 8,
-                backgroundColor: Colors.blue[100],
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  points >= 50 ? Colors.blue : Colors.orange,
-                ),
+                minHeight: 10,
+                color: statusColor,
+                backgroundColor: Colors.grey[300],
               ),
             ),
           ],
@@ -261,7 +210,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _quoteCard() {
-    final quote = Quotes.getRandomQuote();
+    final quote = _randomQuote();
     return Card(
       margin: EdgeInsets.zero,
       elevation: 0,
@@ -270,59 +219,16 @@ class _HomePageState extends State<HomePage> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  quote.category,
-                  style: TextStyle(
-                    color: Colors.purple[700],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: Icon(
-                        Icons.refresh,
-                        size: 20,
-                        color: Colors.purple[700],
-                      ),
-                      onPressed: () => setState(() {}),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.bookmark_border,
-                        size: 20,
-                        color: Colors.purple[700],
-                      ),
-                      onPressed: () => _saveQuote(quote),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.share,
-                        size: 20,
-                        color: Colors.purple[700],
-                      ),
-                      onPressed: () => _shareQuote(quote),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
             Text(
-              '"${quote.text}"',
+              '"${quote["text"]}"',
               style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
             ),
             const SizedBox(height: 8),
             Align(
               alignment: Alignment.bottomRight,
               child: Text(
-                "― ${quote.author}",
+                "― ${quote["author"]}",
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w500,
@@ -335,24 +241,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void _saveQuote(Quote quote) {
-    // TODO: Implement quote saving functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Quote saved: "${quote.text}"'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
-  }
-
-  void _shareQuote(Quote quote) {
-    // TODO: Implement quote sharing functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Sharing quote: "${quote.text}"'),
-        duration: const Duration(seconds: 2),
-      ),
-    );
+  Map<String, String> _randomQuote() {
+    final quotes = [
+      {
+        "text":
+            "Discipline is choosing between what you want now and what you want most.",
+        "author": "Abraham Lincoln",
+      },
+      {"text": "Small progress is still progress.", "author": "Unknown"},
+      {
+        "text": "Do one thing at a time, and do it well.",
+        "author": "Steve Jobs",
+      },
+    ];
+    quotes.shuffle();
+    return quotes.first;
   }
 
   Widget _summaryCard(int actionsCount) {
@@ -707,6 +610,67 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showAddBrainPointsDialog() {
+    final controller = TextEditingController(text: "5");
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Add Brain Points"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  "How many brain points would you like to add?",
+                  style: TextStyle(color: Colors.grey[600]),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: "Points to add",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  final points = int.tryParse(controller.text) ?? 0;
+                  if (points > 0 && points <= 100) {
+                    BrainPointsService.addPoints(points);
+                    Navigator.pop(context);
+                    setState(() {});
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text("Added $points brain points!"),
+                        duration: const Duration(seconds: 2),
+                      ),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          "Please enter a number between 1 and 100",
+                        ),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  }
+                },
+                child: const Text("Add"),
+              ),
+            ],
+          ),
     );
   }
 }

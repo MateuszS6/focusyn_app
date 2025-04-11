@@ -48,7 +48,7 @@ class FlowTile extends StatelessWidget {
       leading: IconButton(
         icon: const Icon(Icons.check_rounded),
         onPressed: () {
-          BrainPointsService.subtract(bp);
+          BrainPointsService.subtractPoints(bp);
 
           // Record completion
           final history = (task[Keys.history] as List<dynamic>?) ?? [];
