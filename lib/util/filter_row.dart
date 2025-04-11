@@ -28,24 +28,28 @@ class FilterRow extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: visibleFilters.length + 1,
-        separatorBuilder: (_, __) => SizedBox(width: 8),
+        separatorBuilder: (_, __) => const SizedBox(width: 8),
         itemBuilder: (context, index) {
           if (index < visibleFilters.length) {
             final tag = visibleFilters[index];
             final isSelected = tag == selected;
-            return ChoiceChip(
+            return ActionChip(
               label: Text(tag),
-              shape: StadiumBorder(),
-              selected: isSelected,
-              onSelected: (_) => onSelect(tag),
-              selectedColor: AppData.instance.colours[category]!['main']!,
-              backgroundColor: Colors.grey[200],
-              labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
+              shape: const StadiumBorder(),
+              onPressed: () => onSelect(tag),
+              backgroundColor:
+                  isSelected
+                      ? AppData.instance.colours[category]!['main']!
+                      : Colors.grey[200],
+              labelStyle: TextStyle(
+                color: isSelected ? Colors.white : Colors.black87,
+                fontSize: 13,
+              ),
             );
           } else {
             return ActionChip(
-              label: Icon(Icons.add, size: 18),
-              shape: StadiumBorder(),
+              label: const Icon(Icons.add, size: 18),
+              shape: const StadiumBorder(),
               onPressed: onAdd,
               backgroundColor: Colors.grey[200],
             );
