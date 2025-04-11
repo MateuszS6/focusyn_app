@@ -122,19 +122,14 @@ class _HomePageState extends State<HomePage> {
             : "Good evening";
 
     String statusMessage;
-    Color statusColor;
     if (points >= 80) {
       statusMessage = "You're at peak mental energy!";
-      statusColor = Colors.green;
     } else if (points >= 50) {
       statusMessage = "You're doing great!";
-      statusColor = Colors.blue;
     } else if (points >= 20) {
       statusMessage = "Time for a quick break?";
-      statusColor = Colors.orange;
     } else {
       statusMessage = "Consider taking a rest";
-      statusColor = Colors.red;
     }
 
     return Card(
@@ -143,64 +138,84 @@ class _HomePageState extends State<HomePage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       color: Colors.blue[50],
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               "$greeting, Mateusz 👋",
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.5,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 4),
             Text(
               statusMessage,
               style: TextStyle(
-                fontSize: 16,
-                color: statusColor,
+                fontSize: 14,
+                color: Colors.blue,
                 fontWeight: FontWeight.w500,
-                letterSpacing: 0.3,
               ),
             ),
             const SizedBox(height: 16),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "$points / 100 brain points",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 0.3,
-                  ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "Brain Points",
+                      style: TextStyle(fontSize: 14, color: Colors.black54),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      "$points / 100",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
                 ),
-                TextButton.icon(
+                const Spacer(),
+                ElevatedButton(
                   onPressed: _showAddBrainPointsDialog,
-                  icon: const Icon(Icons.add, size: 18),
-                  label: const Text(
-                    "Add",
-                    style: TextStyle(
-                      color: Colors.blue,
-                      fontWeight: FontWeight.bold,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue[100],
+                    foregroundColor: Colors.blue[700],
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.add, size: 16, color: Colors.blue[700]),
+                      const SizedBox(width: 4),
+                      Text(
+                        "Add Points",
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blue[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: points / 100,
-                minHeight: 10,
-                color: statusColor,
-                backgroundColor: Colors.grey[300],
+                minHeight: 6,
+                backgroundColor: Colors.blue[100],
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
               ),
             ),
           ],
