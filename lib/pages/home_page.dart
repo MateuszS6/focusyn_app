@@ -7,6 +7,7 @@ import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/pages/task_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tap_effect_card.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -518,41 +519,184 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _flowStreakCard() {
-    final streak = _calculateStreak(_getFlowCompletions());
-    final streakText =
-        streak == 0
-            ? "Complete a flow today to start your streak!"
-            : "You've completed flows $streak day${streak == 1 ? '' : 's'} in a row.";
+    final completions = _getFlowCompletions();
+    final today = DateTime.now();
+    final last30Days = List.generate(
+      30,
+      (i) => today.subtract(Duration(days: 29 - i)),
+    );
 
-    return TapEffectCard(
-      backgroundColor: Colors.teal[50]!,
-      borderRadius: 16,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              const Text(
-                "🔥 Flow Streak",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              if (streak > 0) ...[
-                const SizedBox(width: 8),
-                Text(
-                  streak.toString(),
-                  style: TextStyle(
-                    color: Colors.teal[700],
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+    // Calculate streak for each day
+    final streakData =
+        last30Days.map((day) {
+          int streak = 0;
+          DateTime currentDate = day;
+
+          while (true) {
+            if (completions.any((d) => _isSameDate(d, currentDate))) {
+              streak++;
+              currentDate = currentDate.subtract(const Duration(days: 1));
+            } else {
+              break;
+            }
+          }
+
+          return {'date': day, 'streak': streak};
+        }).toList();
+
+    final currentStreak = streakData.last['streak'] as int;
+    final streakText =
+        currentStreak == 0
+            ? "Complete a flow today to start your streak!"
+            : "You've completed flows $currentStreak day${currentStreak == 1 ? '' : 's'} in a row.";
+
+    return Card(
+      margin: EdgeInsets.zero,
+      elevation: 0,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      color: Colors.teal[50],
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Text(
+                  "🔥 Flow Streak",
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
+                if (currentStreak > 0) ...[
+                  const SizedBox(width: 8),
+                  Text(
+                    currentStreak.toString(),
+                    style: TextStyle(
+                      color: Colors.teal[700],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
               ],
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(streakText),
-        ],
+            ),
+            const SizedBox(height: 8),
+            Text(streakText),
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 140,
+              child: LineChart(
+                LineChartData(
+                  gridData: FlGridData(show: false),
+                  titlesData: FlTitlesData(
+                    show: true,
+                    topTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    rightTitles: AxisTitles(
+                      sideTitles: SideTitles(showTitles: false),
+                    ),
+                    leftTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 30,
+                        interval: 1,
+                        getTitlesWidget: (value, meta) {
+                          return Text(
+                            value.toInt().toString(),
+                            style: TextStyle(
+                              color: Colors.teal[700],
+                              fontSize: 10,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    bottomTitles: AxisTitles(
+                      sideTitles: SideTitles(
+                        showTitles: true,
+                        reservedSize: 30,
+                        getTitlesWidget: (value, meta) {
+                          final date =
+                              streakData[value.toInt()]['date'] as DateTime;
+                          final dayLabel =
+                              ['S', 'M', 'T', 'W', 'T', 'F', 'S'][date.weekday %
+                                  7];
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              dayLabel,
+                              style: TextStyle(
+                                color:
+                                    _isSameDate(date, today)
+                                        ? Colors.teal[700]
+                                        : Colors.black54,
+                                fontSize: 10,
+                                fontWeight:
+                                    _isSameDate(date, today)
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  borderData: FlBorderData(show: false),
+                  lineTouchData: LineTouchData(
+                    touchTooltipData: LineTouchTooltipData(
+                      tooltipRoundedRadius: 8,
+                      tooltipPadding: const EdgeInsets.all(8),
+                      getTooltipItems: (touchedSpots) {
+                        return touchedSpots.map((spot) {
+                          final date =
+                              streakData[spot.x.toInt()]['date'] as DateTime;
+                          final streak =
+                              streakData[spot.x.toInt()]['streak'] as int;
+                          return LineTooltipItem(
+                            '${date.day}/${date.month}\n$streak day${streak == 1 ? '' : 's'} streak',
+                            const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          );
+                        }).toList();
+                      },
+                    ),
+                  ),
+                  lineBarsData: [
+                    LineChartBarData(
+                      spots: List.generate(
+                        streakData.length,
+                        (index) => FlSpot(
+                          index.toDouble(),
+                          (streakData[index]['streak'] as int).toDouble(),
+                        ),
+                      ),
+                      isCurved: true,
+                      color: Colors.teal[700],
+                      barWidth: 2,
+                      isStrokeCapRound: true,
+                      dotData: FlDotData(show: false),
+                      belowBarData: BarAreaData(
+                        show: true,
+                        color: Colors.teal.withOpacity(0.1),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.teal.withOpacity(0.2),
+                            Colors.teal.withOpacity(0.0),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -562,7 +706,6 @@ class _HomePageState extends State<HomePage> {
     final today = DateTime.now();
     final flows = AppData.instance.tasks[Keys.flows] ?? [];
     final totalFlows = flows.length;
-    const maxBarHeight = 100.0;
 
     final last7Days = List.generate(
       7,
@@ -576,6 +719,7 @@ class _HomePageState extends State<HomePage> {
           return {
             'count': dayCompletions,
             'percentage': totalFlows > 0 ? dayCompletions / totalFlows : 0.0,
+            'date': day,
           };
         }).toList();
 
@@ -603,63 +747,126 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: List.generate(7, (i) {
-                  final dayLabel =
-                      ['S', 'M', 'T', 'W', 'T', 'F', 'S'][last7Days[i].weekday %
-                          7];
-                  final dayData = completedPerDay[i];
-                  final height = (dayData['percentage']! * maxBarHeight).clamp(
-                    0.0,
-                    maxBarHeight,
-                  );
-
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 20,
-                        height: height,
-                        decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Center(
-                          child: Text(
-                            dayData['count'].toString(),
-                            style: const TextStyle(
+            const SizedBox(height: 24),
+            SizedBox(
+              height: 180,
+              child: ClipRect(
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.spaceAround,
+                    maxY: 1.0,
+                    minY: 0,
+                    groupsSpace: 12,
+                    barTouchData: BarTouchData(
+                      enabled: true,
+                      touchTooltipData: BarTouchTooltipData(
+                        tooltipBorder: BorderSide.none,
+                        tooltipRoundedRadius: 8,
+                        tooltipPadding: const EdgeInsets.all(8),
+                        tooltipMargin: 8,
+                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                          final data = completedPerDay[groupIndex];
+                          final count = data['count'] as int;
+                          final percentage =
+                              (data['percentage'] as double) * 100;
+                          return BarTooltipItem(
+                            '$count flows\n${percentage.toStringAsFixed(1)}%',
+                            const TextStyle(
                               color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    titlesData: FlTitlesData(
+                      show: true,
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 30,
+                          getTitlesWidget: (value, meta) {
+                            final date =
+                                completedPerDay[value.toInt()]['date']
+                                    as DateTime;
+                            final dayLabel =
+                                [
+                                  'S',
+                                  'M',
+                                  'T',
+                                  'W',
+                                  'T',
+                                  'F',
+                                  'S',
+                                ][date.weekday % 7];
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 4),
+                              child: Text(
+                                dayLabel,
+                                style: TextStyle(
+                                  color:
+                                      _isSameDate(date, today)
+                                          ? Colors.green[700]
+                                          : Colors.black54,
+                                  fontWeight:
+                                      _isSameDate(date, today)
+                                          ? FontWeight.bold
+                                          : FontWeight.normal,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                    gridData: FlGridData(show: false),
+                    borderData: FlBorderData(show: false),
+                    barGroups: List.generate(7, (index) {
+                      final data = completedPerDay[index];
+                      return BarChartGroupData(
+                        x: index,
+                        barRods: [
+                          BarChartRodData(
+                            toY: data['percentage'] as double,
+                            width: 20,
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.green.withOpacity(0.7),
+                                Colors.green,
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(6),
+                              topRight: Radius.circular(6),
+                            ),
+                            backDrawRodData: BackgroundBarChartRodData(
+                              show: true,
+                              toY: 1,
+                              color: Colors.green.withOpacity(0.1),
                             ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        dayLabel,
-                        style: TextStyle(
-                          color:
-                              _isSameDate(last7Days[i], today)
-                                  ? Colors.green[700]
-                                  : Colors.black54,
-                          fontWeight:
-                              _isSameDate(last7Days[i], today)
-                                  ? FontWeight.bold
-                                  : FontWeight.normal,
-                        ),
-                      ),
-                    ],
-                  );
-                }),
+                        ],
+                      );
+                    }),
+                  ),
+                  swapAnimationDuration: const Duration(milliseconds: 800),
+                  swapAnimationCurve: Curves.easeInOutCubic,
+                ),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 12),
             Text(
               "Shows percentage of total flows completed each day",
               style: TextStyle(
