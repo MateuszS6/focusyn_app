@@ -6,7 +6,6 @@ import 'package:focusyn_app/data/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/pages/task_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
-import 'package:focusyn_app/util/tap_effect_card.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class HomePage extends StatefulWidget {
@@ -519,36 +518,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _flowStreakCard() {
-    final completions = _getFlowCompletions();
-    final today = DateTime.now();
-    final last30Days = List.generate(
-      30,
-      (i) => today.subtract(Duration(days: 29 - i)),
-    );
-
-    // Calculate streak for each day
-    final streakData =
-        last30Days.map((day) {
-          int streak = 0;
-          DateTime currentDate = day;
-
-          while (true) {
-            if (completions.any((d) => _isSameDate(d, currentDate))) {
-              streak++;
-              currentDate = currentDate.subtract(const Duration(days: 1));
-            } else {
-              break;
-            }
-          }
-
-          return {'date': day, 'streak': streak};
-        }).toList();
-
-    final currentStreak = streakData.last['streak'] as int;
+    final streak = _calculateStreak(_getFlowCompletions());
     final streakText =
-        currentStreak == 0
+        streak == 0
             ? "Complete a flow today to start your streak!"
-            : "You've completed flows $currentStreak day${currentStreak == 1 ? '' : 's'} in a row.";
+            : "You've completed flows $streak day${streak == 1 ? '' : 's'} in a row.";
 
     return Card(
       margin: EdgeInsets.zero,
@@ -566,10 +540,10 @@ class _HomePageState extends State<HomePage> {
                   "🔥 Flow Streak",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                if (currentStreak > 0) ...[
+                if (streak > 0) ...[
                   const SizedBox(width: 8),
                   Text(
-                    currentStreak.toString(),
+                    streak.toString(),
                     style: TextStyle(
                       color: Colors.teal[700],
                       fontWeight: FontWeight.bold,
@@ -581,120 +555,6 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 8),
             Text(streakText),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 140,
-              child: LineChart(
-                LineChartData(
-                  gridData: FlGridData(show: false),
-                  titlesData: FlTitlesData(
-                    show: true,
-                    topTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    rightTitles: AxisTitles(
-                      sideTitles: SideTitles(showTitles: false),
-                    ),
-                    leftTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 30,
-                        interval: 1,
-                        getTitlesWidget: (value, meta) {
-                          return Text(
-                            value.toInt().toString(),
-                            style: TextStyle(
-                              color: Colors.teal[700],
-                              fontSize: 10,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    bottomTitles: AxisTitles(
-                      sideTitles: SideTitles(
-                        showTitles: true,
-                        reservedSize: 30,
-                        getTitlesWidget: (value, meta) {
-                          final date =
-                              streakData[value.toInt()]['date'] as DateTime;
-                          final dayLabel =
-                              ['S', 'M', 'T', 'W', 'T', 'F', 'S'][date.weekday %
-                                  7];
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 4),
-                            child: Text(
-                              dayLabel,
-                              style: TextStyle(
-                                color:
-                                    _isSameDate(date, today)
-                                        ? Colors.teal[700]
-                                        : Colors.black54,
-                                fontSize: 10,
-                                fontWeight:
-                                    _isSameDate(date, today)
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  borderData: FlBorderData(show: false),
-                  lineTouchData: LineTouchData(
-                    touchTooltipData: LineTouchTooltipData(
-                      tooltipRoundedRadius: 8,
-                      tooltipPadding: const EdgeInsets.all(8),
-                      getTooltipItems: (touchedSpots) {
-                        return touchedSpots.map((spot) {
-                          final date =
-                              streakData[spot.x.toInt()]['date'] as DateTime;
-                          final streak =
-                              streakData[spot.x.toInt()]['streak'] as int;
-                          return LineTooltipItem(
-                            '${date.day}/${date.month}\n$streak day${streak == 1 ? '' : 's'} streak',
-                            const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        }).toList();
-                      },
-                    ),
-                  ),
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: List.generate(
-                        streakData.length,
-                        (index) => FlSpot(
-                          index.toDouble(),
-                          (streakData[index]['streak'] as int).toDouble(),
-                        ),
-                      ),
-                      isCurved: true,
-                      color: Colors.teal[700],
-                      barWidth: 2,
-                      isStrokeCapRound: true,
-                      dotData: FlDotData(show: false),
-                      belowBarData: BarAreaData(
-                        show: true,
-                        color: Colors.teal.withOpacity(0.1),
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.teal.withOpacity(0.2),
-                            Colors.teal.withOpacity(0.0),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
           ],
         ),
       ),
