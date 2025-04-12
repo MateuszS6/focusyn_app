@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusyn_app/data/app_data.dart';
@@ -169,11 +167,9 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
     List<SlidableAction> actions = [
       SlidableAction(
         onPressed: (_) => _removeTask(task),
-        backgroundColor: const Color(0xFFE53935),
-        foregroundColor: Colors.white,
+        backgroundColor: Colors.transparent,
+        foregroundColor: const Color(0xFFE53935),
         icon: Icons.delete_rounded,
-        label: 'Delete',
-        borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
         padding: EdgeInsets.zero,
       ),
     ];
@@ -238,7 +234,8 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
       key: key,
       endActionPane: ActionPane(
         motion: const BehindMotion(),
-        extentRatio: 0.2,
+        extentRatio: 0.15,
+        dismissible: DismissiblePane(onDismissed: () => _removeTask(task)),
         children: actions,
       ),
       child: tile,
