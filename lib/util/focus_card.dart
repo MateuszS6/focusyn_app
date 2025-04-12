@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
-import 'package:focusyn_app/pages/focus_task_page.dart';
+import 'package:focusyn_app/pages/task_page.dart';
 import 'package:focusyn_app/util/tap_effect_card.dart';
 
 class FocusCard extends StatelessWidget {
@@ -74,7 +74,7 @@ class FocusCard extends StatelessWidget {
   void _openTaskList(BuildContext context, String category) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => FocusTaskPage(category: category)),
+      MaterialPageRoute(builder: (_) => TaskPage(category: category)),
     ).then((_) {
       // Trigger rebuild when returning from task page
       (context as Element).markNeedsBuild();

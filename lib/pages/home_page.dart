@@ -4,7 +4,7 @@ import 'package:focusyn_app/data/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/data/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
-import 'package:focusyn_app/pages/focus_task_page.dart';
+import 'package:focusyn_app/pages/task_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tap_effect_card.dart';
 
@@ -383,7 +383,7 @@ class _HomePageState extends State<HomePage> {
                       () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => FocusTaskPage(category: Keys.actions),
+                          builder: (_) => TaskPage(category: Keys.actions),
                         ),
                       ),
                 ),
@@ -395,7 +395,7 @@ class _HomePageState extends State<HomePage> {
                       () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => FocusTaskPage(category: Keys.flows),
+                          builder: (_) => TaskPage(category: Keys.flows),
                         ),
                       ),
                 ),
@@ -407,7 +407,7 @@ class _HomePageState extends State<HomePage> {
                       () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => FocusTaskPage(category: Keys.moments),
+                          builder: (_) => TaskPage(category: Keys.moments),
                         ),
                       ),
                 ),

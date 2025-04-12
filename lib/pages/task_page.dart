@@ -15,15 +15,15 @@ import 'package:focusyn_app/util/filter_row.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tag_manager_dialog.dart';
 
-class FocusTaskPage extends StatefulWidget {
+class TaskPage extends StatefulWidget {
   final String category;
-  const FocusTaskPage({super.key, required this.category});
+  const TaskPage({super.key, required this.category});
 
   @override
-  State<FocusTaskPage> createState() => _FocusTaskPageState();
+  State<TaskPage> createState() => _TaskPageState();
 }
 
-class _FocusTaskPageState extends State<FocusTaskPage> {
+class _TaskPageState extends State<TaskPage> {
   late List<Map<String, dynamic>> _tasks;
   late List<String> _filters;
   late Set<String> _hidden;
