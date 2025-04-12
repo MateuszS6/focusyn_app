@@ -41,23 +41,20 @@ class _TaskTileState extends State<TaskTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        color: widget.color,
-        borderRadius: BorderRadius.circular(16),
-        child: ListTile(
-          contentPadding: widget.padding,
-          leading: widget.leading,
-          title: GestureDetector(
-            onTap: _showEditDialog,
-            child: Text(widget.text, style: const TextStyle(fontSize: 18)),
-          ),
-          subtitle:
-              widget.subtitle != null
-                  ? Text(widget.subtitle!, style: const TextStyle(fontSize: 14))
-                  : null,
+    return Material(
+      color: widget.color,
+      borderRadius: BorderRadius.circular(16),
+      child: ListTile(
+        contentPadding: widget.padding,
+        leading: widget.leading,
+        title: GestureDetector(
+          onTap: _showEditDialog,
+          child: Text(widget.text, style: const TextStyle(fontSize: 18)),
         ),
+        subtitle:
+            widget.subtitle != null
+                ? Text(widget.subtitle!, style: const TextStyle(fontSize: 14))
+                : null,
       ),
     );
   }

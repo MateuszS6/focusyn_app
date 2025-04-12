@@ -153,9 +153,10 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
   }
 
   Widget _buildTaskList() {
-    return ReorderableListView.builder(
+    return ListView.separated(
       itemCount: _filteredTasks.length,
-      onReorder: _reorderTasks,
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      padding: const EdgeInsets.symmetric(vertical: 12),
       itemBuilder: (_, index) => _buildTaskTile(_filteredTasks[index]),
     );
   }
@@ -168,10 +169,12 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
     List<SlidableAction> actions = [
       SlidableAction(
         onPressed: (_) => _removeTask(task),
-        backgroundColor: Colors.red,
+        backgroundColor: const Color(0xFFE53935),
         foregroundColor: Colors.white,
-        icon: Icons.delete,
+        icon: Icons.delete_rounded,
         label: 'Delete',
+        borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
+        padding: EdgeInsets.zero,
       ),
     ];
 
@@ -234,7 +237,8 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
     return Slidable(
       key: key,
       endActionPane: ActionPane(
-        motion: const ScrollMotion(),
+        motion: const BehindMotion(),
+        extentRatio: 0.2,
         children: actions,
       ),
       child: tile,
@@ -260,23 +264,6 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
   void _removeTask(Map<String, dynamic> task) {
     setState(() => _tasks.remove(task));
     AppData.instance.updateTasks(widget.category, _tasks);
-  }
-
-  void _reorderTasks(int oldIndex, int newIndex) {
-    setState(() {
-      if (newIndex > oldIndex) newIndex--;
-      final visible = _filteredTasks;
-      final dragged = visible.removeAt(oldIndex);
-      visible.insert(newIndex, dragged);
-
-      _tasks
-        ..remove(dragged)
-        ..insert(
-          _tasks.indexOf(visible[min(newIndex, _tasks.length - 1)]),
-          dragged,
-        );
-      AppData.instance.updateTasks(widget.category, _tasks);
-    });
   }
 
   void _sortTasks() {
