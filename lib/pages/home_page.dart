@@ -20,29 +20,77 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final points = BrainPointsService.getPoints();
     final actions = AppData.instance.tasks[Keys.actions] ?? [];
+    final today = DateTime.now();
+    final monthNames = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
 
     return Scaffold(
-      appBar: MyAppBar(
-        title: Keys.home,
-        actions: [
-          IconButton(icon: Icon(Icons.notifications_rounded), onPressed: () {}),
-          IconButton(
-            icon: Icon(Icons.account_circle_rounded),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AccountPage()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+      backgroundColor: Colors.white,
+      body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async => setState(() {}),
           child: ListView(
+            padding: const EdgeInsets.all(24),
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "${monthNames[today.month - 1]} ${today.day}",
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        "Today",
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.notifications_rounded),
+                        onPressed: () {},
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.account_circle_rounded),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const AccountPage(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
               _greetingCard(points),
               const SizedBox(height: 16),
               _quoteCard(),
@@ -139,183 +187,223 @@ class _HomePageState extends State<HomePage> {
       statusColor = Colors.red;
     }
 
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      color: Colors.blue[50],
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "$greeting, Mateusz 👋",
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Brain Energy",
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.white, Colors.blue.shade50],
             ),
-            const SizedBox(height: 4),
-            Text(
-              statusMessage,
-              style: TextStyle(
-                fontSize: 14,
-                color: statusColor,
-                fontWeight: FontWeight.w500,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Text(
-                          "Brain Points",
-                          style: TextStyle(fontSize: 14, color: Colors.black54),
-                        ),
-                        const SizedBox(width: 4),
-                        GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder:
-                                  (context) => AlertDialog(
-                                    title: const Text("About Brain Points"),
-                                    content: const Text(
-                                      "Brain Points are an approximate measure of your mental energy. "
-                                      "Since they can't be measured precisely, you can manually adjust them "
-                                      "to better reflect your current state. This helps maintain a more "
-                                      "accurate representation of your mental capacity throughout the day.",
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.pop(context),
-                                        child: const Text("Got it"),
-                                      ),
-                                    ],
-                                  ),
-                            );
-                          },
-                          child: Icon(
-                            Icons.info_outline,
-                            size: 16,
-                            color: Colors.blue[700],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      "$points / 100",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+            ],
+          ),
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "$greeting, Mateusz 👋",
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
                 ),
-                const Spacer(),
-                ElevatedButton(
-                  onPressed: _showAddBrainPointsDialog,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue[100],
-                    foregroundColor: Colors.blue[700],
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
+              ),
+              const SizedBox(height: 4),
+              Text(
+                statusMessage,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: statusColor,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.add, size: 16, color: Colors.blue[700]),
-                      const SizedBox(width: 4),
+                      Row(
+                        children: [
+                          const Text(
+                            "Brain Points",
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.black54,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (context) => AlertDialog(
+                                      title: const Text("About Brain Points"),
+                                      content: const Text(
+                                        "Brain Points are an approximate measure of your mental energy. "
+                                        "Since they can't be measured precisely, you can manually adjust them "
+                                        "to better reflect your current state. This helps maintain a more "
+                                        "accurate representation of your mental capacity throughout the day.",
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed:
+                                              () => Navigator.pop(context),
+                                          child: const Text("Got it"),
+                                        ),
+                                      ],
+                                    ),
+                              );
+                            },
+                            child: Icon(
+                              Icons.info_outline,
+                              size: 16,
+                              color: Colors.blue[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
                       Text(
-                        "Add Points",
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.blue[700],
-                          fontWeight: FontWeight.w500,
+                        "$points / 100",
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(4),
-              child: LinearProgressIndicator(
-                value: points / 100,
-                minHeight: 6,
-                backgroundColor: Colors.blue[100],
-                valueColor: AlwaysStoppedAnimation<Color>(statusColor),
+                  const Spacer(),
+                  ElevatedButton(
+                    onPressed: _showAddBrainPointsDialog,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue[100],
+                      foregroundColor: Colors.blue[700],
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add, size: 16, color: Colors.blue[700]),
+                        const SizedBox(width: 4),
+                        Text(
+                          "Add Points",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.blue[700],
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+              const SizedBox(height: 12),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(4),
+                child: LinearProgressIndicator(
+                  value: points / 100,
+                  minHeight: 6,
+                  backgroundColor: Colors.blue[100],
+                  valueColor: AlwaysStoppedAnimation<Color>(statusColor),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
   Widget _quoteCard() {
     final quote = Quotes.getRandomQuote();
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      color: Colors.purple[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "Daily Quote",
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.purple[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Text(
-                  quote.category,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.purple[700],
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Daily Quote",
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 16),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.purple.shade50, Colors.white],
             ),
-            const SizedBox(height: 8),
-            Text(
-              '"${quote.text}"',
-              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-            ),
-            const SizedBox(height: 8),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Text(
-                "― ${quote.author}",
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    quote.category,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.purple[700],
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '"${quote.text}"',
                 style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                  fontStyle: FontStyle.italic,
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 8),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  "― ${quote.author}",
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -345,101 +433,134 @@ class _HomePageState extends State<HomePage> {
     final nextFlow = todayFlows.isNotEmpty ? todayFlows.first : null;
     final nextMoment = todayMoments.isNotEmpty ? todayMoments.first : null;
 
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      color: Colors.orange[50] ?? Colors.orange,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Today's Tasks",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            const Text(
+              "Today's Tasks",
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.orange[100],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                "$totalBrainPoints BP",
+                style: TextStyle(
+                  color: Colors.orange[700],
+                  fontWeight: FontWeight.bold,
                 ),
-                Text(
-                  "$totalBrainPoints BP",
-                  style: TextStyle(
-                    color: Colors.orange[700],
-                    fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.orange.shade50, Colors.white],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildTaskType(
+                    icon: Icons.whatshot_rounded,
+                    count: actionsCount,
+                    label: "Actions",
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => TaskPage(category: Keys.actions),
+                          ),
+                        ),
+                  ),
+                  _buildTaskType(
+                    icon: Icons.event_repeat,
+                    count: todayFlows.length,
+                    label: "Flows",
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => TaskPage(category: Keys.flows),
+                          ),
+                        ),
+                  ),
+                  _buildTaskType(
+                    icon: Icons.event_rounded,
+                    count: todayMoments.length,
+                    label: "Moments",
+                    onTap:
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => TaskPage(category: Keys.moments),
+                          ),
+                        ),
+                  ),
+                ],
+              ),
+              if (nextFlow != null || nextMoment != null) ...[
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Next Up",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      if (nextFlow != null)
+                        _buildNextTask(
+                          icon: Icons.event_repeat,
+                          title: nextFlow[Keys.title],
+                          time: nextFlow[Keys.time],
+                        ),
+                      if (nextMoment != null)
+                        _buildNextTask(
+                          icon: Icons.event_rounded,
+                          title: nextMoment[Keys.title],
+                          time: nextMoment[Keys.time],
+                        ),
+                    ],
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildTaskType(
-                  icon: Icons.whatshot_rounded,
-                  count: actionsCount,
-                  label: "Actions",
-                  onTap:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => TaskPage(category: Keys.actions),
-                        ),
-                      ),
-                ),
-                _buildTaskType(
-                  icon: Icons.event_repeat,
-                  count: todayFlows.length,
-                  label: "Flows",
-                  onTap:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => TaskPage(category: Keys.flows),
-                        ),
-                      ),
-                ),
-                _buildTaskType(
-                  icon: Icons.event_rounded,
-                  count: todayMoments.length,
-                  label: "Moments",
-                  onTap:
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => TaskPage(category: Keys.moments),
-                        ),
-                      ),
-                ),
-              ],
-            ),
-            if (nextFlow != null || nextMoment != null) ...[
-              const SizedBox(height: 16),
-              const Text(
-                "Next Up",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black54,
-                ),
-              ),
-              const SizedBox(height: 8),
-              if (nextFlow != null)
-                _buildNextTask(
-                  icon: Icons.event_repeat,
-                  title: nextFlow[Keys.title],
-                  time: nextFlow[Keys.time],
-                ),
-              if (nextMoment != null)
-                _buildNextTask(
-                  icon: Icons.event_rounded,
-                  title: nextMoment[Keys.title],
-                  time: nextMoment[Keys.time],
-                ),
             ],
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -524,40 +645,59 @@ class _HomePageState extends State<HomePage> {
             ? "Complete a flow today to start your streak!"
             : "You've completed flows $streak day${streak == 1 ? '' : 's'} in a row.";
 
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      color: Colors.teal[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                const Text(
-                  "🔥 Flow Streak",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                if (streak > 0) ...[
-                  const SizedBox(width: 8),
-                  Text(
-                    streak.toString(),
-                    style: TextStyle(
-                      color: Colors.teal[700],
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-            const SizedBox(height: 8),
-            Text(streakText),
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Flow Streak",
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
         ),
-      ),
+        const SizedBox(height: 16),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.teal.shade50, Colors.white],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Text("🔥", style: TextStyle(fontSize: 24)),
+                  const SizedBox(width: 8),
+                  if (streak > 0) ...[
+                    Text(
+                      streak.toString(),
+                      style: TextStyle(
+                        color: Colors.teal[700],
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                streakText,
+                style: const TextStyle(fontSize: 16, color: Colors.black87),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -571,7 +711,6 @@ class _HomePageState extends State<HomePage> {
       7,
       (i) => today.subtract(Duration(days: 6 - i)),
     );
-
     final completedPerDay =
         last7Days.map((day) {
           final dayCompletions =
@@ -583,161 +722,186 @@ class _HomePageState extends State<HomePage> {
           };
         }).toList();
 
-    return Card(
-      margin: EdgeInsets.zero,
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      color: Colors.green[50],
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Weekly Flow Completion",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Total: $totalFlows flows",
-                  style: TextStyle(color: Colors.green[700], fontSize: 12),
-                ),
-              ],
+            const Text(
+              "Weekly Progress",
+              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 24),
-            SizedBox(
-              height: 180,
-              child: ClipRect(
-                child: BarChart(
-                  BarChartData(
-                    alignment: BarChartAlignment.spaceAround,
-                    maxY: 1.0,
-                    minY: 0,
-                    groupsSpace: 12,
-                    barTouchData: BarTouchData(
-                      enabled: true,
-                      touchTooltipData: BarTouchTooltipData(
-                        tooltipBorder: BorderSide.none,
-                        tooltipRoundedRadius: 8,
-                        tooltipPadding: const EdgeInsets.all(8),
-                        tooltipMargin: 8,
-                        getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                          final data = completedPerDay[groupIndex];
-                          final count = data['count'] as int;
-                          final percentage =
-                              (data['percentage'] as double) * 100;
-                          return BarTooltipItem(
-                            '$count flows\n${percentage.toStringAsFixed(1)}%',
-                            const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12,
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    titlesData: FlTitlesData(
-                      show: true,
-                      topTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      rightTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      leftTitles: AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      bottomTitles: AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: true,
-                          reservedSize: 30,
-                          getTitlesWidget: (value, meta) {
-                            final date =
-                                completedPerDay[value.toInt()]['date']
-                                    as DateTime;
-                            final dayLabel =
-                                [
-                                  'S',
-                                  'M',
-                                  'T',
-                                  'W',
-                                  'T',
-                                  'F',
-                                  'S',
-                                ][date.weekday % 7];
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 4),
-                              child: Text(
-                                dayLabel,
-                                style: TextStyle(
-                                  color:
-                                      _isSameDate(date, today)
-                                          ? Colors.green[700]
-                                          : Colors.black54,
-                                  fontWeight:
-                                      _isSameDate(date, today)
-                                          ? FontWeight.bold
-                                          : FontWeight.normal,
-                                ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: Colors.green[100],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                "Total: $totalFlows flows",
+                style: TextStyle(
+                  color: Colors.green[700],
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.green.shade50, Colors.white],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 180,
+                child: ClipRect(
+                  child: BarChart(
+                    BarChartData(
+                      alignment: BarChartAlignment.spaceAround,
+                      maxY: 1.0,
+                      minY: 0,
+                      groupsSpace: 12,
+                      barTouchData: BarTouchData(
+                        enabled: true,
+                        touchTooltipData: BarTouchTooltipData(
+                          tooltipBorder: BorderSide.none,
+                          tooltipRoundedRadius: 8,
+                          tooltipPadding: const EdgeInsets.all(8),
+                          tooltipMargin: 8,
+                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                            final data = completedPerDay[groupIndex];
+                            final count = data['count'] as int;
+                            final percentage =
+                                (data['percentage'] as double) * 100;
+                            return BarTooltipItem(
+                              '$count flows\n${percentage.toStringAsFixed(1)}%',
+                              const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 12,
                               ),
                             );
                           },
                         ),
                       ),
-                    ),
-                    gridData: FlGridData(show: false),
-                    borderData: FlBorderData(show: false),
-                    barGroups: List.generate(7, (index) {
-                      final data = completedPerDay[index];
-                      return BarChartGroupData(
-                        x: index,
-                        barRods: [
-                          BarChartRodData(
-                            toY: data['percentage'] as double,
-                            width: 20,
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.green.withOpacity(0.7),
-                                Colors.green,
-                              ],
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                            ),
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(6),
-                              topRight: Radius.circular(6),
-                            ),
-                            backDrawRodData: BackgroundBarChartRodData(
-                              show: true,
-                              toY: 1,
-                              color: Colors.green.withOpacity(0.1),
-                            ),
+                      titlesData: FlTitlesData(
+                        show: true,
+                        topTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        rightTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        leftTitles: AxisTitles(
+                          sideTitles: SideTitles(showTitles: false),
+                        ),
+                        bottomTitles: AxisTitles(
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            reservedSize: 30,
+                            getTitlesWidget: (value, meta) {
+                              final date =
+                                  completedPerDay[value.toInt()]['date']
+                                      as DateTime;
+                              final dayLabel =
+                                  [
+                                    'S',
+                                    'M',
+                                    'T',
+                                    'W',
+                                    'T',
+                                    'F',
+                                    'S',
+                                  ][date.weekday % 7];
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 4),
+                                child: Text(
+                                  dayLabel,
+                                  style: TextStyle(
+                                    color:
+                                        _isSameDate(date, today)
+                                            ? Colors.green[700]
+                                            : Colors.black54,
+                                    fontWeight:
+                                        _isSameDate(date, today)
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                  ),
+                                ),
+                              );
+                            },
                           ),
-                        ],
-                      );
-                    }),
+                        ),
+                      ),
+                      gridData: FlGridData(show: false),
+                      borderData: FlBorderData(show: false),
+                      barGroups: List.generate(7, (index) {
+                        final data = completedPerDay[index];
+                        return BarChartGroupData(
+                          x: index,
+                          barRods: [
+                            BarChartRodData(
+                              toY: data['percentage'] as double,
+                              width: 20,
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.green.withOpacity(0.7),
+                                  Colors.green,
+                                ],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                              ),
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(6),
+                                topRight: Radius.circular(6),
+                              ),
+                              backDrawRodData: BackgroundBarChartRodData(
+                                show: true,
+                                toY: 1,
+                                color: Colors.green.withOpacity(0.1),
+                              ),
+                            ),
+                          ],
+                        );
+                      }),
+                    ),
+                    swapAnimationDuration: const Duration(milliseconds: 800),
+                    swapAnimationCurve: Curves.easeInOutCubic,
                   ),
-                  swapAnimationDuration: const Duration(milliseconds: 800),
-                  swapAnimationCurve: Curves.easeInOutCubic,
                 ),
               ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              "Shows percentage of total flows completed each day",
-              style: TextStyle(
-                color: Colors.grey[600],
-                fontSize: 12,
-                fontStyle: FontStyle.italic,
+              const SizedBox(height: 12),
+              Text(
+                "Shows percentage of total flows completed each day",
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 12,
+                  fontStyle: FontStyle.italic,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
