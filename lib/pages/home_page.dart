@@ -123,14 +123,20 @@ class _HomePageState extends State<HomePage> {
             : "Good evening";
 
     String statusMessage;
+    Color statusColor;
+
     if (points >= 80) {
       statusMessage = "You're at peak mental energy!";
+      statusColor = Colors.green;
     } else if (points >= 50) {
       statusMessage = "You're doing great!";
+      statusColor = Colors.blue;
     } else if (points >= 20) {
       statusMessage = "Time for a quick break?";
+      statusColor = Colors.orange;
     } else {
       statusMessage = "Consider taking a rest";
+      statusColor = Colors.red;
     }
 
     return Card(
@@ -152,7 +158,7 @@ class _HomePageState extends State<HomePage> {
               statusMessage,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.blue,
+                color: statusColor,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -249,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                 value: points / 100,
                 minHeight: 6,
                 backgroundColor: Colors.blue[100],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                valueColor: AlwaysStoppedAnimation<Color>(statusColor),
               ),
             ),
           ],
