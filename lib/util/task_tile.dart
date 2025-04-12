@@ -57,13 +57,6 @@ class _TaskTileState extends State<TaskTile> {
               widget.subtitle != null
                   ? Text(widget.subtitle!, style: const TextStyle(fontSize: 14))
                   : null,
-          trailing:
-              widget.onDelete != null
-                  ? IconButton(
-                    icon: const Icon(Icons.delete_rounded),
-                    onPressed: widget.onDelete,
-                  )
-                  : null,
         ),
       ),
     );

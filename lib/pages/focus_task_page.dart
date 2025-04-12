@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
@@ -47,171 +48,253 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_rounded),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: widget.category,
-        actions: [
-          PopupMenuButton<String>(
-            itemBuilder:
-                (_) => const [
-                  PopupMenuItem(value: 'tags', child: Text("Manage Tags")),
-                  PopupMenuItem(value: 'tasks', child: Text("Sort Tasks")),
-                ],
-            onSelected: _handleMenuSelection,
-          ),
-        ],
-      ),
+      appBar: _buildAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            FilterRow(
-              category: widget.category,
-              filters: _filters,
-              hidden: _hidden,
-              selected: _selectedFilter,
-              onSelect: (val) => setState(() => _selectedFilter = val),
-              onAdd: _openAddTagDialog,
-            ),
+            _buildFilterRow(),
             const SizedBox(height: 16),
             Expanded(
               child:
                   _filteredTasks.isEmpty
-                      ? const Center(child: Text("No tasks to show."))
-                      : _buildReorderableList(),
+                      ? _buildEmptyState()
+                      : _buildTaskList(),
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        shape: const CircleBorder(),
-        foregroundColor: Colors.white,
-        backgroundColor: AppData.instance.colours[widget.category]?['main'],
-        onPressed: _showAddDialog,
-        child: const Icon(Icons.add_rounded, size: 40),
+      floatingActionButton: _filteredTasks.isEmpty ? null : _buildFAB(),
+    );
+  }
+
+  PreferredSizeWidget _buildAppBar() {
+    return MyAppBar(
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios_rounded),
+        onPressed: () => Navigator.pop(context),
+      ),
+      title: widget.category,
+      actions: [
+        PopupMenuButton<String>(
+          itemBuilder:
+              (_) => const [
+                PopupMenuItem(value: 'tags', child: Text("Manage Tags")),
+                PopupMenuItem(value: 'tasks', child: Text("Sort Tasks")),
+              ],
+          onSelected: (val) {
+            if (val == 'tags') {
+              _openTagManagerDialog();
+            } else if (val == 'tasks') {
+              _sortTasks();
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFilterRow() {
+    return FilterRow(
+      category: widget.category,
+      filters: _filters,
+      hidden: _hidden,
+      selected: _selectedFilter,
+      onSelect: (val) => setState(() => _selectedFilter = val),
+      onAdd: _openAddTagDialog,
+    );
+  }
+
+  Widget _buildEmptyState() {
+    final color = AppData.instance.colours[widget.category]!['main']!;
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(_getEmptyStateIcon(), size: 64, color: color),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            _getEmptyStateTitle(),
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _getEmptyStateMessage(),
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 32),
+          ElevatedButton.icon(
+            onPressed: _showAddDialog,
+            icon: const Icon(Icons.add_rounded, color: Colors.white),
+            label: Text(
+              "Add ${widget.category.substring(0, widget.category.length - 1)}",
+            ),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: color,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildReorderableList() {
+  Widget _buildTaskList() {
     return ReorderableListView.builder(
       itemCount: _filteredTasks.length,
-      onReorder: (oldIndex, newIndex) {
-        if (newIndex > oldIndex) newIndex--;
-        final visible = _filteredTasks;
-        final dragged = visible.removeAt(oldIndex);
-        visible.insert(newIndex, dragged);
-
-        setState(() {
-          _tasks
-            ..remove(dragged)
-            ..insert(
-              _tasks.indexOf(visible[min(newIndex, _tasks.length - 1)]),
-              dragged,
-            );
-          AppData.instance.updateTasks(widget.category, _tasks);
-        });
-      },
-      itemBuilder: (_, index) {
-        final task = _filteredTasks[index];
-        final color = AppData.instance.colours[widget.category]!['task']!;
-
-        switch (widget.category) {
-          case Keys.actions:
-            return ActionTile(
-              key: ValueKey(task),
-              color: color,
-              task: Task.fromMap(task),
-              onEdit: () {
-                setState(() => task[Keys.title] = task[Keys.title]);
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-              onComplete: () {
-                setState(() => _tasks.remove(task));
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-              onDelete: () {
-                setState(() => _tasks.remove(task));
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-            );
-          case Keys.flows:
-            return FlowTile(
-              key: ValueKey(task),
-              color: color,
-              task: task,
-              onEdit: (newTitle) {
-                setState(() => task[Keys.title] = newTitle);
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-              onComplete: () {
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-              onDelete: () {
-                setState(() => _tasks.remove(task));
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-            );
-          case Keys.moments:
-            return MomentTile(
-              key: ValueKey(task),
-              color: color,
-              task: task,
-              onEdit: (newTitle) {
-                setState(() => task[Keys.title] = newTitle);
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-              onDelete: () {
-                setState(() => _tasks.remove(task));
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-            );
-          case Keys.thoughts:
-            return ThoughtTile(
-              key: ValueKey(task),
-              color: color,
-              task: task,
-              onEdit: (newText) {
-                setState(() => task[Keys.text] = newText);
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-              onDelete: () {
-                setState(() => _tasks.remove(task));
-                AppData.instance.updateTasks(widget.category, _tasks);
-              },
-            );
-          default:
-            return const SizedBox.shrink();
-        }
-      },
+      onReorder: _reorderTasks,
+      itemBuilder: (_, index) => _buildTaskTile(_filteredTasks[index]),
     );
   }
 
-  void _handleMenuSelection(String val) {
-    if (val == 'tags') {
-      _openTagManagerDialog();
-    } else if (val == 'tasks') {
-      setState(() {
-        _tasks.sort((a, b) {
-          // Sort by priority first
-          final priorityCompare = (a['priority'] ?? 1).compareTo(
-            b['priority'] ?? 1,
-          );
-          if (priorityCompare != 0) return priorityCompare;
+  Widget _buildTaskTile(Map<String, dynamic> task) {
+    final color = AppData.instance.colours[widget.category]!['task']!;
+    final key = ValueKey(task);
 
-          // Then by creation date
-          final aDate = DateTime.parse(a[Keys.createdAt] as String);
-          final bDate = DateTime.parse(b[Keys.createdAt] as String);
-          return aDate.compareTo(bDate);
-        });
-        AppData.instance.updateTasks(widget.category, _tasks);
-      });
+    Widget tile;
+    List<SlidableAction> actions = [
+      SlidableAction(
+        onPressed: (_) => _removeTask(task),
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+        icon: Icons.delete,
+        label: 'Delete',
+      ),
+    ];
+
+    switch (widget.category) {
+      case Keys.actions:
+        tile = ActionTile(
+          key: key,
+          color: color,
+          task: Task.fromMap(task),
+          onEdit: () => _updateTask(task),
+          onComplete: () => _removeTask(task),
+          onDelete: () => _removeTask(task),
+        );
+        break;
+
+      case Keys.flows:
+        tile = FlowTile(
+          key: key,
+          color: color,
+          task: task,
+          onEdit: (newTitle) {
+            task[Keys.title] = newTitle;
+            _updateTask(task);
+          },
+          onComplete: () => _updateTask(task),
+          onDelete: () => _removeTask(task),
+        );
+        break;
+
+      case Keys.moments:
+        tile = MomentTile(
+          key: key,
+          color: color,
+          task: task,
+          onEdit: (newTitle) {
+            task[Keys.title] = newTitle;
+            _updateTask(task);
+          },
+          onDelete: () => _removeTask(task),
+        );
+        break;
+
+      case Keys.thoughts:
+        tile = ThoughtTile(
+          key: key,
+          color: color,
+          task: task,
+          onEdit: (newText) {
+            task[Keys.text] = newText;
+            _updateTask(task);
+          },
+          onDelete: () => _removeTask(task),
+        );
+        break;
+
+      default:
+        return const SizedBox.shrink();
     }
+
+    return Slidable(
+      key: key,
+      endActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: actions,
+      ),
+      child: tile,
+    );
   }
 
+  FloatingActionButton _buildFAB() {
+    return FloatingActionButton(
+      shape: const CircleBorder(),
+      foregroundColor: Colors.white,
+      backgroundColor: AppData.instance.colours[widget.category]?['main'],
+      onPressed: _showAddDialog,
+      child: const Icon(Icons.add_rounded, size: 40),
+    );
+  }
+
+  // Task Operations
+  void _updateTask(Map<String, dynamic> task) {
+    setState(() {});
+    AppData.instance.updateTasks(widget.category, _tasks);
+  }
+
+  void _removeTask(Map<String, dynamic> task) {
+    setState(() => _tasks.remove(task));
+    AppData.instance.updateTasks(widget.category, _tasks);
+  }
+
+  void _reorderTasks(int oldIndex, int newIndex) {
+    setState(() {
+      if (newIndex > oldIndex) newIndex--;
+      final visible = _filteredTasks;
+      final dragged = visible.removeAt(oldIndex);
+      visible.insert(newIndex, dragged);
+
+      _tasks
+        ..remove(dragged)
+        ..insert(
+          _tasks.indexOf(visible[min(newIndex, _tasks.length - 1)]),
+          dragged,
+        );
+      AppData.instance.updateTasks(widget.category, _tasks);
+    });
+  }
+
+  void _sortTasks() {
+    setState(() {
+      _tasks.sort((a, b) {
+        final priorityCompare = (a['priority'] ?? 1).compareTo(
+          b['priority'] ?? 1,
+        );
+        if (priorityCompare != 0) return priorityCompare;
+        final aDate = DateTime.parse(a[Keys.createdAt] as String);
+        final bDate = DateTime.parse(b[Keys.createdAt] as String);
+        return aDate.compareTo(bDate);
+      });
+      AppData.instance.updateTasks(widget.category, _tasks);
+    });
+  }
+
+  // Dialog Operations
   void _showAddDialog() {
     showDialog(
       context: context,
@@ -322,5 +405,51 @@ class _FocusTaskPageState extends State<FocusTaskPage> {
             },
           ),
     );
+  }
+
+  // Empty State Helpers
+  IconData _getEmptyStateIcon() {
+    switch (widget.category) {
+      case Keys.actions:
+        return Icons.whatshot_rounded;
+      case Keys.flows:
+        return Icons.event_repeat;
+      case Keys.moments:
+        return Icons.event_rounded;
+      case Keys.thoughts:
+        return Icons.lightbulb_rounded;
+      default:
+        return Icons.task_alt;
+    }
+  }
+
+  String _getEmptyStateTitle() {
+    switch (widget.category) {
+      case Keys.actions:
+        return "No Actions Yet";
+      case Keys.flows:
+        return "No Flows Yet";
+      case Keys.moments:
+        return "No Moments Yet";
+      case Keys.thoughts:
+        return "No Thoughts Yet";
+      default:
+        return "No Tasks Yet";
+    }
+  }
+
+  String _getEmptyStateMessage() {
+    switch (widget.category) {
+      case Keys.actions:
+        return "Start adding tasks to your to-do list\nand track your progress!";
+      case Keys.flows:
+        return "Create your first routine to build\npositive habits and stay focused!";
+      case Keys.moments:
+        return "Schedule your first event or deadline\nto stay organized and on track!";
+      case Keys.thoughts:
+        return "Capture your first idea or reflection\nto keep track of your insights!";
+      default:
+        return "Start by adding your first item\nto get started!";
+    }
   }
 }
