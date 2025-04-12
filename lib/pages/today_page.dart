@@ -200,7 +200,7 @@ class _TodayPageState extends State<TodayPage> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Colors.white, Colors.blue.shade50],
+              colors: [Colors.green.shade50, Colors.white],
             ),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
@@ -465,7 +465,7 @@ class _TodayPageState extends State<TodayPage> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Colors.orange.shade50, Colors.white],
+              colors: [Colors.green.shade50, Colors.white],
             ),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
@@ -780,151 +780,112 @@ class _TodayPageState extends State<TodayPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(
-                height: 180,
-                child: ClipRect(
-                  child: BarChart(
-                    BarChartData(
-                      alignment: BarChartAlignment.spaceAround,
-                      maxY: 1.0,
-                      minY: 0,
-                      groupsSpace: 12,
-                      barTouchData: BarTouchData(
-                        enabled: true,
-                        touchTooltipData: BarTouchTooltipData(
-                          tooltipBorder: BorderSide.none,
-                          tooltipRoundedRadius: 8,
-                          tooltipPadding: const EdgeInsets.all(8),
-                          tooltipMargin: 8,
-                          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                            final data = completedPerDay[groupIndex];
+                height: 200,
+                child: BarChart(
+                  BarChartData(
+                    alignment: BarChartAlignment.spaceAround,
+                    maxY: 1.0,
+                    minY: 0,
+                    groupsSpace: 35, // Increased space between bars
+                    barTouchData: BarTouchData(
+                      enabled: false,
+                    ), // Disabled tooltips since we show values on top
+                    titlesData: FlTitlesData(
+                      show: true,
+                      topTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 32,
+                          getTitlesWidget: (value, meta) {
+                            final data = completedPerDay[value.toInt()];
                             final count = data['count'] as int;
-                            final percentage =
-                                (data['percentage'] as double) * 100;
-                            return BarTooltipItem(
-                              '$count flows\n${percentage.toStringAsFixed(0)}% of max',
-                              const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 12,
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Text(
+                                count.toString(),
+                                style: const TextStyle(
+                                  color: Colors.black87,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             );
                           },
                         ),
                       ),
-                      titlesData: FlTitlesData(
-                        show: true,
-                        topTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        rightTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
-                        ),
-                        leftTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            getTitlesWidget: (value, meta) {
-                              if (maxCompletions == 0)
-                                return const SizedBox.shrink();
-                              final count = (value * maxCompletions).round();
-                              if (count % 1 == 0) {
-                                return Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: Text(
-                                    count.toString(),
-                                    style: const TextStyle(
-                                      color: Colors.black54,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            },
-                          ),
-                        ),
-                        bottomTitles: AxisTitles(
-                          sideTitles: SideTitles(
-                            showTitles: true,
-                            reservedSize: 30,
-                            getTitlesWidget: (value, meta) {
-                              final date =
-                                  completedPerDay[value.toInt()]['date']
-                                      as DateTime;
-                              final dayLabel =
-                                  [
-                                    'S',
-                                    'M',
-                                    'T',
-                                    'W',
-                                    'T',
-                                    'F',
-                                    'S',
-                                  ][date.weekday % 7];
-                              return Padding(
-                                padding: const EdgeInsets.only(top: 4),
-                                child: Text(
-                                  dayLabel,
-                                  style: TextStyle(
-                                    color:
-                                        _isSameDate(date, today)
-                                            ? Colors.green[700]
-                                            : Colors.black54,
-                                    fontWeight:
-                                        _isSameDate(date, today)
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                  ),
+                      rightTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          reservedSize: 30,
+                          getTitlesWidget: (value, meta) {
+                            final date =
+                                completedPerDay[value.toInt()]['date']
+                                    as DateTime;
+                            final dayLabel =
+                                [
+                                  'Mn',
+                                  'Te',
+                                  'Wd',
+                                  'Tu',
+                                  'Fr',
+                                  'St',
+                                  'Sn',
+                                ][date.weekday % 7];
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: Text(
+                                dayLabel,
+                                style: TextStyle(
+                                  color:
+                                      _isSameDate(date, today)
+                                          ? Colors.green[700]
+                                          : Colors.black54,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
                                 ),
-                              );
-                            },
-                          ),
+                              ),
+                            );
+                          },
                         ),
                       ),
-                      gridData: FlGridData(
-                        show: true,
-                        drawVerticalLine: false,
-                        horizontalInterval: 0.2,
-                        getDrawingHorizontalLine: (value) {
-                          return FlLine(
-                            color: Colors.black12,
-                            strokeWidth: 1,
-                            dashArray: [5, 5],
-                          );
-                        },
-                      ),
-                      borderData: FlBorderData(show: false),
-                      barGroups: List.generate(7, (index) {
-                        final data = completedPerDay[index];
-                        return BarChartGroupData(
-                          x: index,
-                          barRods: [
-                            BarChartRodData(
-                              toY: data['percentage'] as double,
-                              width: 20,
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.green.withOpacity(0.7),
-                                  Colors.green,
-                                ],
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                              ),
-                              borderRadius: const BorderRadius.only(
-                                topLeft: Radius.circular(6),
-                                topRight: Radius.circular(6),
-                              ),
-                              backDrawRodData: BackgroundBarChartRodData(
-                                show: true,
-                                toY: 1,
-                                color: Colors.green.withOpacity(0.1),
-                              ),
-                            ),
-                          ],
-                        );
-                      }),
                     ),
-                    duration: const Duration(milliseconds: 800),
-                    curve: Curves.easeInOutCubic,
+                    gridData: FlGridData(show: false),
+                    borderData: FlBorderData(show: false),
+                    barGroups: List.generate(7, (index) {
+                      final data = completedPerDay[index];
+                      return BarChartGroupData(
+                        x: index,
+                        barRods: [
+                          BarChartRodData(
+                            toY: data['percentage'] as double,
+                            width: 8, // Keep the thinner bars
+                            gradient: LinearGradient(
+                              colors: [
+                                Colors.green.withOpacity(0.7),
+                                Colors.green,
+                              ],
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                            ),
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(3),
+                              topRight: Radius.circular(3),
+                            ),
+                            backDrawRodData: BackgroundBarChartRodData(
+                              show: true,
+                              toY: 1,
+                              color: Colors.white.withOpacity(0.05),
+                            ),
+                          ),
+                        ],
+                      );
+                    }),
                   ),
                 ),
               ),
