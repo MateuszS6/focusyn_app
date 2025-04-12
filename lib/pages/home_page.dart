@@ -7,6 +7,7 @@ import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/pages/task_page.dart';
 import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'dart:math' as math;
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -705,8 +706,8 @@ class _HomePageState extends State<HomePage> {
     final completions = _getFlowCompletions();
     final today = DateTime.now();
     final flows = AppData.instance.tasks[Keys.flows] ?? [];
-    final totalFlows = flows.length;
 
+    // Get the maximum completions in a day to use as the baseline for percentage
     final last7Days = List.generate(
       7,
       (i) => today.subtract(Duration(days: 6 - i)),
@@ -715,12 +716,20 @@ class _HomePageState extends State<HomePage> {
         last7Days.map((day) {
           final dayCompletions =
               completions.where((d) => _isSameDate(d, day)).length;
-          return {
-            'count': dayCompletions,
-            'percentage': totalFlows > 0 ? dayCompletions / totalFlows : 0.0,
-            'date': day,
-          };
+          return {'count': dayCompletions, 'date': day};
         }).toList();
+
+    // Find the maximum completions in a day
+    final maxCompletions = completedPerDay.fold<int>(
+      0,
+      (max, day) => math.max(max, day['count'] as int),
+    );
+
+    // Update the data to include percentages based on the maximum
+    for (var day in completedPerDay) {
+      day['percentage'] =
+          maxCompletions > 0 ? (day['count'] as int) / maxCompletions : 0.0;
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -739,7 +748,7 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                "Total: $totalFlows flows",
+                "Max: ${maxCompletions > 0 ? maxCompletions : 'No'} flows/day",
                 style: TextStyle(
                   color: Colors.green[700],
                   fontWeight: FontWeight.bold,
@@ -793,7 +802,7 @@ class _HomePageState extends State<HomePage> {
                             final percentage =
                                 (data['percentage'] as double) * 100;
                             return BarTooltipItem(
-                              '$count flows\n${percentage.toStringAsFixed(1)}%',
+                              '$count flows\n${percentage.toStringAsFixed(0)}% of max',
                               const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,
@@ -812,7 +821,27 @@ class _HomePageState extends State<HomePage> {
                           sideTitles: SideTitles(showTitles: false),
                         ),
                         leftTitles: AxisTitles(
-                          sideTitles: SideTitles(showTitles: false),
+                          sideTitles: SideTitles(
+                            showTitles: true,
+                            getTitlesWidget: (value, meta) {
+                              if (maxCompletions == 0)
+                                return const SizedBox.shrink();
+                              final count = (value * maxCompletions).round();
+                              if (count % 1 == 0) {
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8),
+                                  child: Text(
+                                    count.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                );
+                              }
+                              return const SizedBox.shrink();
+                            },
+                          ),
                         ),
                         bottomTitles: AxisTitles(
                           sideTitles: SideTitles(
@@ -852,7 +881,18 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      gridData: FlGridData(show: false),
+                      gridData: FlGridData(
+                        show: true,
+                        drawVerticalLine: false,
+                        horizontalInterval: 0.2,
+                        getDrawingHorizontalLine: (value) {
+                          return FlLine(
+                            color: Colors.black12,
+                            strokeWidth: 1,
+                            dashArray: [5, 5],
+                          );
+                        },
+                      ),
                       borderData: FlBorderData(show: false),
                       barGroups: List.generate(7, (index) {
                         final data = completedPerDay[index];
@@ -891,7 +931,7 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 12),
               Text(
-                "Shows percentage of total flows completed each day",
+                "Shows daily flow completions relative to your best day",
                 style: TextStyle(
                   color: Colors.grey[600],
                   fontSize: 12,
