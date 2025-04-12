@@ -5,18 +5,17 @@ import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/data/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/pages/task_page.dart';
-import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'dart:math' as math;
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class TodayPage extends StatefulWidget {
+  const TodayPage({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<TodayPage> createState() => _TodayPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _TodayPageState extends State<TodayPage> {
   @override
   Widget build(BuildContext context) {
     final points = BrainPointsService.getPoints();
@@ -924,8 +923,8 @@ class _HomePageState extends State<HomePage> {
                         );
                       }),
                     ),
-                    swapAnimationDuration: const Duration(milliseconds: 800),
-                    swapAnimationCurve: Curves.easeInOutCubic,
+                    duration: const Duration(milliseconds: 800),
+                    curve: Curves.easeInOutCubic,
                   ),
                 ),
               ),

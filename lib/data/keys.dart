@@ -5,7 +5,7 @@ abstract class Keys {
   static const String filterBox = 'filterBox';
 
   // Pages
-  static const String home = 'Home';
+  static const String today = 'Today';
   static const String account = 'Account';
   static const String focuses = 'Focuses';
   static const String planner = 'Planner';
