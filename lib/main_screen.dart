@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/pages/focuses_page.dart';
 import 'package:focusyn_app/pages/today_page.dart';
 import 'package:focusyn_app/pages/planner_page.dart';
@@ -20,37 +19,36 @@ class _MainScreenState extends State<MainScreen> {
     PlannerPage(),
   ];
 
-  static const List<BottomNavigationBarItem> _navItems = [
-    BottomNavigationBarItem(
-      icon: Icon(Icons.dashboard_rounded),
-      label: Keys.today,
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.view_agenda_rounded),
-      label: Keys.focuses,
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.local_library_rounded),
-      label: Keys.planner,
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: _navItems,
-        currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+      bottomNavigationBar: NavigationBar(
+        height: 72,
+        elevation: 0,
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.transparent,
+        indicatorColor: Colors.blue.withAlpha(26),
+        selectedIndex: _selectedIndex,
+        onDestinationSelected:
+            (index) => setState(() => _selectedIndex = index),
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.today_rounded),
+            label: 'Today',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.auto_awesome_motion_rounded),
+            label: 'Focuses',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.calendar_month_rounded),
+            label: 'Planner',
+          ),
+        ],
       ),
     );
-  }
-
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 }
