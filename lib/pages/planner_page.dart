@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
-import 'package:focusyn_app/util/my_app_bar.dart';
 
 class PlannerPage extends StatefulWidget {
   const PlannerPage({super.key});
@@ -31,15 +30,20 @@ class _PlannerPageState extends State<PlannerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(title: 'Planner'),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
-        child: Column(
-          children: [
-            _buildDaySelector(),
-            const SizedBox(height: 16),
-            Expanded(child: _buildTimeline()),
-          ],
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Planner', style: Theme.of(context).textTheme.displayLarge),
+              const SizedBox(height: 24),
+              _buildDaySelector(),
+              const SizedBox(height: 24),
+              Expanded(child: _buildTimeline()),
+            ],
+          ),
         ),
       ),
     );
@@ -49,87 +53,193 @@ class _PlannerPageState extends State<PlannerPage> {
     final today = DateTime.now();
     final days = List.generate(7, (i) => today.add(Duration(days: i)));
 
-    return SizedBox(
-      height: 80,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: days.length,
-        itemBuilder: (_, i) {
-          final date = days[i];
-          final selected = _isSameDay(date, selectedDate);
-          return GestureDetector(
-            onTap: () => setState(() => selectedDate = date),
-            child: Container(
-              width: 60,
-              margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 12),
-              decoration: BoxDecoration(
-                color: selected ? Colors.blue : Colors.grey[200],
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "${date.day}",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: selected ? Colors.white : Colors.black,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.blue.shade50, Colors.white],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(13),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: SizedBox(
+        height: 80,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: days.length,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          itemBuilder: (_, i) {
+            final date = days[i];
+            final selected = _isSameDay(date, selectedDate);
+            return GestureDetector(
+              onTap: () => setState(() => selectedDate = date),
+              child: Container(
+                width: 56,
+                margin: const EdgeInsets.symmetric(horizontal: 4),
+                decoration: BoxDecoration(
+                  color: selected ? Colors.blue : Colors.transparent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${date.day}",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: selected ? Colors.white : Colors.black87,
+                      ),
                     ),
-                  ),
-                  Text(
-                    _dayLabel(date),
-                    style: TextStyle(
-                      color: selected ? Colors.white70 : Colors.grey[600],
+                    const SizedBox(height: 4),
+                    Text(
+                      _dayLabel(date),
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: selected ? Colors.white70 : Colors.black54,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 
   Widget _buildTimeline() {
     if (allScheduledTasks.isEmpty) {
-      return Center(child: Text("No scheduled tasks"));
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.event_available_rounded,
+              size: 48,
+              color: Colors.grey[400],
+            ),
+            const SizedBox(height: 16),
+            Text(
+              "No scheduled tasks",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      );
     }
 
     return ListView.separated(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       itemCount: allScheduledTasks.length,
-      separatorBuilder: (_, __) => SizedBox(height: 12),
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (_, i) {
         final task = allScheduledTasks[i];
         final isMoment = task.containsKey("location");
-
-        final time = task["time"] ?? "Time?";
-        final duration = task["duration"] ?? (isMoment ? null : 15);
-        final label = task["title"] ?? "Untitled";
+        final color = isMoment ? Colors.red : Colors.green;
 
         return Container(
-          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: isMoment ? AppData.instance.colours['Moments']!['task']! : AppData.instance.colours['Flows']!['task']!,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                "$time${duration != null ? " • $duration min" : ""}${isMoment && task["location"] != null ? " • ${task["location"]}" : ""}",
-                style: TextStyle(color: Colors.grey[700]),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [color.shade50, Colors.white],
+            ),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(13),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
               ),
             ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            child: InkWell(
+              onTap: () {}, // Handle task tap
+              borderRadius: BorderRadius.circular(16),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: color.withAlpha(179),
+                      child: Icon(
+                        isMoment
+                            ? Icons.event_rounded
+                            : Icons.replay_circle_filled_rounded,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            task["title"],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if (isMoment && task["location"] != null) ...[
+                            const SizedBox(height: 4),
+                            Text(
+                              task["location"],
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          task["time"],
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: color.shade700,
+                          ),
+                        ),
+                        if (task["duration"] != null) ...[
+                          const SizedBox(height: 4),
+                          Text(
+                            "${task["duration"]} min",
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         );
       },
