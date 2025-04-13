@@ -495,7 +495,7 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                   ),
                   _buildTaskType(
-                    icon: Icons.calendar_today_rounded,
+                    icon: Icons.event_rounded,
                     count: todayMoments.length,
                     label: "Moments",
                     onTap:

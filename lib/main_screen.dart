@@ -33,10 +33,10 @@ class _MainScreenState extends State<MainScreen> {
         selectedIndex: _selectedIndex,
         onDestinationSelected:
             (index) => setState(() => _selectedIndex = index),
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.today_rounded),
+            icon: Icon(Icons.calendar_today_rounded),
             label: 'Today',
           ),
           NavigationDestination(

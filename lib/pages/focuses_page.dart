@@ -41,7 +41,7 @@ class _FocusesPageState extends State<FocusesPage> {
     FocusCategory(
       name: Keys.moments,
       description: 'Your events and deadlines',
-      icon: Icons.calendar_today_rounded,
+      icon: Icons.event_rounded,
       colorKey: Keys.moments,
     ),
     FocusCategory(

@@ -399,7 +399,7 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.flows:
         return Icons.replay_circle_filled_rounded;
       case Keys.moments:
-        return Icons.calendar_today_rounded;
+        return Icons.event_rounded;
       case Keys.thoughts:
         return Icons.lightbulb_rounded;
       default:
