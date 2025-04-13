@@ -1,20 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
 import 'package:focusyn_app/pages/task_page.dart';
-import 'package:focusyn_app/util/tap_effect_card.dart';
 
 class FocusCard extends StatelessWidget {
-  static const double _avatarRadius = 30.0;
-  static const double _iconSize = 30.0;
-  static const double _titleFontSize = 24.0;
-  static const double _countFontSize = 24.0;
-  static const double _arrowIconSize = 30.0;
-  static const double _spacing = 4.0;
-  static const Color _defaultColor = Color(0xFFE0E0E0);
-  static const Color _arrowColor = Colors.blue;
-  static const EdgeInsets _margin = EdgeInsets.only(bottom: 16);
-  static const double _height = 128.0;
-
   final IconData icon;
   final Color? color;
   final String category;
@@ -23,49 +11,79 @@ class FocusCard extends StatelessWidget {
   const FocusCard({
     super.key,
     required this.icon,
-    this.color = _defaultColor,
+    this.color = Colors.grey,
     required this.category,
     required this.description,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TapEffectCard(
-      onTap: () => _openTaskList(context, category),
-      margin: _margin,
-      height: _height,
-      child: ListTile(
-        leading: CircleAvatar(
-          radius: _avatarRadius,
-          backgroundColor: color,
-          child: Icon(
-            icon,
-            size: _iconSize,
-            color: color != _defaultColor ? Colors.white : Colors.black,
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              color?.withOpacity(0.05) ?? Colors.grey.shade50,
+              Colors.white,
+            ],
           ),
-        ),
-        title: Text(
-          category,
-          style: const TextStyle(
-            fontSize: _titleFontSize,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        subtitle: Text(description),
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              "${AppData.instance.tasks[category]?.length ?? 0}",
-              style: const TextStyle(fontSize: _countFontSize),
-            ),
-            const SizedBox(width: _spacing),
-            const Icon(
-              Icons.arrow_forward_ios_rounded,
-              size: _arrowIconSize,
-              color: _arrowColor,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
             ),
           ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(16),
+          child: InkWell(
+            onTap: () => _openTaskList(context, category),
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 24,
+                    backgroundColor: color?.withOpacity(0.9),
+                    child: Icon(icon, color: Colors.white, size: 24),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          category,
+                          style: Theme.of(context).textTheme.headlineMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          description,
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Colors.black54),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    "${AppData.instance.tasks[category]?.length ?? 0}",
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
