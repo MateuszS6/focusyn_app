@@ -52,20 +52,95 @@ class _FocusesPageState extends State<FocusesPage> {
     ),
   ];
 
+  int get _totalTasks {
+    return _categories.fold(0, (sum, category) {
+      return sum + (AppData.instance.tasks[category.name]?.length ?? 0);
+    });
+  }
+
+  String get _mostActiveFocus {
+    int maxTasks = 0;
+    String category = '';
+
+    for (var c in _categories) {
+      final count = AppData.instance.tasks[c.name]?.length ?? 0;
+      if (count > maxTasks) {
+        maxTasks = count;
+        category = c.name;
+      }
+    }
+
+    return category;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final totalTasks = _totalTasks;
+    final mostActive = _mostActiveFocus;
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              const SizedBox(height: 32),
               Text('Focuses', style: Theme.of(context).textTheme.displayLarge),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
+              if (totalTasks > 0) ...[
+                Text(
+                  'You have $totalTasks active items across your focuses',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.black54),
+                ),
+                if (mostActive.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 6,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppData.instance.colours[mostActive]!['main']!
+                          .withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.local_fire_department_rounded,
+                          size: 16,
+                          color: AppData.instance.colours[mostActive]!['main']!,
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          '$mostActive is your most active focus',
+                          style: TextStyle(
+                            color:
+                                AppData.instance.colours[mostActive]!['main']!,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ] else ...[
+                Text(
+                  'Start organizing your tasks into different focuses',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: Colors.black54),
+                ),
+              ],
+              const SizedBox(height: 32),
               Expanded(
                 child: ListView(
+                  padding: EdgeInsets.zero,
                   children:
                       _categories.map((category) {
                         return FocusCard(
