@@ -82,11 +82,10 @@ class _FocusesPageState extends State<FocusesPage> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.all(24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 32),
               Text('Focuses', style: Theme.of(context).textTheme.displayLarge),
               const SizedBox(height: 12),
               if (totalTasks > 0) ...[
@@ -150,6 +149,7 @@ class _FocusesPageState extends State<FocusesPage> {
                                   .colorKey]!['main']!,
                           category: category.name,
                           description: category.description,
+                          onUpdate: () => setState(() {}),
                         );
                       }).toList(),
                 ),

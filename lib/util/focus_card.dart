@@ -7,6 +7,7 @@ class FocusCard extends StatelessWidget {
   final Color? color;
   final String category;
   final String description;
+  final VoidCallback? onUpdate;
 
   const FocusCard({
     super.key,
@@ -14,6 +15,7 @@ class FocusCard extends StatelessWidget {
     this.color = Colors.grey,
     required this.category,
     required this.description,
+    this.onUpdate,
   });
 
   @override
@@ -43,7 +45,7 @@ class FocusCard extends StatelessWidget {
           color: Colors.transparent,
           borderRadius: BorderRadius.circular(16),
           child: InkWell(
-            onTap: () => _openTaskList(context, category),
+            onTap: () => _openTaskList(context),
             borderRadius: BorderRadius.circular(16),
             child: Container(
               padding: const EdgeInsets.all(20),
@@ -89,13 +91,13 @@ class FocusCard extends StatelessWidget {
     );
   }
 
-  void _openTaskList(BuildContext context, String category) {
+  void _openTaskList(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => TaskPage(category: category)),
     ).then((_) {
       // Trigger rebuild when returning from task page
-      (context as Element).markNeedsBuild();
+      if (onUpdate != null) onUpdate!();
     });
   }
 }
