@@ -27,15 +27,12 @@ class FocusCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              color?.withOpacity(0.05) ?? Colors.grey.shade50,
-              Colors.white,
-            ],
+            colors: [color?.withAlpha(13) ?? Colors.grey.shade50, Colors.white],
           ),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.05),
+              color: Colors.black.withAlpha(13),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -53,7 +50,7 @@ class FocusCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundColor: color?.withOpacity(0.9),
+                    backgroundColor: color?.withAlpha(179),
                     child: Icon(icon, color: Colors.white, size: 24),
                   ),
                   const SizedBox(width: 16),

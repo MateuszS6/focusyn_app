@@ -112,7 +112,7 @@ class _TaskPageState extends State<TaskPage> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
+              color: color.withAlpha(26),
               shape: BoxShape.circle,
             ),
             child: Icon(_getEmptyStateIcon(), size: 64, color: color),
@@ -169,7 +169,7 @@ class _TaskPageState extends State<TaskPage> {
         onPressed: (_) => _removeTask(task),
         backgroundColor: Colors.transparent,
         foregroundColor: const Color(0xFFE53935),
-        icon: Icons.delete_rounded,
+        icon: Icons.do_not_disturb_on_rounded,
         padding: EdgeInsets.zero,
       ),
     ];

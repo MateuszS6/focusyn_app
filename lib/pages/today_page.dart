@@ -195,7 +195,7 @@ class _TodayPageState extends State<TodayPage> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withAlpha(13),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -345,7 +345,7 @@ class _TodayPageState extends State<TodayPage> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withAlpha(13),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -457,7 +457,7 @@ class _TodayPageState extends State<TodayPage> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withAlpha(13),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -647,7 +647,7 @@ class _TodayPageState extends State<TodayPage> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withAlpha(13),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -751,7 +751,7 @@ class _TodayPageState extends State<TodayPage> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withAlpha(13),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -850,7 +850,7 @@ class _TodayPageState extends State<TodayPage> {
                             width: 8, // Keep the thinner bars
                             gradient: LinearGradient(
                               colors: [
-                                Colors.green.withOpacity(0.7),
+                                Colors.green.withAlpha(179),
                                 Colors.green,
                               ],
                               begin: Alignment.bottomCenter,
@@ -863,7 +863,7 @@ class _TodayPageState extends State<TodayPage> {
                             backDrawRodData: BackgroundBarChartRodData(
                               show: true,
                               toY: 1,
-                              color: Colors.white.withOpacity(0.05),
+                              color: Colors.white.withAlpha(13),
                             ),
                           ),
                         ],

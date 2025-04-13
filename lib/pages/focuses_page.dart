@@ -104,7 +104,7 @@ class _FocusesPageState extends State<FocusesPage> {
                     ),
                     decoration: BoxDecoration(
                       color: AppData.instance.colours[mostActive]!['main']!
-                          .withOpacity(0.1),
+                          .withAlpha(26),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
