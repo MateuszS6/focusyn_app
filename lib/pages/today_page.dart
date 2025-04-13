@@ -53,19 +53,12 @@ class _TodayPageState extends State<TodayPage> {
                     children: [
                       Text(
                         "${monthNames[today.month - 1]} ${today.day}",
-                        style: const TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black54,
-                        ),
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 8),
-                      const Text(
+                      Text(
                         "Today",
-                        style: TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.displayLarge,
                       ),
                     ],
                   ),
@@ -190,10 +183,7 @@ class _TodayPageState extends State<TodayPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Brain Energy",
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        ),
+        Text("Brain Energy", style: Theme.of(context).textTheme.displayMedium),
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
@@ -343,10 +333,7 @@ class _TodayPageState extends State<TodayPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Daily Quote",
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        ),
+        Text("Daily Quote", style: Theme.of(context).textTheme.displayMedium),
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
@@ -439,9 +426,9 @@ class _TodayPageState extends State<TodayPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               "Today's Tasks",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.displayMedium,
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -648,10 +635,7 @@ class _TodayPageState extends State<TodayPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          "Flow Streak",
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        ),
+        Text("Flow Streak", style: Theme.of(context).textTheme.displayMedium),
         const SizedBox(height: 16),
         Container(
           decoration: BoxDecoration(
@@ -704,7 +688,6 @@ class _TodayPageState extends State<TodayPage> {
   Widget _weeklyProgressChart() {
     final completions = _getFlowCompletions();
     final today = DateTime.now();
-    final flows = AppData.instance.tasks[Keys.flows] ?? [];
 
     // Get the maximum completions in a day to use as the baseline for percentage
     final last7Days = List.generate(
@@ -736,9 +719,9 @@ class _TodayPageState extends State<TodayPage> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               "Weekly Progress",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.displayMedium,
             ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
