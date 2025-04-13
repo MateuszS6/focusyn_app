@@ -471,7 +471,7 @@ class _TodayPageState extends State<TodayPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildTaskType(
-                    icon: Icons.whatshot_rounded,
+                    icon: Icons.check_rounded,
                     count: actionsCount,
                     label: "Actions",
                     onTap:
@@ -483,7 +483,7 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                   ),
                   _buildTaskType(
-                    icon: Icons.event_repeat,
+                    icon: Icons.replay_rounded,
                     count: todayFlows.length,
                     label: "Flows",
                     onTap:
@@ -495,7 +495,7 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                   ),
                   _buildTaskType(
-                    icon: Icons.event_rounded,
+                    icon: Icons.calendar_today_rounded,
                     count: todayMoments.length,
                     label: "Moments",
                     onTap:
@@ -530,13 +530,13 @@ class _TodayPageState extends State<TodayPage> {
                       const SizedBox(height: 8),
                       if (nextFlow != null)
                         _buildNextTask(
-                          icon: Icons.event_repeat,
+                          icon: Icons.replay_circle_filled_rounded,
                           title: nextFlow[Keys.title],
                           time: nextFlow[Keys.time],
                         ),
                       if (nextMoment != null)
                         _buildNextTask(
-                          icon: Icons.event_rounded,
+                          icon: Icons.calendar_today_rounded,
                           title: nextMoment[Keys.title],
                           time: nextMoment[Keys.time],
                         ),

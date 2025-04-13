@@ -395,11 +395,11 @@ class _TaskPageState extends State<TaskPage> {
   IconData _getEmptyStateIcon() {
     switch (widget.category) {
       case Keys.actions:
-        return Icons.whatshot_rounded;
+        return Icons.check_circle_rounded;
       case Keys.flows:
-        return Icons.event_repeat;
+        return Icons.replay_circle_filled_rounded;
       case Keys.moments:
-        return Icons.event_rounded;
+        return Icons.calendar_today_rounded;
       case Keys.thoughts:
         return Icons.lightbulb_rounded;
       default:
