@@ -452,7 +452,7 @@ class _TodayPageState extends State<TodayPage> {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Colors.green.shade50, Colors.white],
+              colors: [Colors.orange.shade50, Colors.white],
             ),
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
