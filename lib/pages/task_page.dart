@@ -12,7 +12,6 @@ import 'package:focusyn_app/task_tiles/flow_tile.dart';
 import 'package:focusyn_app/task_tiles/moment_tile.dart';
 import 'package:focusyn_app/task_tiles/thought_tile.dart';
 import 'package:focusyn_app/util/filter_row.dart';
-import 'package:focusyn_app/util/tag_manager_dialog.dart';
 
 class TaskPage extends StatefulWidget {
   final String category;
@@ -494,56 +493,6 @@ class _TaskPageState extends State<TaskPage> {
                 child: const Text("Add"),
               ),
             ],
-          ),
-    );
-  }
-
-  void _openTagManagerDialog() {
-    showDialog(
-      context: context,
-      builder:
-          (_) => TagManagerDialog(
-            tags: _filters,
-            onRename: (oldTag, newTag) {
-              setState(() {
-                for (var task in _tasks) {
-                  if (task[Keys.tag] == oldTag) task[Keys.tag] = newTag;
-                }
-                final index = _filters.indexOf(oldTag);
-                if (index != -1) _filters[index] = newTag;
-                if (_hidden.remove(oldTag)) _hidden.add(newTag);
-                if (_selectedFilter == oldTag) _selectedFilter = newTag;
-                AppData.instance.updateTasks(widget.category, _tasks);
-                AppData.instance.updateFilters(widget.category, _filters);
-                AppData.instance.updateHidden(widget.category, _hidden);
-              });
-            },
-            onDelete: (tag) {
-              setState(() {
-                _filters.remove(tag);
-                _hidden.remove(tag);
-                _tasks.removeWhere((task) => task[Keys.tag] == tag);
-                if (_selectedFilter == tag) _selectedFilter = Keys.all;
-                AppData.instance.updateTasks(widget.category, _tasks);
-                AppData.instance.updateFilters(widget.category, _filters);
-                AppData.instance.updateHidden(widget.category, _hidden);
-              });
-            },
-            onToggleHide: (tag) {
-              setState(() {
-                _hidden.contains(tag) ? _hidden.remove(tag) : _hidden.add(tag);
-                if (_selectedFilter == tag) _selectedFilter = Keys.all;
-                AppData.instance.updateFilters(widget.category, _filters);
-                AppData.instance.updateHidden(widget.category, _hidden);
-              });
-            },
-            onReorder: (newOrder) {
-              setState(() {
-                AppData.instance.filters[widget.category] = List.from(newOrder);
-                AppData.instance.updateFilters(widget.category, _filters);
-                AppData.instance.updateHidden(widget.category, _hidden);
-              });
-            },
           ),
     );
   }
