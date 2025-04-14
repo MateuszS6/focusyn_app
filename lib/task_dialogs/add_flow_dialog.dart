@@ -77,123 +77,119 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
           ),
           onChanged: (val) => setState(() => title = val),
         ),
-        Container(
-          decoration: listTileDecoration,
-          child: ListTile(
-            leading: const Icon(Icons.calendar_today_rounded),
-            title: const Text("Start Date"),
-            subtitle: Text("${selectedDate.toLocal()}".split(' ')[0]),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
+        InkWell(
+          onTap: () async {
+            final picked = await showDatePicker(
+              context: context,
+              initialDate: selectedDate,
+              firstDate: DateTime.now().subtract(const Duration(days: 365)),
+              lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+            );
+            if (picked != null) {
+              setState(() => selectedDate = picked);
+            }
+          },
+          child: InputDecorator(
+            decoration: inputDecoration.copyWith(
+              labelText: "Start Date",
+              prefixIcon: const Icon(Icons.calendar_today_rounded),
             ),
-            onTap: () async {
-              final picked = await showDatePicker(
-                context: context,
-                initialDate: selectedDate,
-                firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
-              );
-              if (picked != null) {
-                setState(() => selectedDate = picked);
-              }
-            },
+            child: Text("${selectedDate.toLocal()}".split(' ')[0]),
           ),
         ),
-        Container(
-          decoration: listTileDecoration,
-          child: ListTile(
-            leading: const Icon(Icons.access_time_rounded),
-            title: const Text("Reminder Time"),
-            subtitle: Text(selectedTime.format(context)),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder:
-                    (context) => StatefulBuilder(
-                      builder:
-                          (context, setDialogState) => AlertDialog(
-                            title: const Text('Set Time'),
-                            content: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Expanded(
-                                  child: DropdownButtonFormField<int>(
-                                    value: selectedTime.hour,
-                                    decoration: inputDecoration.copyWith(
-                                      labelText: 'Hour',
-                                    ),
-                                    items: List.generate(
-                                      24,
-                                      (index) => DropdownMenuItem(
-                                        value: index,
-                                        child: Text(
-                                          index.toString().padLeft(2, '0'),
-                                        ),
+        InkWell(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder:
+                  (context) => StatefulBuilder(
+                    builder:
+                        (context, setDialogState) => AlertDialog(
+                          title: const Text('Set Time'),
+                          content: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Expanded(
+                                child: DropdownButtonFormField<int>(
+                                  value: selectedTime.hour,
+                                  decoration: inputDecoration.copyWith(
+                                    labelText: 'Hour',
+                                  ),
+                                  items: List.generate(
+                                    24,
+                                    (index) => DropdownMenuItem(
+                                      value: index,
+                                      child: Text(
+                                        index.toString().padLeft(2, '0'),
                                       ),
                                     ),
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        setDialogState(() {
-                                          setState(() {
-                                            selectedTime = TimeOfDay(
-                                              hour: value,
-                                              minute: selectedTime.minute,
-                                            );
-                                          });
-                                        });
-                                      }
-                                    },
                                   ),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: DropdownButtonFormField<int>(
-                                    value: selectedTime.minute,
-                                    decoration: inputDecoration.copyWith(
-                                      labelText: 'Minute',
-                                    ),
-                                    items: List.generate(
-                                      60,
-                                      (index) => DropdownMenuItem(
-                                        value: index,
-                                        child: Text(
-                                          index.toString().padLeft(2, '0'),
-                                        ),
-                                      ),
-                                    ),
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        setDialogState(() {
-                                          setState(() {
-                                            selectedTime = TimeOfDay(
-                                              hour: selectedTime.hour,
-                                              minute: value,
-                                            );
-                                          });
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      setDialogState(() {
+                                        setState(() {
+                                          selectedTime = TimeOfDay(
+                                            hour: value,
+                                            minute: selectedTime.minute,
+                                          );
                                         });
-                                      }
-                                    },
-                                  ),
+                                      });
+                                    }
+                                  },
                                 ),
-                              ],
-                            ),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
                               ),
-                              ElevatedButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: const Text('OK'),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: DropdownButtonFormField<int>(
+                                  value: selectedTime.minute,
+                                  decoration: inputDecoration.copyWith(
+                                    labelText: 'Minute',
+                                  ),
+                                  items: List.generate(
+                                    60,
+                                    (index) => DropdownMenuItem(
+                                      value: index,
+                                      child: Text(
+                                        index.toString().padLeft(2, '0'),
+                                      ),
+                                    ),
+                                  ),
+                                  onChanged: (value) {
+                                    if (value != null) {
+                                      setDialogState(() {
+                                        setState(() {
+                                          selectedTime = TimeOfDay(
+                                            hour: selectedTime.hour,
+                                            minute: value,
+                                          );
+                                        });
+                                      });
+                                    }
+                                  },
+                                ),
                               ),
                             ],
                           ),
-                    ),
-              );
-            },
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cancel'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                  ),
+            );
+          },
+          child: InputDecorator(
+            decoration: inputDecoration.copyWith(
+              labelText: "Reminder Time",
+              prefixIcon: const Icon(Icons.access_time_rounded),
+            ),
+            child: Text(selectedTime.format(context)),
           ),
         ),
         TextField(
