@@ -6,6 +6,7 @@ import 'package:focusyn_app/data/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/pages/task_page.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
 
 class TodayPage extends StatefulWidget {
@@ -156,175 +157,158 @@ class _TodayPageState extends State<TodayPage> {
 
   Widget _greetingCard(int points) {
     final hour = DateTime.now().hour;
-    final greeting =
+    String greeting =
         hour < 12
             ? "Good morning"
             : hour < 17
             ? "Good afternoon"
             : "Good evening";
 
-    String statusMessage;
-    Color statusColor;
+    final statusMessage =
+        points >= 70
+            ? "You're doing great today!"
+            : points >= 40
+            ? "Keep up the good work!"
+            : "Time to recharge";
 
-    if (points >= 80) {
-      statusMessage = "You're at peak mental energy!";
-      statusColor = Colors.green;
-    } else if (points >= 50) {
-      statusMessage = "You're doing great!";
-      statusColor = Colors.blue;
-    } else if (points >= 20) {
-      statusMessage = "Time for a quick break?";
-      statusColor = Colors.orange;
-    } else {
-      statusMessage = "Consider taking a rest";
-      statusColor = Colors.red;
-    }
+    final statusColor =
+        points >= 70
+            ? Colors.green[700]!
+            : points >= 40
+            ? Colors.orange[700]!
+            : Colors.red[700]!;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text("Brain Energy", style: Theme.of(context).textTheme.displayMedium),
-        const SizedBox(height: 16),
-        Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.green.shade50, Colors.white],
-            ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(13),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Colors.green.shade50, Colors.white],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(13),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+        ],
+      ),
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "$greeting, ${FirebaseAuth.instance.currentUser?.displayName ?? 'there'} 👋",
+            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            statusMessage,
+            style: TextStyle(
+              fontSize: 14,
+              color: statusColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
             children: [
-              Text(
-                "$greeting, Mateusz 👋",
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                statusMessage,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: statusColor,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          const Text(
-                            "Brain Points",
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.black54,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder:
-                                    (context) => AlertDialog(
-                                      title: const Text("About Brain Points"),
-                                      content: const Text(
-                                        "Brain Points are an approximate measure of your mental energy. "
-                                        "Since they can't be measured precisely, you can manually adjust them "
-                                        "to better reflect your current state. This helps maintain a more "
-                                        "accurate representation of your mental capacity throughout the day.",
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          onPressed:
-                                              () => Navigator.pop(context),
-                                          child: const Text("Got it"),
-                                        ),
-                                      ],
-                                    ),
-                              );
-                            },
-                            child: Icon(
-                              Icons.info_outline,
-                              size: 16,
-                              color: Colors.blue[700],
-                            ),
-                          ),
-                        ],
+                      const Text(
+                        "Brain Points",
+                        style: TextStyle(fontSize: 14, color: Colors.black54),
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        "$points / 100",
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                      const SizedBox(width: 4),
+                      GestureDetector(
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder:
+                                (context) => AlertDialog(
+                                  title: const Text("About Brain Points"),
+                                  content: const Text(
+                                    "Brain Points are an approximate measure of your mental energy. "
+                                    "Since they can't be measured precisely, you can manually adjust them "
+                                    "to better reflect your current state. This helps maintain a more "
+                                    "accurate representation of your mental capacity throughout the day.",
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text("Got it"),
+                                    ),
+                                  ],
+                                ),
+                          );
+                        },
+                        child: Icon(
+                          Icons.info_outline,
+                          size: 16,
+                          color: Colors.blue[700],
                         ),
                       ),
                     ],
                   ),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: _showAddBrainPointsDialog,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[100],
-                      foregroundColor: Colors.blue[700],
-                      elevation: 0,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.add, size: 16, color: Colors.blue[700]),
-                        const SizedBox(width: 4),
-                        Text(
-                          "Add Points",
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.blue[700],
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
+                  const SizedBox(height: 4),
+                  Text(
+                    "$points / 100",
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: points / 100,
-                  minHeight: 6,
+              const Spacer(),
+              ElevatedButton(
+                onPressed: _showAddBrainPointsDialog,
+                style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue[100],
-                  valueColor: AlwaysStoppedAnimation<Color>(statusColor),
+                  foregroundColor: Colors.blue[700],
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.add, size: 16, color: Colors.blue[700]),
+                    const SizedBox(width: 4),
+                    Text(
+                      "Add Points",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.blue[700],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 12),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: points / 100,
+              minHeight: 6,
+              backgroundColor: Colors.blue[100],
+              valueColor: AlwaysStoppedAnimation<Color>(statusColor),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
