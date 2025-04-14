@@ -39,12 +39,32 @@ class _TaskPageState extends State<TaskPage> {
 
     // Sort tasks
     filtered.sort((a, b) {
-      if (_sortBy == 'Priority') {
-        final priorityCompare = (a['priority'] ?? 1).compareTo(
-          b['priority'] ?? 1,
-        );
-        if (priorityCompare != 0) return priorityCompare;
+      switch (_sortBy) {
+        case 'Priority':
+          final priorityCompare = (a['priority'] ?? 1).compareTo(
+            b['priority'] ?? 1,
+          );
+          if (priorityCompare != 0) return priorityCompare;
+          break;
+        case 'Brain Points':
+          final bpCompare = (a['brainPoints'] ?? 0).compareTo(
+            b['brainPoints'] ?? 0,
+          );
+          if (bpCompare != 0) return bpCompare;
+          break;
+        case 'Alphabetical':
+          final titleCompare = (a['title'] ?? '').compareTo(b['title'] ?? '');
+          if (titleCompare != 0) return titleCompare;
+          break;
+        case 'Date':
+          if (widget.category == Keys.flows ||
+              widget.category == Keys.moments) {
+            final dateCompare = (a['date'] ?? '').compareTo(b['date'] ?? '');
+            if (dateCompare != 0) return dateCompare;
+          }
+          break;
       }
+      // Default to creation date
       final aDate = DateTime.parse(a[Keys.createdAt] as String);
       final bDate = DateTime.parse(b[Keys.createdAt] as String);
       return aDate.compareTo(bDate);
@@ -140,34 +160,126 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   void _showSortDialog() {
+    List<RadioListTile> options = [];
+
+    switch (widget.category) {
+      case Keys.actions:
+        options = [
+          RadioListTile(
+            title: const Text('Priority'),
+            value: 'Priority',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile(
+            title: const Text('Brain Points'),
+            value: 'Brain Points',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile(
+            title: const Text('Creation Date'),
+            value: 'Date',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+        ];
+        break;
+
+      case Keys.flows:
+        options = [
+          RadioListTile(
+            title: const Text('Date'),
+            value: 'Date',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile(
+            title: const Text('Brain Points'),
+            value: 'Brain Points',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile(
+            title: const Text('Creation Date'),
+            value: 'Creation Date',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+        ];
+        break;
+
+      case Keys.moments:
+        options = [
+          RadioListTile(
+            title: const Text('Date'),
+            value: 'Date',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile(
+            title: const Text('Creation Date'),
+            value: 'Creation Date',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+        ];
+        break;
+
+      case Keys.thoughts:
+        options = [
+          RadioListTile(
+            title: const Text('Alphabetical'),
+            value: 'Alphabetical',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile(
+            title: const Text('Creation Date'),
+            value: 'Creation Date',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+        ];
+        break;
+    }
+
     showDialog(
       context: context,
       builder:
           (context) => AlertDialog(
             title: const Text('Sort Tasks'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                RadioListTile(
-                  title: const Text('Date'),
-                  value: 'Date',
-                  groupValue: _sortBy,
-                  onChanged: (value) {
-                    setState(() => _sortBy = value.toString());
-                    Navigator.pop(context);
-                  },
-                ),
-                RadioListTile(
-                  title: const Text('Priority'),
-                  value: 'Priority',
-                  groupValue: _sortBy,
-                  onChanged: (value) {
-                    setState(() => _sortBy = value.toString());
-                    Navigator.pop(context);
-                  },
-                ),
-              ],
-            ),
+            content: Column(mainAxisSize: MainAxisSize.min, children: options),
           ),
     );
   }
