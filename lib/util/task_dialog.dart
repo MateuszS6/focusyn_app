@@ -33,8 +33,8 @@ class _TaskDialogState extends State<TaskDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+      backgroundColor: Colors.white,
       child: ConstrainedBox(
         constraints: BoxConstraints(
           maxWidth: TaskDialog._dialogWidth,
@@ -45,10 +45,13 @@ class _TaskDialogState extends State<TaskDialog> {
           children: [
             // Fixed header
             Padding(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
               child: Text(
                 widget.title,
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
                 textAlign: TextAlign.center,
               ),
             ),

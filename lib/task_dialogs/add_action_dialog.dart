@@ -23,6 +23,20 @@ class AddActionDialog extends StatelessWidget {
     String tag = Keys.all;
     final tags = AppData.instance.filters[Keys.actions] ?? [Keys.all];
 
+    final inputBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey.shade300),
+    );
+
+    final inputDecoration = InputDecoration(
+      filled: true,
+      fillColor: Colors.white,
+      border: inputBorder,
+      enabledBorder: inputBorder,
+      focusedBorder: inputBorder,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    );
+
     return TaskDialog(
       title: _dialogTitle,
       onAdd: onAdd,
@@ -36,12 +50,18 @@ class AddActionDialog extends StatelessWidget {
           ),
       fields: [
         TextField(
-          decoration: const InputDecoration(labelText: _titleLabel),
+          decoration: inputDecoration.copyWith(
+            labelText: _titleLabel,
+            prefixIcon: const Icon(Icons.title_rounded),
+          ),
           onChanged: (val) => title = val,
         ),
         DropdownButtonFormField<int>(
           value: priority,
-          decoration: const InputDecoration(labelText: _priorityLabel),
+          decoration: inputDecoration.copyWith(
+            labelText: _priorityLabel,
+            prefixIcon: const Icon(Icons.priority_high_rounded),
+          ),
           items: const [
             DropdownMenuItem(value: 1, child: Text("Urgent & Important")),
             DropdownMenuItem(value: 2, child: Text("Not Urgent but Important")),
@@ -54,13 +74,19 @@ class AddActionDialog extends StatelessWidget {
           onChanged: (val) => priority = val ?? 1,
         ),
         TextField(
-          decoration: const InputDecoration(labelText: _brainPointsLabel),
+          decoration: inputDecoration.copyWith(
+            labelText: _brainPointsLabel,
+            prefixIcon: const Icon(Icons.psychology_rounded),
+          ),
           keyboardType: TextInputType.number,
           onChanged: (val) => brainPoints = int.tryParse(val) ?? 5,
         ),
         DropdownButtonFormField<String>(
           value: tag,
-          decoration: const InputDecoration(labelText: _tagLabel),
+          decoration: inputDecoration.copyWith(
+            labelText: _tagLabel,
+            prefixIcon: const Icon(Icons.label_rounded),
+          ),
           items:
               tags
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
