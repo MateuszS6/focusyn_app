@@ -48,12 +48,6 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     );
 
-    final listTileDecoration = BoxDecoration(
-      color: Colors.white,
-      border: Border.all(color: Colors.grey.shade300),
-      borderRadius: BorderRadius.circular(12),
-    );
-
     return TaskDialog(
       title: AddMomentDialog._dialogTitle,
       onAdd: widget.onAdd,

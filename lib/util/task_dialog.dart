@@ -4,11 +4,6 @@ import 'package:focusyn_app/models/task_model.dart';
 class TaskDialog extends StatefulWidget {
   static const double _dialogWidth = 400.0;
   static const double _maxDialogHeight = 500.0;
-  static const double _fieldSpacing = 16.0;
-  static const double _buttonSpacing = 8.0;
-  static const EdgeInsets _fieldPadding = EdgeInsets.only(
-    bottom: _fieldSpacing,
-  );
 
   final String title;
   final List<Widget> fields;
