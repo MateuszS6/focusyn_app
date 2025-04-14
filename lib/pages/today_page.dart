@@ -63,24 +63,45 @@ class _TodayPageState extends State<TodayPage> {
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.notifications_rounded),
-                        onPressed: () {},
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.account_circle_rounded),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => const AccountPage(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.notifications_rounded),
+                          onPressed: () {},
+                          padding: const EdgeInsets.all(8),
+                          constraints: const BoxConstraints(),
+                          iconSize: 24,
+                        ),
+                        const SizedBox(width: 8),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const AccountPage(),
+                              ),
+                            );
+                          },
+                          child: CircleAvatar(
+                            radius: 20,
+                            backgroundColor: Colors.orange.shade100,
+                            child: Text(
+                              FirebaseAuth.instance.currentUser?.displayName
+                                      ?.substring(0, 1)
+                                      .toUpperCase() ??
+                                  'M',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.orange.shade700,
+                              ),
                             ),
-                          );
-                        },
-                      ),
-                    ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
