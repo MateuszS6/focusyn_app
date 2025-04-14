@@ -10,9 +10,18 @@ class MyAppBar extends AppBar {
     double super.elevation = 0,
   }) : super(
          automaticallyImplyLeading: leading != null,
-         title: Padding(
-           padding: leading == null ? const EdgeInsets.only(left: 16) : const EdgeInsets.all(0),
-           child: Text(title),
+         title: Builder(
+           builder:
+               (context) => Padding(
+                 padding:
+                     leading == null
+                         ? const EdgeInsets.only(left: 16)
+                         : const EdgeInsets.all(0),
+                 child: Text(
+                   title,
+                   style: Theme.of(context).textTheme.displayLarge,
+                 ),
+               ),
          ),
          actionsPadding: const EdgeInsets.only(right: 16),
          scrolledUnderElevation: 0.0,
