@@ -237,11 +237,16 @@ class _AccountPageState extends State<AccountPage> {
                   _buildSettingItem(
                     context,
                     icon: Icons.description_outlined,
-                    label: 'Terms & Conditions',
+                    label: 'Terms of Use',
                     onTap:
                         () => _showDialog(
-                          "Terms & Conditions",
-                          "Here you would show the terms of use for the app.",
+                          "Terms of Use",
+                          "By using Focusyn, you agree to:\n\n"
+                              "• Use the app for personal task management\n"
+                              "• Keep your account credentials secure\n"
+                              "• Not misuse or exploit the app\n\n"
+                              "Your data is stored securely and you retain full control over it.\n\n"
+                              "Last updated: March 2024",
                         ),
                   ),
                   _buildDivider(),

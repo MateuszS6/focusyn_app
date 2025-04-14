@@ -15,7 +15,7 @@ class SettingsPage extends StatelessWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         children: [
           _buildSection(
             context,
