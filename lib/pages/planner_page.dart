@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
+import 'package:focusyn_app/data/keys.dart';
 
 class PlannerPage extends StatefulWidget {
   const PlannerPage({super.key});
@@ -14,17 +15,18 @@ class _PlannerPageState extends State<PlannerPage> {
   List<Map<String, dynamic>> get allScheduledTasks {
     final formattedDate = _formatDate(selectedDate);
     final flows =
-        AppData.instance.tasks["Flows"]!
-            .where((t) => t["date"] == formattedDate)
+        AppData.instance.tasks[Keys.flows]!
+            .where((t) => t[Keys.date] == formattedDate)
             .toList();
 
     final moments =
-        AppData.instance.tasks["Moments"]!
-            .where((t) => t["date"] == formattedDate)
+        AppData.instance.tasks[Keys.moments]!
+            .where((t) => t[Keys.date] == formattedDate)
             .toList();
 
-    return [...flows, ...moments]
-      ..sort((a, b) => _parseTime(a["time"]).compareTo(_parseTime(b["time"])));
+    return [...flows, ...moments]..sort(
+      (a, b) => _parseTime(a[Keys.time]).compareTo(_parseTime(b[Keys.time])),
+    );
   }
 
   @override
@@ -148,7 +150,12 @@ class _PlannerPageState extends State<PlannerPage> {
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (_, i) {
         final task = allScheduledTasks[i];
-        final isMoment = task.containsKey("location");
+        final isMoment = AppData.instance.tasks[Keys.moments]!.any(
+          (m) =>
+              m[Keys.title] == task[Keys.title] &&
+              m[Keys.date] == task[Keys.date] &&
+              m[Keys.time] == task[Keys.time],
+        );
         final color = isMoment ? Colors.red : Colors.green;
 
         return Container(
@@ -193,16 +200,16 @@ class _PlannerPageState extends State<PlannerPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            task["title"],
+                            task[Keys.title],
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          if (isMoment && task["location"] != null) ...[
+                          if (isMoment && task[Keys.location] != null) ...[
                             const SizedBox(height: 4),
                             Text(
-                              task["location"],
+                              task[Keys.location],
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey[600],
@@ -217,17 +224,17 @@ class _PlannerPageState extends State<PlannerPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          task["time"],
+                          task[Keys.time],
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                             color: color.shade700,
                           ),
                         ),
-                        if (task["duration"] != null) ...[
+                        if (task[Keys.duration] != null) ...[
                           const SizedBox(height: 4),
                           Text(
-                            "${task["duration"]} min",
+                            "${task[Keys.duration]} min",
                             style: TextStyle(
                               fontSize: 13,
                               color: Colors.grey[600],
