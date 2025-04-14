@@ -12,7 +12,6 @@ import 'package:focusyn_app/task_tiles/flow_tile.dart';
 import 'package:focusyn_app/task_tiles/moment_tile.dart';
 import 'package:focusyn_app/task_tiles/thought_tile.dart';
 import 'package:focusyn_app/util/filter_row.dart';
-import 'package:focusyn_app/util/my_app_bar.dart';
 import 'package:focusyn_app/util/tag_manager_dialog.dart';
 
 class TaskPage extends StatefulWidget {
@@ -27,13 +26,32 @@ class _TaskPageState extends State<TaskPage> {
   late List<Map<String, dynamic>> _tasks;
   late List<String> _filters;
   late Set<String> _hidden;
-
   String _selectedFilter = Keys.all;
+  String _sortBy = 'Date';
 
-  List<Map<String, dynamic>> get _filteredTasks =>
-      _selectedFilter == Keys.all
-          ? _tasks
-          : _tasks.where((task) => task[Keys.tag] == _selectedFilter).toList();
+  List<Map<String, dynamic>> get _filteredTasks {
+    var filtered =
+        _selectedFilter == Keys.all
+            ? _tasks
+            : _tasks
+                .where((task) => task[Keys.tag] == _selectedFilter)
+                .toList();
+
+    // Sort tasks
+    filtered.sort((a, b) {
+      if (_sortBy == 'Priority') {
+        final priorityCompare = (a['priority'] ?? 1).compareTo(
+          b['priority'] ?? 1,
+        );
+        if (priorityCompare != 0) return priorityCompare;
+      }
+      final aDate = DateTime.parse(a[Keys.createdAt] as String);
+      final bDate = DateTime.parse(b[Keys.createdAt] as String);
+      return aDate.compareTo(bDate);
+    });
+
+    return filtered;
+  }
 
   @override
   void initState() {
@@ -45,61 +63,105 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
+    final color = AppData.instance.colours[widget.category]!['main']!;
+
     return Scaffold(
-      appBar: _buildAppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            _buildFilterRow(),
-            const SizedBox(height: 16),
-            Expanded(
-              child:
-                  _filteredTasks.isEmpty
-                      ? _buildEmptyState()
-                      : _buildTaskList(),
-            ),
-          ],
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_rounded),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    widget.category,
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.sort_rounded),
+                    onPressed: _showSortDialog,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              FilterRow(
+                category: widget.category,
+                filters: _filters,
+                hidden: _hidden,
+                selected: _selectedFilter,
+                onSelect: (filter) => setState(() => _selectedFilter = filter),
+                onAdd: _openAddTagDialog,
+                onDelete: (tag) {
+                  setState(() {
+                    _filters.remove(tag);
+                    _hidden.remove(tag);
+                    _tasks.removeWhere((task) => task[Keys.tag] == tag);
+                    if (_selectedFilter == tag) _selectedFilter = Keys.all;
+                    AppData.instance.updateTasks(widget.category, _tasks);
+                    AppData.instance.updateFilters(widget.category, _filters);
+                    AppData.instance.updateHidden(widget.category, _hidden);
+                  });
+                },
+              ),
+              const SizedBox(height: 24),
+              Expanded(
+                child:
+                    _filteredTasks.isEmpty
+                        ? _buildEmptyState()
+                        : _buildTaskList(),
+              ),
+            ],
+          ),
         ),
       ),
-      floatingActionButton: _filteredTasks.isEmpty ? null : _buildFAB(),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showAddDialog,
+        backgroundColor: color,
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: const Icon(Icons.add_rounded, size: 32),
+      ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    return MyAppBar(
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_rounded),
-        onPressed: () => Navigator.pop(context),
-      ),
-      title: widget.category,
-      actions: [
-        PopupMenuButton<String>(
-          itemBuilder:
-              (_) => const [
-                PopupMenuItem(value: 'tags', child: Text("Manage Tags")),
-                PopupMenuItem(value: 'tasks', child: Text("Sort Tasks")),
+  void _showSortDialog() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Sort Tasks'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                RadioListTile(
+                  title: const Text('Date'),
+                  value: 'Date',
+                  groupValue: _sortBy,
+                  onChanged: (value) {
+                    setState(() => _sortBy = value.toString());
+                    Navigator.pop(context);
+                  },
+                ),
+                RadioListTile(
+                  title: const Text('Priority'),
+                  value: 'Priority',
+                  groupValue: _sortBy,
+                  onChanged: (value) {
+                    setState(() => _sortBy = value.toString());
+                    Navigator.pop(context);
+                  },
+                ),
               ],
-          onSelected: (val) {
-            if (val == 'tags') {
-              _openTagManagerDialog();
-            } else if (val == 'tasks') {
-              _sortTasks();
-            }
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildFilterRow() {
-    return FilterRow(
-      category: widget.category,
-      filters: _filters,
-      hidden: _hidden,
-      selected: _selectedFilter,
-      onSelect: (val) => setState(() => _selectedFilter = val),
-      onAdd: _openAddTagDialog,
+            ),
+          ),
     );
   }
 
@@ -126,7 +188,7 @@ class _TaskPageState extends State<TaskPage> {
           const SizedBox(height: 8),
           Text(
             _getEmptyStateMessage(),
-            style: const TextStyle(fontSize: 16, color: Colors.grey),
+            style: const TextStyle(fontSize: 16, color: Colors.black54),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 32),
@@ -135,10 +197,11 @@ class _TaskPageState extends State<TaskPage> {
             icon: const Icon(Icons.add_rounded, color: Colors.white),
             label: Text(
               "Add ${widget.category.substring(0, widget.category.length - 1)}",
+              style: const TextStyle(color: Colors.white),
             ),
             style: ElevatedButton.styleFrom(
               backgroundColor: color,
-              foregroundColor: Colors.white,
+              elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -154,7 +217,7 @@ class _TaskPageState extends State<TaskPage> {
     return ListView.separated(
       itemCount: _filteredTasks.length,
       separatorBuilder: (_, __) => const SizedBox(height: 12),
-      padding: const EdgeInsets.symmetric(vertical: 12),
+      padding: const EdgeInsets.symmetric(vertical: 4),
       itemBuilder: (_, index) => _buildTaskTile(_filteredTasks[index]),
     );
   }
@@ -242,16 +305,6 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
-  FloatingActionButton _buildFAB() {
-    return FloatingActionButton(
-      shape: const CircleBorder(),
-      foregroundColor: Colors.white,
-      backgroundColor: AppData.instance.colours[widget.category]?['main'],
-      onPressed: _showAddDialog,
-      child: const Icon(Icons.add_rounded, size: 40),
-    );
-  }
-
   // Task Operations
   void _updateTask(Map<String, dynamic> task) {
     setState(() {});
@@ -261,21 +314,6 @@ class _TaskPageState extends State<TaskPage> {
   void _removeTask(Map<String, dynamic> task) {
     setState(() => _tasks.remove(task));
     AppData.instance.updateTasks(widget.category, _tasks);
-  }
-
-  void _sortTasks() {
-    setState(() {
-      _tasks.sort((a, b) {
-        final priorityCompare = (a['priority'] ?? 1).compareTo(
-          b['priority'] ?? 1,
-        );
-        if (priorityCompare != 0) return priorityCompare;
-        final aDate = DateTime.parse(a[Keys.createdAt] as String);
-        final bDate = DateTime.parse(b[Keys.createdAt] as String);
-        return aDate.compareTo(bDate);
-      });
-      AppData.instance.updateTasks(widget.category, _tasks);
-    });
   }
 
   // Dialog Operations

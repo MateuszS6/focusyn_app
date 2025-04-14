@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/app_data.dart';
+import 'package:focusyn_app/data/keys.dart';
 
 class FilterRow extends StatelessWidget {
   final String category;
@@ -8,6 +9,7 @@ class FilterRow extends StatelessWidget {
   final String selected;
   final void Function(String) onSelect;
   final VoidCallback onAdd;
+  final void Function(String) onDelete;
 
   const FilterRow({
     super.key,
@@ -17,41 +19,82 @@ class FilterRow extends StatelessWidget {
     required this.selected,
     required this.onSelect,
     required this.onAdd,
+    required this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
     final visibleFilters = filters.where((f) => !hidden.contains(f)).toList();
+    final color = AppData.instance.colours[category]!['main']!;
 
     return SizedBox(
-      height: 40,
+      height: 48,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         itemCount: visibleFilters.length + 1,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
+        separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           if (index < visibleFilters.length) {
             final tag = visibleFilters[index];
             final isSelected = tag == selected;
-            return ActionChip(
-              label: Text(tag),
-              shape: const StadiumBorder(),
-              onPressed: () => onSelect(tag),
-              backgroundColor:
-                  isSelected
-                      ? AppData.instance.colours[category]!['main']!
-                      : Colors.grey[200],
-              labelStyle: TextStyle(
-                color: isSelected ? Colors.white : Colors.black87,
-                fontSize: 13,
+            return GestureDetector(
+              onLongPress: () {
+                if (tag != Keys.all) {
+                  showDialog(
+                    context: context,
+                    builder:
+                        (context) => AlertDialog(
+                          title: Text('Delete "$tag"?'),
+                          content: const Text(
+                            'This will remove the list and all its tasks.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Cancel'),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                onDelete(tag);
+                                Navigator.pop(context);
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white,
+                              ),
+                              child: const Text('Delete'),
+                            ),
+                          ],
+                        ),
+                  );
+                }
+              },
+              child: ActionChip(
+                label: Text(
+                  tag,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : Colors.black87,
+                    fontSize: 14,
+                    fontWeight:
+                        isSelected ? FontWeight.w600 : FontWeight.normal,
+                  ),
+                ),
+                shape: const StadiumBorder(),
+                onPressed: () => onSelect(tag),
+                backgroundColor: isSelected ? color : Colors.grey[200],
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                side: BorderSide.none,
               ),
             );
           } else {
             return ActionChip(
-              label: const Icon(Icons.add, size: 18),
+              label: Icon(Icons.add_rounded, size: 20, color: color),
               shape: const StadiumBorder(),
               onPressed: onAdd,
               backgroundColor: Colors.grey[200],
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              side: BorderSide.none,
             );
           }
         },
