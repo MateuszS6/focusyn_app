@@ -17,8 +17,27 @@ class TodayPage extends StatefulWidget {
 }
 
 class _TodayPageState extends State<TodayPage> {
+  DateTime? _lastUpdateDate;
+  List<DateTime>? _cachedCompletions;
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
+  }
+
+  void _refreshData() {
+    final now = DateTime.now();
+    // Refresh if there's no cached data or if it's a new day
+    if (_lastUpdateDate == null || !_isSameDate(_lastUpdateDate!, now)) {
+      _cachedCompletions = _getFlowCompletions();
+      _lastUpdateDate = now;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    _refreshData(); // Check if we need to refresh data
     final points = BrainPointsService.getPoints();
     final actions = AppData.instance.tasks[Keys.actions] ?? [];
     final today = DateTime.now();
@@ -41,7 +60,11 @@ class _TodayPageState extends State<TodayPage> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: RefreshIndicator(
-          onRefresh: () async => setState(() {}),
+          onRefresh: () async {
+            _cachedCompletions = null; // Force refresh of completions
+            _lastUpdateDate = null;
+            setState(() {});
+          },
           child: ListView(
             padding: const EdgeInsets.all(24),
             children: [
@@ -631,7 +654,7 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   Widget _flowStreakCard() {
-    final streak = _calculateStreak(_getFlowCompletions());
+    final streak = _calculateStreak(_cachedCompletions ?? []);
     final streakText =
         streak == 0
             ? "Complete a flow today to start your streak!"
@@ -691,7 +714,7 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   Widget _weeklyProgressChart() {
-    final completions = _getFlowCompletions();
+    final completions = _cachedCompletions ?? [];
     final today = DateTime.now();
 
     // Get the maximum completions in a day to use as the baseline for percentage
