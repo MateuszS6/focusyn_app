@@ -47,16 +47,19 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _updatePassword() async {
-    final controller = TextEditingController();
-    final result = await showDialog<String>(
+    // First get the current password for reauthentication
+    final currentPasswordController = TextEditingController();
+    final currentPasswordResult = await showDialog<String>(
       context: context,
       builder:
           (_) => AlertDialog(
-            title: const Text("Update Password"),
+            title: const Text("Current Password"),
             content: TextField(
-              controller: controller,
+              controller: currentPasswordController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: "New Password"),
+              decoration: const InputDecoration(
+                labelText: "Enter current password",
+              ),
             ),
             actions: [
               TextButton(
@@ -64,23 +67,82 @@ class _AccountPageState extends State<AccountPage> {
                 child: const Text("Cancel"),
               ),
               ElevatedButton(
-                onPressed: () => Navigator.pop(context, controller.text.trim()),
-                child: const Text("Save"),
+                onPressed:
+                    () => Navigator.pop(
+                      context,
+                      currentPasswordController.text.trim(),
+                    ),
+                child: const Text("Continue"),
               ),
             ],
           ),
     );
-    if (result != null && result.length >= 6) {
-      await user?.updatePassword(result);
+
+    if (currentPasswordResult == null || !mounted) return;
+
+    try {
+      // Reauthenticate user
+      final credentials = EmailAuthProvider.credential(
+        email: user?.email ?? '',
+        password: currentPasswordResult,
+      );
+      await user?.reauthenticateWithCredential(credentials);
+
+      // Now prompt for new password
+      final newPasswordController = TextEditingController();
+      final newPassword = await showDialog<String>(
+        context: context,
+        builder:
+            (_) => AlertDialog(
+              title: const Text("New Password"),
+              content: TextField(
+                controller: newPasswordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: "Enter new password (min 6 characters)",
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed:
+                      () => Navigator.pop(
+                        context,
+                        newPasswordController.text.trim(),
+                      ),
+                  child: const Text("Update"),
+                ),
+              ],
+            ),
+      );
+
+      if (newPassword != null && newPassword.length >= 6) {
+        await user?.updatePassword(newPassword);
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Password updated successfully.")),
+        );
+      } else if (newPassword != null) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Password must be at least 6 characters."),
+          ),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Password updated.")));
-    } else if (result != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message ?? "Failed to update password.")),
+      );
+    } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Password must be at least 6 characters."),
+          content: Text("An error occurred while updating password."),
         ),
       );
     }
