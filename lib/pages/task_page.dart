@@ -122,13 +122,20 @@ class _TaskPageState extends State<TaskPage> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showAddDialog,
-        backgroundColor: color,
-        elevation: 2,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: const Icon(Icons.add_rounded, size: 32),
-      ),
+      floatingActionButton:
+          _filteredTasks.isEmpty
+              ? null
+              : FloatingActionButton(
+                onPressed: _showAddDialog,
+                backgroundColor: color,
+                elevation: 2,
+                shape: const CircleBorder(),
+                child: const Icon(
+                  Icons.add_rounded,
+                  size: 32,
+                  color: Colors.white,
+                ),
+              ),
     );
   }
 
