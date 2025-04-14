@@ -4,7 +4,7 @@ import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/util/task_dialog.dart';
 
-class AddFlowDialog extends StatelessWidget {
+class AddFlowDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Flow";
   static const String _titleLabel = "Title";
   static const String _tagLabel = "Tag";
@@ -14,19 +14,50 @@ class AddFlowDialog extends StatelessWidget {
   const AddFlowDialog({super.key, required this.onAdd});
 
   @override
+  State<AddFlowDialog> createState() => _AddFlowDialogState();
+}
+
+class _AddFlowDialogState extends State<AddFlowDialog> {
+  String title = '';
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
+  Duration duration = const Duration(minutes: 15);
+  String repeat = 'Daily';
+  int brainPoints = 5;
+  String tag = Keys.all;
+  late final List<String> tags;
+
+  @override
+  void initState() {
+    super.initState();
+    tags = AppData.instance.filters[Keys.flows] ?? [Keys.all];
+  }
+
+  @override
   Widget build(BuildContext context) {
-    String title = '';
-    DateTime selectedDate = DateTime.now();
-    TimeOfDay selectedTime = TimeOfDay.now();
-    Duration duration = const Duration(minutes: 15);
-    String repeat = 'Daily';
-    int brainPoints = 5;
-    String tag = Keys.all;
-    final tags = AppData.instance.filters[Keys.flows] ?? [Keys.all];
+    final inputBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(color: Colors.grey.shade300),
+    );
+
+    final inputDecoration = InputDecoration(
+      filled: true,
+      fillColor: Colors.white,
+      border: inputBorder,
+      enabledBorder: inputBorder,
+      focusedBorder: inputBorder,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    );
+
+    final listTileDecoration = BoxDecoration(
+      color: Colors.white,
+      border: Border.all(color: Colors.grey.shade300),
+      borderRadius: BorderRadius.circular(12),
+    );
 
     return TaskDialog(
-      title: _dialogTitle,
-      onAdd: onAdd,
+      title: AddFlowDialog._dialogTitle,
+      onAdd: widget.onAdd,
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
           () => Task(
@@ -40,62 +71,175 @@ class AddFlowDialog extends StatelessWidget {
           ),
       fields: [
         TextField(
-          decoration: const InputDecoration(labelText: _titleLabel),
-          onChanged: (val) => title = val,
+          decoration: inputDecoration.copyWith(
+            labelText: AddFlowDialog._titleLabel,
+            prefixIcon: const Icon(Icons.title_rounded),
+          ),
+          onChanged: (val) => setState(() => title = val),
         ),
-        ListTile(
-          title: const Text("Start Date"),
-          subtitle: Text("${selectedDate.toLocal()}".split(' ')[0]),
-          onTap: () async {
-            final picked = await showDatePicker(
-              context: context,
-              initialDate: selectedDate,
-              firstDate: DateTime.now().subtract(const Duration(days: 365)),
-              lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
-            );
-            if (picked != null) selectedDate = picked;
-          },
+        Container(
+          decoration: listTileDecoration,
+          child: ListTile(
+            leading: const Icon(Icons.calendar_today_rounded),
+            title: const Text("Start Date"),
+            subtitle: Text("${selectedDate.toLocal()}".split(' ')[0]),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            onTap: () async {
+              final picked = await showDatePicker(
+                context: context,
+                initialDate: selectedDate,
+                firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                lastDate: DateTime.now().add(const Duration(days: 365 * 5)),
+              );
+              if (picked != null) {
+                setState(() => selectedDate = picked);
+              }
+            },
+          ),
         ),
-        ListTile(
-          title: const Text("Reminder Time"),
-          subtitle: Text(selectedTime.format(context)),
-          onTap: () async {
-            final picked = await showTimePicker(
-              context: context,
-              initialTime: selectedTime,
-            );
-            if (picked != null) selectedTime = picked;
-          },
+        Container(
+          decoration: listTileDecoration,
+          child: ListTile(
+            leading: const Icon(Icons.access_time_rounded),
+            title: const Text("Reminder Time"),
+            subtitle: Text(selectedTime.format(context)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder:
+                    (context) => StatefulBuilder(
+                      builder:
+                          (context, setDialogState) => AlertDialog(
+                            title: const Text('Set Time'),
+                            content: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  child: DropdownButtonFormField<int>(
+                                    value: selectedTime.hour,
+                                    decoration: inputDecoration.copyWith(
+                                      labelText: 'Hour',
+                                    ),
+                                    items: List.generate(
+                                      24,
+                                      (index) => DropdownMenuItem(
+                                        value: index,
+                                        child: Text(
+                                          index.toString().padLeft(2, '0'),
+                                        ),
+                                      ),
+                                    ),
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        setDialogState(() {
+                                          setState(() {
+                                            selectedTime = TimeOfDay(
+                                              hour: value,
+                                              minute: selectedTime.minute,
+                                            );
+                                          });
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: DropdownButtonFormField<int>(
+                                    value: selectedTime.minute,
+                                    decoration: inputDecoration.copyWith(
+                                      labelText: 'Minute',
+                                    ),
+                                    items: List.generate(
+                                      60,
+                                      (index) => DropdownMenuItem(
+                                        value: index,
+                                        child: Text(
+                                          index.toString().padLeft(2, '0'),
+                                        ),
+                                      ),
+                                    ),
+                                    onChanged: (value) {
+                                      if (value != null) {
+                                        setDialogState(() {
+                                          setState(() {
+                                            selectedTime = TimeOfDay(
+                                              hour: selectedTime.hour,
+                                              minute: value,
+                                            );
+                                          });
+                                        });
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                    ),
+              );
+            },
+          ),
         ),
         TextField(
-          decoration: const InputDecoration(labelText: "Duration (minutes)"),
+          decoration: inputDecoration.copyWith(
+            labelText: "Duration (minutes)",
+            prefixIcon: const Icon(Icons.timer_rounded),
+          ),
           keyboardType: TextInputType.number,
           onChanged:
-              (val) => duration = Duration(minutes: int.tryParse(val) ?? 15),
+              (val) => setState(
+                () => duration = Duration(minutes: int.tryParse(val) ?? 15),
+              ),
         ),
         DropdownButtonFormField<String>(
           value: repeat,
-          decoration: const InputDecoration(labelText: "Repeat"),
+          decoration: inputDecoration.copyWith(
+            labelText: "Repeat",
+            prefixIcon: const Icon(Icons.repeat_rounded),
+          ),
           items: const [
-            DropdownMenuItem(value: 'Daily', child: Text("Daily")),
-            DropdownMenuItem(value: 'Weekly', child: Text("Weekly")),
-            DropdownMenuItem(value: 'Monthly', child: Text("Monthly")),
+            DropdownMenuItem(value: 'Daily', child: Text('Daily')),
+            DropdownMenuItem(value: 'Weekly', child: Text('Weekly')),
+            DropdownMenuItem(value: 'Monthly', child: Text('Monthly')),
           ],
-          onChanged: (val) => repeat = val ?? 'Daily',
+          onChanged: (val) => setState(() => repeat = val ?? 'Daily'),
         ),
         TextField(
-          decoration: const InputDecoration(labelText: "Brain Points"),
+          decoration: inputDecoration.copyWith(
+            labelText: "Brain Points",
+            prefixIcon: const Icon(Icons.psychology_rounded),
+          ),
           keyboardType: TextInputType.number,
-          onChanged: (val) => brainPoints = int.tryParse(val) ?? 5,
+          onChanged:
+              (val) => setState(() => brainPoints = int.tryParse(val) ?? 5),
         ),
         DropdownButtonFormField<String>(
           value: tag,
-          decoration: const InputDecoration(labelText: _tagLabel),
+          decoration: inputDecoration.copyWith(
+            labelText: AddFlowDialog._tagLabel,
+            prefixIcon: const Icon(Icons.label_rounded),
+          ),
           items:
               tags
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                   .toList(),
-          onChanged: (val) => tag = val ?? Keys.all,
+          onChanged: (val) => setState(() => tag = val ?? Keys.all),
         ),
       ],
     );
