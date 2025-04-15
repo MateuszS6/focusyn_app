@@ -46,7 +46,7 @@ class _AccountPageState extends State<AccountPage> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Display name updated to "${result}"'),
+          content: Text('Display name updated to "$result"'),
           backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
           margin: const EdgeInsets.all(16),
