@@ -74,7 +74,7 @@ class FocusCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 16),
                   Text(
-                    "${AppData.instance.tasks[category]?.length ?? 0}",
+                    "${TaskService.instance.tasks[category]?.length ?? 0}",
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                       fontWeight: FontWeight.w500,
                     ),

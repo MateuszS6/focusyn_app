@@ -54,7 +54,7 @@ class _FocusesPageState extends State<FocusesPage> {
 
   int get _totalTasks {
     return _categories.fold(0, (sum, category) {
-      return sum + (AppData.instance.tasks[category.name]?.length ?? 0);
+      return sum + (TaskService.instance.tasks[category.name]?.length ?? 0);
     });
   }
 
@@ -63,7 +63,7 @@ class _FocusesPageState extends State<FocusesPage> {
     String category = '';
 
     for (var c in _categories) {
-      final count = AppData.instance.tasks[c.name]?.length ?? 0;
+      final count = TaskService.instance.tasks[c.name]?.length ?? 0;
       if (count > maxTasks) {
         maxTasks = count;
         category = c.name;
@@ -103,7 +103,7 @@ class _FocusesPageState extends State<FocusesPage> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: AppData.instance.colours[mostActive]!['main']!
+                      color: TaskService.instance.colours[mostActive]!['main']!
                           .withAlpha(26),
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -113,14 +113,19 @@ class _FocusesPageState extends State<FocusesPage> {
                         Icon(
                           Icons.local_fire_department_rounded,
                           size: 16,
-                          color: AppData.instance.colours[mostActive]!['main']!,
+                          color:
+                              TaskService
+                                  .instance
+                                  .colours[mostActive]!['main']!,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           '$mostActive is your most active focus',
                           style: TextStyle(
                             color:
-                                AppData.instance.colours[mostActive]!['main']!,
+                                TaskService
+                                    .instance
+                                    .colours[mostActive]!['main']!,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -145,7 +150,7 @@ class _FocusesPageState extends State<FocusesPage> {
                         return FocusCard(
                           icon: category.icon,
                           color:
-                              AppData.instance.colours[category
+                              TaskService.instance.colours[category
                                   .colorKey]!['main']!,
                           category: category.name,
                           description: category.description,

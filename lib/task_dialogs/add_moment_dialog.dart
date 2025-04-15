@@ -29,7 +29,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
   @override
   void initState() {
     super.initState();
-    tags = AppData.instance.filters[Keys.moments] ?? [Keys.all];
+    tags = TaskService.instance.filters[Keys.moments] ?? [Keys.all];
   }
 
   @override

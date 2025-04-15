@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:hive/hive.dart';
 
-class AppData {
-  static final AppData instance = AppData._internal();
-  AppData._internal();
+class TaskService {
+  static final TaskService instance = TaskService._internal();
+  TaskService._internal();
 
   final _taskBox = Hive.box(Keys.taskBox);
   final _filterBox = Hive.box(Keys.filterBox);

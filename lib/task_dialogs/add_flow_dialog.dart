@@ -30,7 +30,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
   @override
   void initState() {
     super.initState();
-    tags = AppData.instance.filters[Keys.flows] ?? [Keys.all];
+    tags = TaskService.instance.filters[Keys.flows] ?? [Keys.all];
   }
 
   @override

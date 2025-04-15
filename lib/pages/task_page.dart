@@ -76,14 +76,14 @@ class _TaskPageState extends State<TaskPage> {
   @override
   void initState() {
     super.initState();
-    _tasks = AppData.instance.tasks[widget.category]!;
-    _filters = AppData.instance.filters[widget.category]!;
-    _hidden = AppData.instance.hiddenFilters[widget.category]!;
+    _tasks = TaskService.instance.tasks[widget.category]!;
+    _filters = TaskService.instance.filters[widget.category]!;
+    _hidden = TaskService.instance.hiddenFilters[widget.category]!;
   }
 
   @override
   Widget build(BuildContext context) {
-    final color = AppData.instance.colours[widget.category]!['main']!;
+    final color = TaskService.instance.colours[widget.category]!['main']!;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -125,9 +125,12 @@ class _TaskPageState extends State<TaskPage> {
                     _hidden.remove(tag);
                     _tasks.removeWhere((task) => task[Keys.tag] == tag);
                     if (_selectedFilter == tag) _selectedFilter = Keys.all;
-                    AppData.instance.updateTasks(widget.category, _tasks);
-                    AppData.instance.updateFilters(widget.category, _filters);
-                    AppData.instance.updateHidden(widget.category, _hidden);
+                    TaskService.instance.updateTasks(widget.category, _tasks);
+                    TaskService.instance.updateFilters(
+                      widget.category,
+                      _filters,
+                    );
+                    TaskService.instance.updateHidden(widget.category, _hidden);
                   });
                 },
               ),
@@ -285,7 +288,7 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildEmptyState() {
-    final color = AppData.instance.colours[widget.category]!['main']!;
+    final color = TaskService.instance.colours[widget.category]!['main']!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -342,7 +345,7 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTaskTile(Map<String, dynamic> task) {
-    final color = AppData.instance.colours[widget.category]!['task']!;
+    final color = TaskService.instance.colours[widget.category]!['task']!;
     final key = ValueKey(task);
 
     Widget tile;
@@ -427,12 +430,12 @@ class _TaskPageState extends State<TaskPage> {
   // Task Operations
   void _updateTask(Map<String, dynamic> task) {
     setState(() {});
-    AppData.instance.updateTasks(widget.category, _tasks);
+    TaskService.instance.updateTasks(widget.category, _tasks);
   }
 
   void _removeTask(Map<String, dynamic> task) {
     setState(() => _tasks.remove(task));
-    AppData.instance.updateTasks(widget.category, _tasks);
+    TaskService.instance.updateTasks(widget.category, _tasks);
   }
 
   // Dialog Operations
@@ -442,7 +445,7 @@ class _TaskPageState extends State<TaskPage> {
       builder: (_) {
         onAdd(Task task) {
           setState(() => _tasks.add(task.toMap()));
-          AppData.instance.updateTasks(widget.category, _tasks);
+          TaskService.instance.updateTasks(widget.category, _tasks);
         }
 
         switch (widget.category) {
@@ -485,8 +488,14 @@ class _TaskPageState extends State<TaskPage> {
                     setState(() {
                       _filters.add(newTag);
                       _hidden.remove(newTag);
-                      AppData.instance.updateFilters(widget.category, _filters);
-                      AppData.instance.updateHidden(widget.category, _hidden);
+                      TaskService.instance.updateFilters(
+                        widget.category,
+                        _filters,
+                      );
+                      TaskService.instance.updateHidden(
+                        widget.category,
+                        _hidden,
+                      );
                     });
                   }
                   Navigator.pop(context);

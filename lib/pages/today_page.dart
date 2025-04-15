@@ -39,7 +39,7 @@ class _TodayPageState extends State<TodayPage> {
   Widget build(BuildContext context) {
     _refreshData(); // Check if we need to refresh data
     final points = BrainPointsService.getPoints();
-    final actions = AppData.instance.tasks[Keys.actions] ?? [];
+    final actions = TaskService.instance.tasks[Keys.actions] ?? [];
     final today = DateTime.now();
     final monthNames = [
       'Jan',
@@ -170,7 +170,7 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   List<DateTime> _getFlowCompletions() {
-    final flows = AppData.instance.tasks[Keys.flows] ?? [];
+    final flows = TaskService.instance.tasks[Keys.flows] ?? [];
     final completions = <DateTime>[];
 
     for (final task in flows) {
@@ -427,9 +427,9 @@ class _TodayPageState extends State<TodayPage> {
     final formattedDate =
         "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
 
-    final actions = AppData.instance.tasks[Keys.actions] ?? [];
-    final flows = AppData.instance.tasks[Keys.flows] ?? [];
-    final moments = AppData.instance.tasks[Keys.moments] ?? [];
+    final actions = TaskService.instance.tasks[Keys.actions] ?? [];
+    final flows = TaskService.instance.tasks[Keys.flows] ?? [];
+    final moments = TaskService.instance.tasks[Keys.moments] ?? [];
 
     final todayFlows =
         flows.where((flow) => flow[Keys.date] == formattedDate).toList();

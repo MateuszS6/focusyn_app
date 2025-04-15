@@ -25,7 +25,7 @@ class FilterRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final visibleFilters = filters.where((f) => !hidden.contains(f)).toList();
-    final color = AppData.instance.colours[category]!['main']!;
+    final color = TaskService.instance.colours[category]!['main']!;
 
     return SizedBox(
       height: 48,

@@ -21,7 +21,7 @@ class AddActionDialog extends StatelessWidget {
     int priority = 1;
     int brainPoints = 5;
     String tag = Keys.all;
-    final tags = AppData.instance.filters[Keys.actions] ?? [Keys.all];
+    final tags = TaskService.instance.filters[Keys.actions] ?? [Keys.all];
 
     final inputBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
