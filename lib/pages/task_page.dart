@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:focusyn_app/data/app_data.dart';
+import 'package:focusyn_app/data/task_service.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/task_dialogs/add_action_dialog.dart';
