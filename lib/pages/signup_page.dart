@@ -136,8 +136,8 @@ class _SignUpPageState extends State<SignUpPage> {
                           TextField(
                             controller: nameController,
                             decoration: InputDecoration(
-                              labelText: 'Name',
-                              hintText: 'Enter your name',
+                              labelText: 'Display Name',
+                              hintText: 'Enter your display name',
                               prefixIcon: Icon(
                                 Icons.person_rounded,
                                 color: Colors.blue[300],
