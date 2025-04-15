@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:focusyn_app/constants/theme_constants.dart';
+import 'package:focusyn_app/theme/theme_constants.dart';
 
 class AppTheme {
   static TextTheme get textTheme {
@@ -59,10 +59,9 @@ class AppTheme {
           fontWeight: ThemeConstants.appBarFontWeight,
         ),
       ),
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+      navigationBarTheme: const NavigationBarThemeData(
+        indicatorColor: ThemeConstants.selectedItemColor,
         backgroundColor: ThemeConstants.scaffoldBackgroundColor,
-        selectedItemColor: ThemeConstants.selectedItemColor,
-        unselectedItemColor: ThemeConstants.unselectedItemColor,
       ),
     );
   }
@@ -76,9 +75,9 @@ class AppTheme {
         brightness: Brightness.dark,
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-        selectedItemColor: ThemeConstants.selectedItemColor,
-        unselectedItemColor: ThemeConstants.unselectedItemColor,
+      navigationBarTheme: const NavigationBarThemeData(
+        indicatorColor: ThemeConstants.selectedItemColor,
+        backgroundColor: ThemeConstants.scaffoldBackgroundColor,
       ),
     );
   }
