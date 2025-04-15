@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/pages/privacy_page.dart';
 import 'package:focusyn_app/pages/settings_page.dart';
-import 'package:focusyn_app/util/my_app_bar.dart';
+import 'package:focusyn_app/utils/my_app_bar.dart';
 import '../pages/login_page.dart';
 
 class AccountPage extends StatefulWidget {

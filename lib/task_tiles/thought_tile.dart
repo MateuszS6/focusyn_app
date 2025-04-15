@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/keys.dart';
-import 'package:focusyn_app/util/task_tile.dart';
+import 'package:focusyn_app/utils/task_tile.dart';
 
 class ThoughtTile extends StatelessWidget {
   final Map<String, dynamic> task;

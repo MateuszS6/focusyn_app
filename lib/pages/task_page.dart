@@ -12,7 +12,7 @@ import 'package:focusyn_app/task_tiles/action_tile.dart';
 import 'package:focusyn_app/task_tiles/flow_tile.dart';
 import 'package:focusyn_app/task_tiles/moment_tile.dart';
 import 'package:focusyn_app/task_tiles/thought_tile.dart';
-import 'package:focusyn_app/util/filter_row.dart';
+import 'package:focusyn_app/utils/filter_row.dart';
 
 class TaskPage extends StatefulWidget {
   final String category;

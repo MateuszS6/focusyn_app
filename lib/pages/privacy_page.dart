@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../util/my_app_bar.dart';
+import '../utils/my_app_bar.dart';
 import '../pages/login_page.dart';
 
 class PrivacyPage extends StatefulWidget {

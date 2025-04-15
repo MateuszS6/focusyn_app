@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/task_service.dart';
 import 'package:focusyn_app/data/keys.dart';
-import 'package:focusyn_app/util/focus_card.dart';
+import 'package:focusyn_app/utils/focus_card.dart';
 
 class FocusCategory {
   final String name;

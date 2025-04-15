@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/data/task_service.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
-import 'package:focusyn_app/util/task_dialog.dart';
+import 'package:focusyn_app/utils/task_dialog.dart';
 
 class AddThoughtDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Thought";
