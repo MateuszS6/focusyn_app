@@ -427,6 +427,7 @@ class _TodayPageState extends State<TodayPage> {
     final formattedDate =
         "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
 
+    final actions = AppData.instance.tasks[Keys.actions] ?? [];
     final flows = AppData.instance.tasks[Keys.flows] ?? [];
     final moments = AppData.instance.tasks[Keys.moments] ?? [];
 
@@ -435,15 +436,21 @@ class _TodayPageState extends State<TodayPage> {
     final todayMoments =
         moments.where((moment) => moment[Keys.date] == formattedDate).toList();
 
-    final totalBrainPoints =
-        todayFlows.fold<int>(
-          0,
-          (sum, flow) => sum + ((flow[Keys.brainPoints] as int?) ?? 0),
-        ) +
-        todayMoments.fold<int>(
-          0,
-          (sum, moment) => sum + ((moment[Keys.brainPoints] as int?) ?? 0),
-        );
+    // Calculate total brain points from uncompleted actions and overdue flows
+    final totalActionBrainPoints = actions.fold<int>(
+      0,
+      (sum, action) => sum + ((action[Keys.brainPoints] as int?) ?? 0),
+    );
+    final totalFlowBrainPoints = flows.fold<int>(0, (sum, flow) {
+      final flowDate = DateTime.tryParse(flow[Keys.date] as String);
+      if (flowDate == null) return sum;
+      // Only count flows that are due today or before today
+      if (flowDate.isBefore(today) || _isSameDate(flowDate, today)) {
+        return sum + ((flow[Keys.brainPoints] as int?) ?? 0);
+      }
+      return sum;
+    });
+    final totalBrainPoints = totalActionBrainPoints + totalFlowBrainPoints;
 
     final nextFlow = todayFlows.isNotEmpty ? todayFlows.first : null;
     final nextMoment = todayMoments.isNotEmpty ? todayMoments.first : null;
@@ -464,12 +471,18 @@ class _TodayPageState extends State<TodayPage> {
                 color: Colors.orange[100],
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Text(
-                "$totalBrainPoints BP",
-                style: TextStyle(
-                  color: Colors.orange[700],
-                  fontWeight: FontWeight.bold,
-                ),
+              child: Row(
+                children: [
+                  Text(
+                    "$totalBrainPoints",
+                    style: TextStyle(
+                      color: Colors.orange[700],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  Text("BP", style: TextStyle(color: Colors.orange[700])),
+                ],
               ),
             ),
           ],
