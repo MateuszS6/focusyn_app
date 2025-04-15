@@ -15,7 +15,7 @@ class AppInitializer {
 
   static Future<void> _initializeHive() async {
     await Hive.initFlutter();
-    await Hive.openBox(Keys.homeBox);
+    await Hive.openBox(Keys.brainBox);
     await Hive.openBox(Keys.taskBox);
     await Hive.openBox(Keys.filterBox);
   }
