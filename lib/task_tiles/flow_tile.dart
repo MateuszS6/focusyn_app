@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/data/brain_points_service.dart';
+import 'package:focusyn_app/services/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 

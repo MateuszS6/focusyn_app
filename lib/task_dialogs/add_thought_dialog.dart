@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/data/task_service.dart';
+import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';

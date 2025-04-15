@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/data/task_service.dart';
-import 'package:focusyn_app/data/brain_points_service.dart';
+import 'package:focusyn_app/services/task_service.dart';
+import 'package:focusyn_app/services/brain_points_service.dart';
 import 'package:focusyn_app/data/keys.dart';
 import 'package:focusyn_app/data/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
