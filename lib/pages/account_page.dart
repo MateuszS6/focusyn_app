@@ -47,6 +47,8 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   Future<void> _updatePassword() async {
+    if (!mounted) return;
+
     // First get the current password for reauthentication
     final currentPasswordController = TextEditingController();
     final currentPasswordResult = await showDialog<String>(
@@ -88,6 +90,8 @@ class _AccountPageState extends State<AccountPage> {
       );
       await user?.reauthenticateWithCredential(credentials);
 
+      if (!mounted) return;
+
       // Now prompt for new password
       final newPasswordController = TextEditingController();
       final newPassword = await showDialog<String>(
@@ -118,6 +122,8 @@ class _AccountPageState extends State<AccountPage> {
               ],
             ),
       );
+
+      if (!mounted) return;
 
       if (newPassword != null && newPassword.length >= 6) {
         await user?.updatePassword(newPassword);
