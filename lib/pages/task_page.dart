@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusyn_app/data/app_data.dart';
@@ -350,7 +351,7 @@ class _TaskPageState extends State<TaskPage> {
         onPressed: (_) => _removeTask(task),
         backgroundColor: Colors.transparent,
         foregroundColor: const Color(0xFFE53935),
-        icon: Icons.do_not_disturb_on_rounded,
+        icon: CupertinoIcons.xmark,
         padding: EdgeInsets.zero,
       ),
     ];
