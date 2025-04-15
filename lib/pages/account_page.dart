@@ -14,10 +14,11 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  final user = FirebaseAuth.instance.currentUser;
-
   Future<void> _updateDisplayName() async {
-    final controller = TextEditingController(text: user?.displayName ?? "");
+    final currentUser = FirebaseAuth.instance.currentUser;
+    final controller = TextEditingController(
+      text: currentUser?.displayName ?? "",
+    );
     final result = await showDialog<String>(
       context: context,
       builder:
@@ -40,9 +41,19 @@ class _AccountPageState extends State<AccountPage> {
           ),
     );
     if (result != null && result.isNotEmpty) {
-      await user?.updateDisplayName(result);
-      await user?.reload();
-      setState(() {});
+      await currentUser?.updateDisplayName(result);
+      await currentUser?.reload();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Display name updated to "${result}"'),
+          backgroundColor: Colors.green,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
+      setState(() {}); // This will trigger a rebuild with the new data
     }
   }
 
@@ -85,10 +96,12 @@ class _AccountPageState extends State<AccountPage> {
     try {
       // Reauthenticate user
       final credentials = EmailAuthProvider.credential(
-        email: user?.email ?? '',
+        email: FirebaseAuth.instance.currentUser?.email ?? '',
         password: currentPasswordResult,
       );
-      await user?.reauthenticateWithCredential(credentials);
+      await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential(
+        credentials,
+      );
 
       if (!mounted) return;
 
@@ -126,7 +139,7 @@ class _AccountPageState extends State<AccountPage> {
       if (!mounted) return;
 
       if (newPassword != null && newPassword.length >= 6) {
-        await user?.updatePassword(newPassword);
+        await FirebaseAuth.instance.currentUser?.updatePassword(newPassword);
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Password updated successfully.")),
@@ -182,6 +195,7 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUser = FirebaseAuth.instance.currentUser;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: MyAppBar(
@@ -219,7 +233,7 @@ class _AccountPageState extends State<AccountPage> {
                     radius: 40,
                     backgroundColor: Colors.orange.shade100,
                     child: Text(
-                      user?.displayName?.substring(0, 1) ?? 'M',
+                      currentUser?.displayName?.substring(0, 1) ?? 'M',
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -229,14 +243,14 @@ class _AccountPageState extends State<AccountPage> {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    user?.displayName ?? 'No name set',
+                    currentUser?.displayName ?? 'No name set',
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    user?.email ?? 'Unknown',
+                    currentUser?.email ?? 'Unknown',
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey.shade600,
                     ),

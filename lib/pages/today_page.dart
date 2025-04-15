@@ -55,6 +55,7 @@ class _TodayPageState extends State<TodayPage> {
       'Nov',
       'Dec',
     ];
+    final currentUser = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -99,19 +100,21 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                         const SizedBox(width: 8),
                         GestureDetector(
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            await Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (_) => const AccountPage(),
                               ),
                             );
+                            // Trigger rebuild when returning from account page
+                            if (mounted) setState(() {});
                           },
                           child: CircleAvatar(
                             radius: 20,
                             backgroundColor: Colors.orange.shade100,
                             child: Text(
-                              FirebaseAuth.instance.currentUser?.displayName
+                              currentUser?.displayName
                                       ?.substring(0, 1)
                                       .toUpperCase() ??
                                   'M',
@@ -208,6 +211,7 @@ class _TodayPageState extends State<TodayPage> {
             ? "Good afternoon"
             : "Good evening";
 
+    final currentUser = FirebaseAuth.instance.currentUser;
     final statusMessage =
         points >= 70
             ? "You're doing great today!"
@@ -243,7 +247,7 @@ class _TodayPageState extends State<TodayPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "$greeting, ${FirebaseAuth.instance.currentUser?.displayName ?? 'there'} 👋",
+            "$greeting, ${currentUser?.displayName ?? 'there'} 👋",
             style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
           ),
           const SizedBox(height: 4),
