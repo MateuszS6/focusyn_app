@@ -9,6 +9,7 @@ import 'package:focusyn_app/pages/task_page.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
+import 'package:focusyn_app/pages/notifications_page.dart';
 
 class TodayPage extends StatefulWidget {
   const TodayPage({super.key});
@@ -94,7 +95,14 @@ class _TodayPageState extends State<TodayPage> {
                       children: [
                         IconButton(
                           icon: const Icon(ThemeIcons.notificationsIcon),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => const NotificationsPage(),
+                              ),
+                            );
+                          },
                           padding: const EdgeInsets.all(8),
                           constraints: const BoxConstraints(),
                           iconSize: 24,
