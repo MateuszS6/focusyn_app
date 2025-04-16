@@ -44,12 +44,6 @@ class SettingsPage extends StatelessWidget {
               _buildWeekStartSelector(context),
             ],
           ),
-          const SizedBox(height: 24),
-          _buildSection(
-            context,
-            title: 'Danger Zone',
-            children: [_buildResetButton(context)],
-          ),
         ],
       ),
     );
@@ -152,41 +146,6 @@ class SettingsPage extends StatelessWidget {
           // TODO: Implement week start change
         },
       ),
-    );
-  }
-
-  Widget _buildResetButton(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.warning_rounded, color: Colors.red),
-      title: const Text('Reset App Data', style: TextStyle(color: Colors.red)),
-      onTap: () {
-        showDialog(
-          context: context,
-          builder:
-              (context) => AlertDialog(
-                title: const Text('Reset App Data'),
-                content: const Text(
-                  'Are you sure you want to reset all app data? This action cannot be undone.',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      // TODO: Implement reset
-                      Navigator.pop(context);
-                    },
-                    child: const Text(
-                      'Reset',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                ],
-              ),
-        );
-      },
     );
   }
 }

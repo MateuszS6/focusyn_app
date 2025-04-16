@@ -4,6 +4,8 @@ import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import 'package:focusyn_app/pages/login_page.dart';
+import 'package:hive/hive.dart';
+import 'package:focusyn_app/constants/keys.dart';
 
 class PrivacyPage extends StatefulWidget {
   const PrivacyPage({super.key});
@@ -45,7 +47,11 @@ class _PrivacyPageState extends State<PrivacyPage> {
           _buildSection(
             context,
             title: 'Data Management',
-            children: [_buildDeleteAccountTile(context)],
+            children: [
+              _buildResetDataTile(context),
+              const SizedBox(height: 8),
+              _buildDeleteAccountTile(context),
+            ],
           ),
         ],
       ),
@@ -154,6 +160,69 @@ class _PrivacyPageState extends State<PrivacyPage> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
         _deleteAccount();
+      },
+    );
+  }
+
+  Widget _buildResetDataTile(BuildContext context) {
+    return ListTile(
+      leading: const Icon(ThemeIcons.deleteIcon, color: Colors.red),
+      title: const Text('Reset App Data', style: TextStyle(color: Colors.red)),
+      subtitle: const Text('Clear all tasks, filters, and brain points'),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: const Text('Reset App Data'),
+                content: const Text(
+                  'Are you sure you want to reset all app data? This will clear all your tasks, filters, and brain points. This action cannot be undone.',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Cancel'),
+                  ),
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      final scaffoldMessenger = ScaffoldMessenger.of(context);
+                      CloudSyncService.clearLocalData(
+                            Hive.box(Keys.taskBox),
+                            Hive.box(Keys.filterBox),
+                            Hive.box(Keys.brainBox),
+                          )
+                          .then((_) {
+                            if (!mounted) return;
+                            scaffoldMessenger.showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'App data has been reset successfully',
+                                ),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          })
+                          .catchError((e) {
+                            if (!mounted) return;
+                            scaffoldMessenger.showSnackBar(
+                              SnackBar(
+                                content: Text('Failed to reset app data: $e'),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          });
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Colors.red.shade50,
+                      foregroundColor: Colors.red.shade700,
+                    ),
+                    child: const Text('Reset'),
+                  ),
+                ],
+              ),
+        );
       },
     );
   }
