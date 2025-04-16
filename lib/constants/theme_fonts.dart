@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class ThemeConstants {
-  // Theme sizes
-  static const double iconSize = 28.0;
-  static const double appBarIconSize = 28.0;
-  static const double appBarFontSize = 32.0;
-  static const FontWeight appBarFontWeight = FontWeight.w900;
+class ThemeFonts {
+  // Font families
+  static final displayFont = GoogleFonts.outfit;
+  static final headlineFont = GoogleFonts.poppins;
+  static final titleFont = GoogleFonts.inter;
+  static final bodyFont = GoogleFonts.inter;
+  static final labelFont = GoogleFonts.inter;
 
-  // Text styles
   static TextTheme get textTheme {
-    // Font families
-    final displayFont = GoogleFonts.outfit;
-    final headlineFont = GoogleFonts.poppins;
-    final titleFont = GoogleFonts.inter;
-    final bodyFont = GoogleFonts.inter;
-    final labelFont = GoogleFonts.inter;
-
     return TextTheme(
       // Display styles
       displayLarge: displayFont(fontSize: 36, fontWeight: FontWeight.w600),
