@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import 'package:focusyn_app/pages/login_page.dart';
 
@@ -172,7 +173,11 @@ class _PrivacyPageState extends State<PrivacyPage> {
                     onPressed: () async {
                       Navigator.pop(context);
                       try {
+                        // First delete all user data from Firestore
+                        await CloudSyncService.deleteUserData();
+                        // Then delete the auth account
                         await FirebaseAuth.instance.currentUser?.delete();
+
                         if (!mounted) return;
                         navigator.pushAndRemoveUntil(
                           MaterialPageRoute(builder: (_) => const LoginPage()),
@@ -186,6 +191,11 @@ class _PrivacyPageState extends State<PrivacyPage> {
                               e.message ?? 'Failed to delete account',
                             ),
                           ),
+                        );
+                      } catch (e) {
+                        if (!mounted) return;
+                        scaffoldMessenger.showSnackBar(
+                          SnackBar(content: Text('Error deleting account: $e')),
                         );
                       }
                     },

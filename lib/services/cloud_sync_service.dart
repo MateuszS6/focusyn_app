@@ -351,4 +351,46 @@ class CloudSyncService {
       rethrow;
     }
   }
+
+  static Future<void> deleteUserData() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      print('DEBUG: No user found in deleteUserData');
+      return;
+    }
+
+    print('DEBUG: Starting user data deletion for user: ${user.uid}');
+    final userRef = _firestore.collection('users').doc(user.uid);
+
+    try {
+      // Delete brain points subcollection
+      final brainPointsRef = userRef.collection('brainPoints');
+      final brainPointsDocs = await brainPointsRef.get();
+      for (var doc in brainPointsDocs.docs) {
+        await doc.reference.delete();
+      }
+
+      // Delete tasks subcollection
+      final tasksRef = userRef.collection('tasks');
+      final tasksDocs = await tasksRef.get();
+      for (var doc in tasksDocs.docs) {
+        await doc.reference.delete();
+      }
+
+      // Delete filters subcollection
+      final filtersRef = userRef.collection('filters');
+      final filtersDocs = await filtersRef.get();
+      for (var doc in filtersDocs.docs) {
+        await doc.reference.delete();
+      }
+
+      // Finally delete the user document itself
+      await userRef.delete();
+
+      print('DEBUG: User data deletion complete');
+    } catch (e) {
+      print('DEBUG: Error in deleteUserData: $e');
+      rethrow;
+    }
+  }
 }
