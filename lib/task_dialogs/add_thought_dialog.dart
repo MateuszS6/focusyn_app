@@ -25,7 +25,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
   @override
   void initState() {
     super.initState();
-    tags = TaskService.instance.filters[Keys.thoughts] ?? [Keys.all];
+    tags = TaskService.filters[Keys.thoughts] ?? [Keys.all];
   }
 
   @override

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/initialization/app_initializer.dart';
 import 'package:focusyn_app/main_screen.dart';
 import 'package:focusyn_app/pages/login_page.dart';
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Focusyn',
+      title: Keys.appName,
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

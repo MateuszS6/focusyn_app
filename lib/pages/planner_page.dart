@@ -15,12 +15,12 @@ class _PlannerPageState extends State<PlannerPage> {
   List<Map<String, dynamic>> get allScheduledTasks {
     final formattedDate = _formatDate(selectedDate);
     final flows =
-        TaskService.instance.tasks[Keys.flows]!
+        TaskService.tasks[Keys.flows]!
             .where((t) => t[Keys.date] == formattedDate)
             .toList();
 
     final moments =
-        TaskService.instance.tasks[Keys.moments]!
+        TaskService.tasks[Keys.moments]!
             .where((t) => t[Keys.date] == formattedDate)
             .toList();
 
@@ -150,7 +150,7 @@ class _PlannerPageState extends State<PlannerPage> {
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (_, i) {
         final task = allScheduledTasks[i];
-        final isMoment = TaskService.instance.tasks[Keys.moments]!.any(
+        final isMoment = TaskService.tasks[Keys.moments]!.any(
           (m) =>
               m[Keys.title] == task[Keys.title] &&
               m[Keys.date] == task[Keys.date] &&

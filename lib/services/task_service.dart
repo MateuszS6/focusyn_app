@@ -2,13 +2,10 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
 
 class TaskService {
-  static final TaskService instance = TaskService._internal();
-  TaskService._internal();
+  static final _taskBox = Hive.box(Keys.taskBox);
+  static final _filterBox = Hive.box(Keys.filterBox);
 
-  final _taskBox = Hive.box(Keys.taskBox);
-  final _filterBox = Hive.box(Keys.filterBox);
-
-  Map<String, List<Map<String, dynamic>>> get tasks {
+  static Map<String, List<Map<String, dynamic>>> get tasks {
     final result = <String, List<Map<String, dynamic>>>{};
 
     for (var key in _taskBox.keys) {
@@ -21,7 +18,7 @@ class TaskService {
     return result;
   }
 
-  Map<String, List<String>> get filters {
+  static Map<String, List<String>> get filters {
     final result = <String, List<String>>{};
 
     for (var key in _filterBox.keys) {
@@ -34,11 +31,11 @@ class TaskService {
     return result;
   }
 
-  void updateTasks(String category, List<Map<String, dynamic>> list) {
+  static void updateTasks(String category, List<Map<String, dynamic>> list) {
     _taskBox.put(category, list);
   }
 
-  void updateFilters(String category, List<String> list) {
+  static void updateFilters(String category, List<String> list) {
     _filterBox.put(category, list);
   }
 }

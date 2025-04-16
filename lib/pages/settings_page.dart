@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/keys.dart';
 import '../utils/my_app_bar.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -8,7 +9,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: 'Settings',
+        title: Keys.settings,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
           onPressed: () => Navigator.pop(context),

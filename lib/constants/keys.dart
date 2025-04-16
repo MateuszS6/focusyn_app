@@ -1,4 +1,7 @@
 abstract class Keys {
+  // App
+  static const String appName = 'Focusyn';
+
   // Hive
   static const String brainBox = 'brainBox';
   static const String taskBox = 'taskBox';
@@ -7,6 +10,7 @@ abstract class Keys {
   // Pages
   static const String today = 'Today';
   static const String account = 'Account';
+  static const String settings = 'Settings';
   static const String focuses = 'Focuses';
   static const String planner = 'Planner';
 

@@ -295,7 +295,7 @@ class _AccountPageState extends State<AccountPage> {
                   _buildSettingItem(
                     context,
                     icon: Icons.settings_outlined,
-                    label: 'Settings',
+                    label: Keys.settings,
                     onTap: () {
                       Navigator.push(
                         context,

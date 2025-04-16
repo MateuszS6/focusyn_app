@@ -55,7 +55,7 @@ class _FocusesPageState extends State<FocusesPage> {
 
   int get _totalTasks {
     return _categories.fold(0, (sum, category) {
-      return sum + (TaskService.instance.tasks[category.name]?.length ?? 0);
+      return sum + (TaskService.tasks[category.name]?.length ?? 0);
     });
   }
 
@@ -64,7 +64,7 @@ class _FocusesPageState extends State<FocusesPage> {
     String category = '';
 
     for (var c in _categories) {
-      final count = TaskService.instance.tasks[c.name]?.length ?? 0;
+      final count = TaskService.tasks[c.name]?.length ?? 0;
       if (count > maxTasks) {
         maxTasks = count;
         category = c.name;

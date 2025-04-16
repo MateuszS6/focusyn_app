@@ -76,8 +76,8 @@ class _TaskPageState extends State<TaskPage> {
   @override
   void initState() {
     super.initState();
-    _tasks = TaskService.instance.tasks[widget.category]!;
-    _filters = TaskService.instance.filters[widget.category]!;
+    _tasks = TaskService.tasks[widget.category]!;
+    _filters = TaskService.filters[widget.category]!;
   }
 
   @override
@@ -122,11 +122,8 @@ class _TaskPageState extends State<TaskPage> {
                     _filters.remove(tag);
                     _tasks.removeWhere((task) => task[Keys.tag] == tag);
                     if (_selectedFilter == tag) _selectedFilter = Keys.all;
-                    TaskService.instance.updateTasks(widget.category, _tasks);
-                    TaskService.instance.updateFilters(
-                      widget.category,
-                      _filters,
-                    );
+                    TaskService.updateTasks(widget.category, _tasks);
+                    TaskService.updateFilters(widget.category, _filters);
                   });
                 },
               ),
@@ -426,12 +423,12 @@ class _TaskPageState extends State<TaskPage> {
   // Task Operations
   void _updateTask(Map<String, dynamic> task) {
     setState(() {});
-    TaskService.instance.updateTasks(widget.category, _tasks);
+    TaskService.updateTasks(widget.category, _tasks);
   }
 
   void _removeTask(Map<String, dynamic> task) {
     setState(() => _tasks.remove(task));
-    TaskService.instance.updateTasks(widget.category, _tasks);
+    TaskService.updateTasks(widget.category, _tasks);
   }
 
   // Dialog Operations
@@ -441,7 +438,7 @@ class _TaskPageState extends State<TaskPage> {
       builder: (_) {
         onAdd(Task task) {
           setState(() => _tasks.add(task.toMap()));
-          TaskService.instance.updateTasks(widget.category, _tasks);
+          TaskService.updateTasks(widget.category, _tasks);
         }
 
         switch (widget.category) {
@@ -483,10 +480,7 @@ class _TaskPageState extends State<TaskPage> {
                   if (newTag.isNotEmpty && !_filters.contains(newTag)) {
                     setState(() {
                       _filters.add(newTag);
-                      TaskService.instance.updateFilters(
-                        widget.category,
-                        _filters,
-                      );
+                      TaskService.updateFilters(widget.category, _filters);
                     });
                   }
                   Navigator.pop(context);
