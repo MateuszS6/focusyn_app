@@ -24,7 +24,6 @@ class ThemeIcons {
   static const IconData deleteIcon = Icons.delete_forever_rounded;
   static const IconData openIcon = Icons.chevron_right_rounded;
   static const IconData closeIcon = Icons.close_rounded;
-  static const IconData plusIcon = Icons.add_rounded;
 
   // General Symbols
   static const IconData infoIcon = Icons.info_outline_rounded;
@@ -35,12 +34,12 @@ class ThemeIcons {
   static const IconData titleIcon = Icons.title_rounded;
   static const IconData priorityIcon = Icons.priority_high_rounded;
   static const IconData brainPointsIcon = Icons.psychology_rounded;
-  static const IconData tagIcon = Icons.label_rounded;
   static const IconData dateIcon = Icons.today_rounded;
   static const IconData timeIcon = Icons.access_time_rounded;
   static const IconData durationIcon = Icons.timer_rounded;
   static const IconData repeatIcon = Icons.repeat_rounded;
   static const IconData locationIcon = Icons.location_on_rounded;
+  static const IconData tagIcon = Icons.label_rounded;
 
   // User Symbols
   static const IconData userIcon = Icons.person_outline_rounded;
