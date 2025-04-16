@@ -39,18 +39,14 @@ class CloudSyncService {
     }
   }
 
-  static Future<void> uploadTasks(
-    Box<dynamic> taskBox,
-    Box<dynamic> filterBox,
-    Box<dynamic> brainBox,
-  ) async {
+  static Future<void> uploadTasks(Box<dynamic> taskBox) async {
     final user = _auth.currentUser;
     if (user == null) {
       print('DEBUG: No user found in uploadTasks');
       return;
     }
 
-    print('DEBUG: Starting upload for user: ${user.uid}');
+    print('DEBUG: Starting task upload for user: ${user.uid}');
     final userRef = _firestore.collection('users').doc(user.uid);
     final batch = _firestore.batch();
 
@@ -68,6 +64,26 @@ class CloudSyncService {
         batch.set(tasksRef, {'items': tasks});
       }
 
+      await batch.commit();
+      print('DEBUG: Task upload complete');
+    } catch (e) {
+      print('DEBUG: Error in uploadTasks: $e');
+      rethrow;
+    }
+  }
+
+  static Future<void> uploadFilters(Box<dynamic> filterBox) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      print('DEBUG: No user found in uploadFilters');
+      return;
+    }
+
+    print('DEBUG: Starting filter upload for user: ${user.uid}');
+    final userRef = _firestore.collection('users').doc(user.uid);
+    final batch = _firestore.batch();
+
+    try {
       // Upload filters for each category
       for (final category in [
         Keys.actions,
@@ -83,15 +99,32 @@ class CloudSyncService {
         batch.set(filtersRef, {'items': filters});
       }
 
+      await batch.commit();
+      print('DEBUG: Filter upload complete');
+    } catch (e) {
+      print('DEBUG: Error in uploadFilters: $e');
+      rethrow;
+    }
+  }
+
+  static Future<void> uploadBrainPoints(Box<dynamic> brainBox) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      print('DEBUG: No user found in uploadBrainPoints');
+      return;
+    }
+
+    print('DEBUG: Starting brain points upload for user: ${user.uid}');
+    final userRef = _firestore.collection('users').doc(user.uid);
+
+    try {
       // Upload brain points
       final brainPoints = brainBox.get('points') ?? 0;
       print('DEBUG: Uploading brain points: $brainPoints');
-      batch.set(userRef, {'brainPoints': brainPoints}, SetOptions(merge: true));
-
-      await batch.commit();
-      print('DEBUG: Upload complete');
+      await userRef.update({'brainPoints': brainPoints});
+      print('DEBUG: Brain points upload complete');
     } catch (e) {
-      print('DEBUG: Error in uploadTasks: $e');
+      print('DEBUG: Error in uploadBrainPoints: $e');
       rethrow;
     }
   }
@@ -224,13 +257,17 @@ class CloudSyncService {
         // For new users, first ensure the user document exists
         await _ensureUserDocument();
         // Then upload local data to cloud
-        await uploadTasks(taskBox, filterBox, brainBox);
+        await uploadTasks(taskBox);
+        await uploadFilters(filterBox);
+        await uploadBrainPoints(brainBox);
       } else {
         print('DEBUG: Existing user, syncing with cloud');
         // For existing users, download from cloud
         await downloadTasks(taskBox, filterBox, brainBox);
         // Then upload any changes
-        await uploadTasks(taskBox, filterBox, brainBox);
+        await uploadTasks(taskBox);
+        await uploadFilters(filterBox);
+        await uploadBrainPoints(brainBox);
       }
       print('DEBUG: Sync on login complete');
     } catch (e) {

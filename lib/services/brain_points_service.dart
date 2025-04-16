@@ -1,4 +1,5 @@
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:hive/hive.dart';
 
 class BrainPointsService {
@@ -12,25 +13,27 @@ class BrainPointsService {
     return _box.get(_pointsKey, defaultValue: _maxPoints);
   }
 
-  static void setPoints(int value) {
+  static Future<void> setPoints(int value) async {
     _box.put(_pointsKey, value.clamp(0, _maxPoints));
+    await CloudSyncService.uploadBrainPoints(_box);
   }
 
-  static void addPoints(int value) {
+  static Future<void> addPoints(int value) async {
     _checkReset();
     final current = getPoints();
-    setPoints(current + value);
+    await setPoints(current + value);
   }
 
-  static void subtractPoints(int value) {
+  static Future<void> subtractPoints(int value) async {
     _checkReset();
     final current = getPoints();
-    setPoints(current - value);
+    await setPoints(current - value);
   }
 
-  static void reset() {
+  static Future<void> reset() async {
     _box.put(_pointsKey, _maxPoints);
     _box.put(_dateKey, DateTime.now().toIso8601String());
+    await CloudSyncService.uploadBrainPoints(_box);
   }
 
   static void _checkReset() {
