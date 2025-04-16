@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/theme_constants.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/utils/focus_card.dart';
@@ -103,7 +104,7 @@ class _FocusesPageState extends State<FocusesPage> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: TaskService.instance.colours[mostActive]!['main']!
+                      color: ThemeConstants.focusColors[mostActive]!['main']!
                           .withAlpha(26),
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -114,18 +115,15 @@ class _FocusesPageState extends State<FocusesPage> {
                           Icons.local_fire_department_rounded,
                           size: 16,
                           color:
-                              TaskService
-                                  .instance
-                                  .colours[mostActive]!['main']!,
+                              ThemeConstants.focusColors[mostActive]!['main']!,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           '$mostActive is your most active focus',
                           style: TextStyle(
                             color:
-                                TaskService
-                                    .instance
-                                    .colours[mostActive]!['main']!,
+                                ThemeConstants
+                                    .focusColors[mostActive]!['main']!,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -150,7 +148,7 @@ class _FocusesPageState extends State<FocusesPage> {
                         return FocusCard(
                           icon: category.icon,
                           color:
-                              TaskService.instance.colours[category
+                              ThemeConstants.focusColors[category
                                   .colorKey]!['main']!,
                           category: category.name,
                           description: category.description,

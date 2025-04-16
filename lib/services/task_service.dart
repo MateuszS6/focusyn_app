@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
 
@@ -42,12 +41,4 @@ class TaskService {
   void updateFilters(String category, List<String> list) {
     _filterBox.put(category, list);
   }
-
-  // You can keep this in memory
-  final Map<String, Map<String, Color?>> colours = {
-    Keys.actions: {'main': Colors.purple, 'task': Colors.purple[50]},
-    Keys.flows: {'main': Colors.lightGreen, 'task': Colors.green[50]},
-    Keys.moments: {'main': Colors.red, 'task': Colors.red[50]},
-    Keys.thoughts: {'main': Colors.orange, 'task': Colors.orange[50]},
-  };
 }
