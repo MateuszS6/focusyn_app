@@ -153,62 +153,136 @@ class _PrivacyPageState extends State<PrivacyPage> {
       subtitle: const Text('Permanently delete your account and all data'),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
-        final navigator = Navigator.of(context);
-        final scaffoldMessenger = ScaffoldMessenger.of(context);
-
-        showDialog(
-          context: context,
-          builder:
-              (context) => AlertDialog(
-                title: const Text('Delete Account'),
-                content: const Text(
-                  'This will permanently delete your account and all associated data. This action cannot be undone.',
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      Navigator.pop(context);
-                      try {
-                        // First delete all user data from Firestore
-                        await CloudSyncService.deleteUserData();
-                        // Then delete the auth account
-                        await FirebaseAuth.instance.currentUser?.delete();
-
-                        if (!mounted) return;
-                        navigator.pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (_) => const LoginPage()),
-                          (route) => false,
-                        );
-                      } on FirebaseAuthException catch (e) {
-                        if (!mounted) return;
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              e.message ?? 'Failed to delete account',
-                            ),
-                          ),
-                        );
-                      } catch (e) {
-                        if (!mounted) return;
-                        scaffoldMessenger.showSnackBar(
-                          SnackBar(content: Text('Error deleting account: $e')),
-                        );
-                      }
-                    },
-                    child: const Text(
-                      'Delete',
-                      style: TextStyle(color: Colors.red),
-                    ),
-                  ),
-                ],
-              ),
-        );
+        _deleteAccount();
       },
     );
+  }
+
+  Future<void> _deleteAccount() async {
+    // First confirm the user wants to delete their account
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Delete Account'),
+            content: const Text(
+              'Are you sure you want to delete your account? This action cannot be undone.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context, false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.pop(context, true),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.red.shade50,
+                  foregroundColor: Colors.red.shade700,
+                ),
+                child: const Text('Delete'),
+              ),
+            ],
+          ),
+    );
+
+    if (confirmed != true || !mounted) return;
+
+    // Get current user's email
+    final user = FirebaseAuth.instance.currentUser;
+    final userEmail = user?.email;
+    if (user == null || userEmail == null) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('No user found')));
+      return;
+    }
+
+    // Ask for password to re-authenticate
+    final passwordController = TextEditingController();
+    final password = await showDialog<String>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Confirm Password'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'Please enter your password to confirm account deletion.',
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed:
+                    () => Navigator.pop(context, passwordController.text),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.red.shade50,
+                  foregroundColor: Colors.red.shade700,
+                ),
+                child: const Text('Confirm'),
+              ),
+            ],
+          ),
+    );
+
+    if (password == null || !mounted) return;
+
+    try {
+      // Re-authenticate user
+      final credential = EmailAuthProvider.credential(
+        email: userEmail,
+        password: password,
+      );
+      await user.reauthenticateWithCredential(credential);
+
+      // Delete user data from Firestore
+      await CloudSyncService.deleteUserData();
+
+      // Delete Firebase Auth account
+      await user.delete();
+
+      if (!mounted) return;
+      // Navigate to login page
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (_) => const LoginPage()),
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.code == 'wrong-password'
+                ? 'Incorrect password'
+                : 'Failed to delete account: ${e.message}',
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to delete account: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Widget _buildContactTile(BuildContext context) {

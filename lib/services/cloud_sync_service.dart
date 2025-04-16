@@ -14,18 +14,21 @@ class CloudSyncService {
       return;
     }
 
-    print('DEBUG: Ensuring document for user: ${user.uid}');
-    final userRef = _firestore.collection('users').doc(user.uid);
-    final brainPointsRef = userRef.collection('brainPoints').doc('current');
+    print('DEBUG: Ensuring documents for user: ${user.uid}');
+    final userDataRef = _firestore.collection('user_data').doc(user.uid);
+    final profileRef = _firestore.collection('profiles').doc(user.uid);
+    final brainPointsRef = userDataRef.collection('brainPoints').doc('current');
 
     try {
-      final userDoc = await userRef.get();
-      print('DEBUG: User document exists: ${userDoc.exists}');
+      final userDataDoc = await userDataRef.get();
+      final profileDoc = await profileRef.get();
+      print('DEBUG: User data document exists: ${userDataDoc.exists}');
+      print('DEBUG: Profile document exists: ${profileDoc.exists}');
 
-      if (!userDoc.exists) {
-        print('DEBUG: Creating new user document');
-        // Create initial user document
-        await userRef.set({'createdAt': FieldValue.serverTimestamp()});
+      if (!userDataDoc.exists) {
+        print('DEBUG: Creating new user data document');
+        // Create initial user data document
+        await userDataRef.set({'createdAt': FieldValue.serverTimestamp()});
 
         // Create initial brain points document
         await brainPointsRef.set({
@@ -34,7 +37,19 @@ class CloudSyncService {
           'updatedAt': FieldValue.serverTimestamp(),
         });
 
-        print('DEBUG: Initial user setup complete');
+        print('DEBUG: Initial user data setup complete');
+      }
+
+      if (!profileDoc.exists) {
+        print('DEBUG: Creating new profile document');
+        // Create initial profile document
+        await profileRef.set({
+          'displayName': user.displayName ?? '',
+          'email': user.email ?? '',
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+        print('DEBUG: Initial profile setup complete');
       }
     } catch (e) {
       print('DEBUG: Error in _ensureUserDocument: $e');
@@ -50,7 +65,7 @@ class CloudSyncService {
     }
 
     print('DEBUG: Starting task upload for user: ${user.uid}');
-    final userRef = _firestore.collection('users').doc(user.uid);
+    final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final batch = _firestore.batch();
 
     try {
@@ -63,7 +78,7 @@ class CloudSyncService {
       ]) {
         final tasks = taskBox.get(category) as List<dynamic>? ?? [];
         print('DEBUG: Uploading tasks for $category: ${tasks.length} items');
-        final tasksRef = userRef.collection('tasks').doc(category);
+        final tasksRef = userDataRef.collection('tasks').doc(category);
         batch.set(tasksRef, {'items': tasks});
       }
 
@@ -83,7 +98,7 @@ class CloudSyncService {
     }
 
     print('DEBUG: Starting filter upload for user: ${user.uid}');
-    final userRef = _firestore.collection('users').doc(user.uid);
+    final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final batch = _firestore.batch();
 
     try {
@@ -98,7 +113,7 @@ class CloudSyncService {
         print(
           'DEBUG: Uploading filters for $category: ${filters.length} items',
         );
-        final filtersRef = userRef.collection('filters').doc(category);
+        final filtersRef = userDataRef.collection('filters').doc(category);
         batch.set(filtersRef, {'items': filters});
       }
 
@@ -119,7 +134,7 @@ class CloudSyncService {
 
     print('DEBUG: Starting brain points upload for user: ${user.uid}');
     final brainPointsRef = _firestore
-        .collection('users')
+        .collection('user_data')
         .doc(user.uid)
         .collection('brainPoints')
         .doc('current');
@@ -161,12 +176,12 @@ class CloudSyncService {
       // Ensure user document exists before downloading
       await _ensureUserDocument();
 
-      final userRef = _firestore.collection('users').doc(user.uid);
+      final userDataRef = _firestore.collection('user_data').doc(user.uid);
 
       // Download brain points from its collection
       print('DEBUG: Downloading brain points');
       final brainPointsDoc =
-          await userRef.collection('brainPoints').doc('current').get();
+          await userDataRef.collection('brainPoints').doc('current').get();
 
       if (brainPointsDoc.exists) {
         final data = brainPointsDoc.data();
@@ -188,7 +203,7 @@ class CloudSyncService {
             print('DEBUG: Reset brain points to 100 (new day)');
 
             // Update cloud with reset values
-            await userRef.collection('brainPoints').doc('current').set({
+            await userDataRef.collection('brainPoints').doc('current').set({
               'points': 100,
               'lastReset': now.toIso8601String(),
               'updatedAt': FieldValue.serverTimestamp(),
@@ -210,7 +225,8 @@ class CloudSyncService {
         Keys.thoughts,
       ]) {
         print('DEBUG: Downloading tasks for $category');
-        final tasksDoc = await userRef.collection('tasks').doc(category).get();
+        final tasksDoc =
+            await userDataRef.collection('tasks').doc(category).get();
         if (tasksDoc.exists) {
           final data = tasksDoc.data();
           if (data != null && data['items'] != null) {
@@ -241,7 +257,7 @@ class CloudSyncService {
       ]) {
         print('DEBUG: Downloading filters for $category');
         final filtersDoc =
-            await userRef.collection('filters').doc(category).get();
+            await userDataRef.collection('filters').doc(category).get();
         if (filtersDoc.exists) {
           final data = filtersDoc.data();
           if (data != null && data['items'] != null) {
@@ -286,9 +302,9 @@ class CloudSyncService {
       }
 
       // Check if user document exists
-      final userRef = _firestore.collection('users').doc(user.uid);
-      final userDoc = await userRef.get();
-      final isNewUser = !userDoc.exists;
+      final userDataRef = _firestore.collection('user_data').doc(user.uid);
+      final userDataDoc = await userDataRef.get();
+      final isNewUser = !userDataDoc.exists;
 
       if (isNewUser) {
         print('DEBUG: New user detected, uploading local data to cloud');
@@ -360,36 +376,63 @@ class CloudSyncService {
     }
 
     print('DEBUG: Starting user data deletion for user: ${user.uid}');
-    final userRef = _firestore.collection('users').doc(user.uid);
+    final userDataRef = _firestore.collection('user_data').doc(user.uid);
+    final profileRef = _firestore.collection('profiles').doc(user.uid);
 
     try {
       // Delete brain points subcollection
-      final brainPointsRef = userRef.collection('brainPoints');
+      final brainPointsRef = userDataRef.collection('brainPoints');
       final brainPointsDocs = await brainPointsRef.get();
       for (var doc in brainPointsDocs.docs) {
         await doc.reference.delete();
       }
 
       // Delete tasks subcollection
-      final tasksRef = userRef.collection('tasks');
+      final tasksRef = userDataRef.collection('tasks');
       final tasksDocs = await tasksRef.get();
       for (var doc in tasksDocs.docs) {
         await doc.reference.delete();
       }
 
       // Delete filters subcollection
-      final filtersRef = userRef.collection('filters');
+      final filtersRef = userDataRef.collection('filters');
       final filtersDocs = await filtersRef.get();
       for (var doc in filtersDocs.docs) {
         await doc.reference.delete();
       }
 
-      // Finally delete the user document itself
-      await userRef.delete();
+      // Delete the profile document
+      await profileRef.delete();
+
+      // Finally delete the user data document itself
+      await userDataRef.delete();
 
       print('DEBUG: User data deletion complete');
     } catch (e) {
       print('DEBUG: Error in deleteUserData: $e');
+      rethrow;
+    }
+  }
+
+  static Future<void> updateUserProfile(String displayName) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      print('DEBUG: No user found in updateUserProfile');
+      return;
+    }
+
+    print('DEBUG: Updating user profile for user: ${user.uid}');
+    final profileRef = _firestore.collection('profiles').doc(user.uid);
+
+    try {
+      await profileRef.set({
+        'displayName': displayName,
+        'email': user.email,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      print('DEBUG: User profile updated successfully');
+    } catch (e) {
+      print('DEBUG: Error in updateUserProfile: $e');
       rethrow;
     }
   }

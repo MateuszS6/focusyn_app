@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/services/cloud_sync_service.dart';
 import '../main_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:focusyn_app/constants/keys.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -45,8 +48,17 @@ class _SignUpPageState extends State<SignUpPage> {
       final userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // Set display name
+      // Set display name in Auth
       await userCredential.user?.updateDisplayName(name);
+      // Store in Firestore profile
+      await CloudSyncService.updateUserProfile(name);
+
+      // Initialize user data in Firestore and local storage
+      await CloudSyncService.syncOnLogin(
+        Hive.box(Keys.taskBox),
+        Hive.box(Keys.filterBox),
+        Hive.box(Keys.brainBox),
+      );
 
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
