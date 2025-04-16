@@ -1,6 +1,7 @@
-import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/constants/keys.dart';
 
 class Task {
+  final String id;
   final String title;
   final int priority;
   final int brainPoints;
@@ -15,6 +16,7 @@ class Task {
   final DateTime createdAt;
 
   Task({
+    String? id,
     required this.title,
     this.priority = 1,
     this.brainPoints = 0,
@@ -27,15 +29,17 @@ class Task {
     this.repeat,
     List<String>? history,
     DateTime? createdAt,
-  }) : history = history ?? [],
+  }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString(),
+       history = history ?? [],
        createdAt = createdAt ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {
-      'title': title,
-      'priority': priority,
-      'brainPoints': brainPoints,
-      'tag': tag,
+      Keys.id: id,
+      Keys.title: title,
+      Keys.priority: priority,
+      Keys.brainPoints: brainPoints,
+      Keys.tag: tag,
       if (text != null) Keys.text: text,
       if (date != null) Keys.date: date,
       if (time != null) Keys.time: time,
@@ -49,10 +53,11 @@ class Task {
 
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
-      title: map['title'] ?? '',
-      priority: map['priority'] ?? 1,
-      brainPoints: map['brainPoints'] ?? 0,
-      tag: map['tag'] ?? 'All',
+      id: map[Keys.id] ?? '',
+      title: map[Keys.title] ?? '',
+      priority: map[Keys.priority] ?? 1,
+      brainPoints: map[Keys.brainPoints] ?? 0,
+      tag: map[Keys.tag] ?? 'All',
       text: map[Keys.text] as String?,
       date: map[Keys.date] as String?,
       time: map[Keys.time] as String?,
