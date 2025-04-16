@@ -188,11 +188,16 @@ class _PrivacyPageState extends State<PrivacyPage> {
                     onPressed: () {
                       Navigator.pop(context);
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
-                      CloudSyncService.clearLocalData(
-                            Hive.box(Keys.taskBox),
-                            Hive.box(Keys.filterBox),
-                            Hive.box(Keys.brainBox),
-                          )
+                      // Clear only app data in Firestore (tasks, filters, brain points)
+                      CloudSyncService.clearAppData()
+                          .then((_) {
+                            // Then clear local data
+                            return CloudSyncService.clearLocalData(
+                              Hive.box(Keys.taskBox),
+                              Hive.box(Keys.filterBox),
+                              Hive.box(Keys.brainBox),
+                            );
+                          })
                           .then((_) {
                             if (!mounted) return;
                             scaffoldMessenger.showSnackBar(

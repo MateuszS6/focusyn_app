@@ -10,6 +10,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
 import 'package:focusyn_app/pages/notifications_page.dart';
+import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:hive/hive.dart';
 
 class TodayPage extends StatefulWidget {
   const TodayPage({super.key});
@@ -64,9 +66,26 @@ class _TodayPageState extends State<TodayPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            _cachedCompletions = null; // Force refresh of completions
-            _lastUpdateDate = null;
-            setState(() {});
+            try {
+              // First sync with Firestore
+              await CloudSyncService.syncOnLogin(
+                Hive.box(Keys.taskBox),
+                Hive.box(Keys.filterBox),
+                Hive.box(Keys.brainBox),
+              );
+              // Then refresh local data
+              _cachedCompletions = null; // Force refresh of completions
+              _lastUpdateDate = null;
+              setState(() {});
+            } catch (e) {
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Failed to sync: $e'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
           },
           child: ListView(
             padding: const EdgeInsets.all(24),

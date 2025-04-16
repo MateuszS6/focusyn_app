@@ -436,4 +436,46 @@ class CloudSyncService {
       rethrow;
     }
   }
+
+  static Future<void> clearAppData() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      print('DEBUG: No user found in clearAppData');
+      return;
+    }
+
+    print('DEBUG: Starting app data clearing for user: ${user.uid}');
+    final userDataRef = _firestore.collection('user_data').doc(user.uid);
+
+    try {
+      // Clear brain points
+      final brainPointsRef = userDataRef
+          .collection('brainPoints')
+          .doc('current');
+      await brainPointsRef.set({
+        'points': 100,
+        'lastReset': DateTime.now().toIso8601String(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+
+      // Clear tasks
+      final tasksRef = userDataRef.collection('tasks');
+      final tasksDocs = await tasksRef.get();
+      for (var doc in tasksDocs.docs) {
+        await doc.reference.set({'items': []});
+      }
+
+      // Clear filters
+      final filtersRef = userDataRef.collection('filters');
+      final filtersDocs = await filtersRef.get();
+      for (var doc in filtersDocs.docs) {
+        await doc.reference.set({'items': []});
+      }
+
+      print('DEBUG: App data cleared successfully');
+    } catch (e) {
+      print('DEBUG: Error in clearAppData: $e');
+      rethrow;
+    }
+  }
 }
