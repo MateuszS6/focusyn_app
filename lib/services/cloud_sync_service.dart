@@ -16,6 +16,7 @@ class CloudSyncService {
 
     print('DEBUG: Ensuring document for user: ${user.uid}');
     final userRef = _firestore.collection('users').doc(user.uid);
+    final brainPointsRef = userRef.collection('brainPoints').doc('current');
 
     try {
       final userDoc = await userRef.get();
@@ -23,14 +24,16 @@ class CloudSyncService {
 
       if (!userDoc.exists) {
         print('DEBUG: Creating new user document');
-        // Create initial user document with default values
-        await userRef.set({
-          'brainPoints': 0,
-          'createdAt': FieldValue.serverTimestamp(),
+        // Create initial user document
+        await userRef.set({'createdAt': FieldValue.serverTimestamp()});
+
+        // Create initial brain points document
+        await brainPointsRef.set({
+          'points': 100,
+          'lastReset': DateTime.now().toIso8601String(),
+          'updatedAt': FieldValue.serverTimestamp(),
         });
 
-        // We don't create empty task documents here anymore
-        // They will be created when data is uploaded
         print('DEBUG: Initial user setup complete');
       }
     } catch (e) {
@@ -115,13 +118,25 @@ class CloudSyncService {
     }
 
     print('DEBUG: Starting brain points upload for user: ${user.uid}');
-    final userRef = _firestore.collection('users').doc(user.uid);
+    final brainPointsRef = _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('brainPoints')
+        .doc('current');
 
     try {
-      // Upload brain points
-      final brainPoints = brainBox.get('points') ?? 0;
-      print('DEBUG: Uploading brain points: $brainPoints');
-      await userRef.update({'brainPoints': brainPoints});
+      final brainPoints = brainBox.get(Keys.brainPoints) ?? 100;
+      final lastReset =
+          brainBox.get('lastReset') ?? DateTime.now().toIso8601String();
+
+      print(
+        'DEBUG: Uploading brain points: $brainPoints, lastReset: $lastReset',
+      );
+      await brainPointsRef.set({
+        'points': brainPoints,
+        'lastReset': lastReset,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
       print('DEBUG: Brain points upload complete');
     } catch (e) {
       print('DEBUG: Error in uploadBrainPoints: $e');
@@ -147,6 +162,45 @@ class CloudSyncService {
       await _ensureUserDocument();
 
       final userRef = _firestore.collection('users').doc(user.uid);
+
+      // Download brain points from its collection
+      print('DEBUG: Downloading brain points');
+      final brainPointsDoc =
+          await userRef.collection('brainPoints').doc('current').get();
+
+      if (brainPointsDoc.exists) {
+        final data = brainPointsDoc.data();
+        if (data != null) {
+          final cloudPoints = data['points'] as int? ?? 100;
+          final cloudLastReset =
+              data['lastReset'] as String? ?? DateTime.now().toIso8601String();
+
+          // Check if we need to reset points based on date
+          final lastResetDate = DateTime.parse(cloudLastReset);
+          final now = DateTime.now();
+
+          if (now.year > lastResetDate.year ||
+              now.month > lastResetDate.month ||
+              now.day > lastResetDate.day) {
+            // Reset points if it's a new day
+            await brainBox.put(Keys.brainPoints, 100);
+            await brainBox.put('lastReset', now.toIso8601String());
+            print('DEBUG: Reset brain points to 100 (new day)');
+
+            // Update cloud with reset values
+            await userRef.collection('brainPoints').doc('current').set({
+              'points': 100,
+              'lastReset': now.toIso8601String(),
+              'updatedAt': FieldValue.serverTimestamp(),
+            });
+          } else {
+            // Use cloud points if it's the same day
+            await brainBox.put(Keys.brainPoints, cloudPoints);
+            await brainBox.put('lastReset', cloudLastReset);
+            print('DEBUG: Downloaded brain points: $cloudPoints');
+          }
+        }
+      }
 
       // Download tasks for each category
       for (final category in [
@@ -210,22 +264,6 @@ class CloudSyncService {
         }
       }
 
-      // Download brain points
-      print('DEBUG: Downloading brain points');
-      final userDoc = await userRef.get();
-      if (userDoc.exists) {
-        final data = userDoc.data();
-        if (data != null && data['brainPoints'] != null) {
-          // Only update if cloud data is greater than local data
-          final localPoints = brainBox.get('points') ?? 0;
-          if (data['brainPoints'] > localPoints) {
-            await brainBox.put('points', data['brainPoints']);
-            print('DEBUG: Downloaded brain points: ${data['brainPoints']}');
-          } else {
-            print('DEBUG: Preserving local brain points: $localPoints');
-          }
-        }
-      }
       print('DEBUG: Download complete');
     } catch (e) {
       print('DEBUG: Error in downloadTasks: $e');
@@ -304,7 +342,8 @@ class CloudSyncService {
       }
 
       // Reset brain points
-      await brainBox.put('points', 0);
+      await brainBox.put(Keys.brainPoints, 100);
+      await brainBox.put('lastReset', DateTime.now().toIso8601String());
 
       print('DEBUG: Local data cleared successfully');
     } catch (e) {
