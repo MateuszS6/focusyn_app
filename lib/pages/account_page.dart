@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/pages/privacy_page.dart';
 import 'package:focusyn_app/pages/settings_page.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
@@ -221,7 +222,7 @@ class _AccountPageState extends State<AccountPage> {
       appBar: MyAppBar(
         title: Keys.account,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded),
+          icon: const Icon(ThemeIcons.backIcon),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -300,21 +301,21 @@ class _AccountPageState extends State<AccountPage> {
                 children: [
                   _buildSettingItem(
                     context,
-                    icon: Icons.person_outline_rounded,
+                    icon: ThemeIcons.userIcon,
                     label: 'Edit Display Name',
                     onTap: _updateDisplayName,
                   ),
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: Icons.lock_outline_rounded,
+                    icon: ThemeIcons.lockIcon,
                     label: 'Change Password',
                     onTap: _updatePassword,
                   ),
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: Icons.settings_outlined,
+                    icon: ThemeIcons.settingsIcon,
                     label: Keys.settings,
                     onTap: () {
                       Navigator.push(
@@ -326,7 +327,7 @@ class _AccountPageState extends State<AccountPage> {
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: Icons.security_outlined,
+                    icon: ThemeIcons.securityIcon,
                     label: 'Privacy & Security',
                     onTap: () {
                       Navigator.push(
@@ -338,7 +339,7 @@ class _AccountPageState extends State<AccountPage> {
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: Icons.description_outlined,
+                    icon: ThemeIcons.termsIcon,
                     label: 'Terms of Use',
                     onTap:
                         () => _showDialog(
@@ -354,7 +355,7 @@ class _AccountPageState extends State<AccountPage> {
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: Icons.info_outline_rounded,
+                    icon: ThemeIcons.infoIcon,
                     label: 'About',
                     onTap:
                         () => _showDialog(
@@ -380,7 +381,7 @@ class _AccountPageState extends State<AccountPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.logout_rounded),
+                  const Icon(ThemeIcons.logoutIcon),
                   const SizedBox(width: 8),
                   Text(
                     'Log Out',
@@ -421,7 +422,7 @@ class _AccountPageState extends State<AccountPage> {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
-              Icon(Icons.chevron_right_rounded, color: Colors.grey.shade400),
+              Icon(ThemeIcons.openIcon, color: Colors.grey.shade400),
             ],
           ),
         ),

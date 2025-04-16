@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import '../main_screen.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -94,7 +95,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     // Logo and Title
                     Icon(
-                      Icons.auto_awesome_motion_rounded,
+                      ThemeIcons.focusesIcon,
                       size: 64,
                       color: Colors.blue[300],
                     ),
@@ -139,7 +140,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               labelText: 'Display Name',
                               hintText: 'Enter your display name',
                               prefixIcon: Icon(
-                                Icons.person_rounded,
+                                ThemeIcons.userFilledIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
@@ -160,7 +161,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             decoration: InputDecoration(
                               labelText: 'Email',
                               prefixIcon: Icon(
-                                Icons.email_rounded,
+                                ThemeIcons.mailIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
@@ -181,7 +182,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             decoration: InputDecoration(
                               labelText: 'Password (min 6 chars)',
                               prefixIcon: Icon(
-                                Icons.lock_rounded,
+                                ThemeIcons.lockFilledIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(

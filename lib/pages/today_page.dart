@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/services/brain_points_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
@@ -92,7 +93,7 @@ class _TodayPageState extends State<TodayPage> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(Icons.notifications_rounded),
+                          icon: const Icon(ThemeIcons.notificationsIcon),
                           onPressed: () {},
                           padding: const EdgeInsets.all(8),
                           constraints: const BoxConstraints(),
@@ -295,7 +296,7 @@ class _TodayPageState extends State<TodayPage> {
                           );
                         },
                         child: Icon(
-                          Icons.info_outline,
+                          ThemeIcons.infoIcon,
                           size: 16,
                           color: Colors.blue[700],
                         ),
@@ -330,7 +331,11 @@ class _TodayPageState extends State<TodayPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.add, size: 16, color: Colors.blue[700]),
+                    Icon(
+                      ThemeIcons.plusIcon,
+                      size: 16,
+                      color: Colors.blue[700],
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       "Add Points",
@@ -516,7 +521,7 @@ class _TodayPageState extends State<TodayPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildTaskType(
-                    icon: Icons.check_rounded,
+                    icon: ThemeIcons.checkIcon,
                     count: actionsCount,
                     label: "Actions",
                     onTap:
@@ -528,7 +533,7 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                   ),
                   _buildTaskType(
-                    icon: Icons.replay_rounded,
+                    icon: ThemeIcons.replayIcon,
                     count: todayFlows.length,
                     label: "Flows",
                     onTap:
@@ -540,7 +545,7 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                   ),
                   _buildTaskType(
-                    icon: Icons.event_rounded,
+                    icon: ThemeIcons.momentsIcon,
                     count: todayMoments.length,
                     label: "Moments",
                     onTap:
@@ -575,13 +580,13 @@ class _TodayPageState extends State<TodayPage> {
                       const SizedBox(height: 8),
                       if (nextFlow != null)
                         _buildNextTask(
-                          icon: Icons.replay_circle_filled_rounded,
+                          icon: ThemeIcons.flowsIcon,
                           title: nextFlow[Keys.title],
                           time: nextFlow[Keys.time],
                         ),
                       if (nextMoment != null)
                         _buildNextTask(
-                          icon: Icons.calendar_today_rounded,
+                          icon: ThemeIcons.momentsIcon,
                           title: nextMoment[Keys.title],
                           time: nextMoment[Keys.time],
                         ),

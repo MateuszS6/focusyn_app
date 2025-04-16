@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
@@ -52,7 +53,7 @@ class AddActionDialog extends StatelessWidget {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _titleLabel,
-            prefixIcon: const Icon(Icons.title_rounded),
+            prefixIcon: const Icon(ThemeIcons.titleIcon),
           ),
           onChanged: (val) => title = val,
         ),
@@ -60,7 +61,7 @@ class AddActionDialog extends StatelessWidget {
           value: priority,
           decoration: inputDecoration.copyWith(
             labelText: _priorityLabel,
-            prefixIcon: const Icon(Icons.priority_high_rounded),
+            prefixIcon: const Icon(ThemeIcons.priorityIcon),
           ),
           items: const [
             DropdownMenuItem(value: 1, child: Text("Urgent & Important")),
@@ -76,7 +77,7 @@ class AddActionDialog extends StatelessWidget {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _brainPointsLabel,
-            prefixIcon: const Icon(Icons.psychology_rounded),
+            prefixIcon: const Icon(ThemeIcons.brainPointsIcon),
           ),
           keyboardType: TextInputType.number,
           onChanged: (val) => brainPoints = int.tryParse(val) ?? 5,
@@ -85,7 +86,7 @@ class AddActionDialog extends StatelessWidget {
           value: tag,
           decoration: inputDecoration.copyWith(
             labelText: _tagLabel,
-            prefixIcon: const Icon(Icons.label_rounded),
+            prefixIcon: const Icon(ThemeIcons.tagIcon),
           ),
           items:
               tags

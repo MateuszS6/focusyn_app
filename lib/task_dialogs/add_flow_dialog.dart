@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
@@ -67,7 +68,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddFlowDialog._titleLabel,
-            prefixIcon: const Icon(Icons.title_rounded),
+            prefixIcon: const Icon(ThemeIcons.titleIcon),
           ),
           onChanged: (val) => setState(() => title = val),
         ),
@@ -86,7 +87,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
               labelText: "Start Date",
-              prefixIcon: const Icon(Icons.calendar_today_rounded),
+              prefixIcon: const Icon(ThemeIcons.dateIcon),
             ),
             child: Text("${selectedDate.toLocal()}".split(' ')[0]),
           ),
@@ -181,7 +182,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
               labelText: "Reminder Time",
-              prefixIcon: const Icon(Icons.access_time_rounded),
+              prefixIcon: const Icon(ThemeIcons.timeIcon),
             ),
             child: Text(selectedTime.format(context)),
           ),
@@ -189,7 +190,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: "Duration (minutes)",
-            prefixIcon: const Icon(Icons.timer_rounded),
+            prefixIcon: const Icon(ThemeIcons.durationIcon),
           ),
           keyboardType: TextInputType.number,
           onChanged:
@@ -201,7 +202,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
           value: repeat,
           decoration: inputDecoration.copyWith(
             labelText: "Repeat",
-            prefixIcon: const Icon(Icons.repeat_rounded),
+            prefixIcon: const Icon(ThemeIcons.repeatIcon),
           ),
           items: const [
             DropdownMenuItem(value: 'Daily', child: Text('Daily')),
@@ -213,7 +214,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: "Brain Points",
-            prefixIcon: const Icon(Icons.psychology_rounded),
+            prefixIcon: const Icon(ThemeIcons.brainPointsIcon),
           ),
           keyboardType: TextInputType.number,
           onChanged:
@@ -223,7 +224,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
           value: tag,
           decoration: inputDecoration.copyWith(
             labelText: AddFlowDialog._tagLabel,
-            prefixIcon: const Icon(Icons.label_rounded),
+            prefixIcon: const Icon(ThemeIcons.tagIcon),
           ),
           items:
               tags

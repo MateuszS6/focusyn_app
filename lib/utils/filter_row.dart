@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_constants.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 
 class FilterRow extends StatelessWidget {
   final String category;
@@ -86,7 +87,7 @@ class FilterRow extends StatelessWidget {
             );
           } else {
             return ActionChip(
-              label: Icon(Icons.add_rounded, size: 20, color: color),
+              label: Icon(ThemeIcons.addIcon, size: 20, color: color),
               shape: const StadiumBorder(),
               onPressed: onAdd,
               backgroundColor: Colors.grey[200],

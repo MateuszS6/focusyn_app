@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/pages/signup_page.dart';
 import '../main_screen.dart';
 
@@ -70,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     // Logo and Title
                     Icon(
-                      Icons.auto_awesome_motion_rounded,
+                      ThemeIcons.focusesIcon,
                       size: 64,
                       color: Colors.blue[300],
                     ),
@@ -115,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               labelText: 'Email',
                               prefixIcon: Icon(
-                                Icons.email_rounded,
+                                ThemeIcons.mailIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
@@ -136,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               labelText: 'Password',
                               prefixIcon: Icon(
-                                Icons.lock_rounded,
+                                ThemeIcons.lockFilledIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(

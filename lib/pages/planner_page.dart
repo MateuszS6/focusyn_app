@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 
@@ -125,11 +126,7 @@ class _PlannerPageState extends State<PlannerPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.event_available_rounded,
-              size: 48,
-              color: Colors.grey[400],
-            ),
+            Icon(ThemeIcons.noEventsIcon, size: 48, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
               "No scheduled tasks",
@@ -189,8 +186,8 @@ class _PlannerPageState extends State<PlannerPage> {
                       backgroundColor: color.withAlpha(179),
                       child: Icon(
                         isMoment
-                            ? Icons.event_rounded
-                            : Icons.replay_circle_filled_rounded,
+                            ? ThemeIcons.momentsIcon
+                            : ThemeIcons.flowsIcon,
                         color: Colors.white,
                       ),
                     ),

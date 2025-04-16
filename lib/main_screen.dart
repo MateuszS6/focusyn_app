@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/theme_constants.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/pages/focuses_page.dart';
 import 'package:focusyn_app/pages/today_page.dart';
 import 'package:focusyn_app/pages/planner_page.dart';
@@ -74,7 +76,7 @@ class _MainScreenState extends State<MainScreen> {
                   vertical: 12,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.blue[300],
                   borderRadius: BorderRadius.circular(8),
                   boxShadow: [
                     BoxShadow(
@@ -120,16 +122,16 @@ class _MainScreenState extends State<MainScreen> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.calendar_today_rounded),
-            label: 'Today',
+            icon: Icon(ThemeIcons.todayIcon),
+            label: Keys.today,
           ),
           NavigationDestination(
-            icon: Icon(Icons.auto_awesome_motion_rounded),
-            label: 'Focuses',
+            icon: Icon(ThemeIcons.focusesIcon),
+            label: Keys.focuses,
           ),
           NavigationDestination(
-            icon: Icon(Icons.calendar_month_rounded),
-            label: 'Planner',
+            icon: Icon(ThemeIcons.plannerIcon),
+            label: Keys.planner,
           ),
         ],
       ),

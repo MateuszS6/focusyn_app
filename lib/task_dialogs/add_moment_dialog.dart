@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
@@ -65,7 +66,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddMomentDialog._titleLabel,
-            prefixIcon: const Icon(Icons.title_rounded),
+            prefixIcon: const Icon(ThemeIcons.titleIcon),
           ),
           onChanged: (val) => setState(() => title = val),
         ),
@@ -84,7 +85,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
               labelText: "Date",
-              prefixIcon: const Icon(Icons.calendar_today_rounded),
+              prefixIcon: const Icon(ThemeIcons.dateIcon),
             ),
             child: Text("${selectedDate.toLocal()}".split(' ')[0]),
           ),
@@ -179,7 +180,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
               labelText: "Time",
-              prefixIcon: const Icon(Icons.access_time_rounded),
+              prefixIcon: const Icon(ThemeIcons.timeIcon),
             ),
             child: Text(selectedTime.format(context)),
           ),
@@ -187,7 +188,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: "Duration (minutes)",
-            prefixIcon: const Icon(Icons.timer_rounded),
+            prefixIcon: const Icon(ThemeIcons.durationIcon),
           ),
           keyboardType: TextInputType.number,
           onChanged:
@@ -199,7 +200,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           decoration: inputDecoration.copyWith(
             labelText: "Location (optional)",
             hintText: "Enter location if applicable",
-            prefixIcon: const Icon(Icons.location_on_rounded),
+            prefixIcon: const Icon(ThemeIcons.locationIcon),
           ),
           onChanged: (val) => setState(() => location = val),
         ),
@@ -207,7 +208,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           value: tag,
           decoration: inputDecoration.copyWith(
             labelText: AddMomentDialog._tagLabel,
-            prefixIcon: const Icon(Icons.label_rounded),
+            prefixIcon: const Icon(ThemeIcons.tagIcon),
           ),
           items:
               tags

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
@@ -53,7 +54,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddThoughtDialog._textLabel,
-            prefixIcon: const Icon(Icons.lightbulb_rounded),
+            prefixIcon: const Icon(ThemeIcons.titleIcon),
             alignLabelWithHint: true,
           ),
           maxLines: 5,
@@ -63,7 +64,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
           value: tag,
           decoration: inputDecoration.copyWith(
             labelText: AddThoughtDialog._tagLabel,
-            prefixIcon: const Icon(Icons.label_rounded),
+            prefixIcon: const Icon(ThemeIcons.tagIcon),
           ),
           items:
               tags

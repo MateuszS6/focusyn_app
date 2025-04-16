@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/brain_points_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
@@ -46,7 +47,7 @@ class FlowTile extends StatelessWidget {
       onInlineEdit: onEdit,
       onDelete: onDelete,
       leading: IconButton(
-        icon: const Icon(Icons.check_rounded),
+        icon: const Icon(ThemeIcons.checkIcon),
         onPressed: () {
           BrainPointsService.subtractPoints(bp);
 

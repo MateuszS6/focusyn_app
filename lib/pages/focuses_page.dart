@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_constants.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/utils/focus_card.dart';
@@ -30,25 +31,25 @@ class _FocusesPageState extends State<FocusesPage> {
     FocusCategory(
       name: Keys.actions,
       description: 'Your unscheduled to-do list',
-      icon: Icons.check_circle_rounded,
+      icon: ThemeIcons.actionsIcon,
       colorKey: Keys.actions,
     ),
     FocusCategory(
       name: Keys.flows,
       description: 'Your routines and habits',
-      icon: Icons.replay_circle_filled_rounded,
+      icon: ThemeIcons.flowsIcon,
       colorKey: Keys.flows,
     ),
     FocusCategory(
       name: Keys.moments,
       description: 'Your events and deadlines',
-      icon: Icons.event_rounded,
+      icon: ThemeIcons.momentsIcon,
       colorKey: Keys.moments,
     ),
     FocusCategory(
       name: Keys.thoughts,
       description: 'Your reflections for later',
-      icon: Icons.lightbulb_rounded,
+      icon: ThemeIcons.thoughtsIcon,
       colorKey: Keys.thoughts,
     ),
   ];
@@ -112,7 +113,7 @@ class _FocusesPageState extends State<FocusesPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          Icons.local_fire_department_rounded,
+                          ThemeIcons.streakIcon,
                           size: 16,
                           color:
                               ThemeConstants.focusColors[mostActive]!['main']!,

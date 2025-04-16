@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusyn_app/constants/theme_constants.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
@@ -101,7 +101,7 @@ class _TaskPageState extends State<TaskPage> {
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_rounded),
+                    icon: const Icon(ThemeIcons.backIcon),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const SizedBox(width: 8),
@@ -111,7 +111,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(Icons.sort_rounded),
+                    icon: const Icon(ThemeIcons.sortIcon),
                     onPressed: _showSortDialog,
                   ),
                 ],
@@ -154,7 +154,7 @@ class _TaskPageState extends State<TaskPage> {
                 elevation: 2,
                 shape: const CircleBorder(),
                 child: const Icon(
-                  Icons.add_rounded,
+                  ThemeIcons.addIcon,
                   size: 32,
                   color: Colors.white,
                 ),
@@ -316,7 +316,7 @@ class _TaskPageState extends State<TaskPage> {
           const SizedBox(height: 32),
           ElevatedButton.icon(
             onPressed: _showAddDialog,
-            icon: const Icon(Icons.add_rounded, color: Colors.white),
+            icon: const Icon(ThemeIcons.addIcon, color: Colors.white),
             label: Text(
               "Add ${widget.category.substring(0, widget.category.length - 1)}",
               style: const TextStyle(color: Colors.white),
@@ -354,7 +354,7 @@ class _TaskPageState extends State<TaskPage> {
         onPressed: (_) => _removeTask(task),
         backgroundColor: Colors.transparent,
         foregroundColor: const Color(0xFFE53935),
-        icon: CupertinoIcons.xmark,
+        icon: ThemeIcons.closeIcon,
         padding: EdgeInsets.zero,
       ),
     ];
@@ -490,6 +490,7 @@ class _TaskPageState extends State<TaskPage> {
                     });
                     await TaskService.updateFilters(widget.category, _filters);
                   }
+                  if (!mounted) return;
                   Navigator.pop(context);
                 },
                 child: const Text("Add"),
@@ -503,15 +504,15 @@ class _TaskPageState extends State<TaskPage> {
   IconData _getEmptyStateIcon() {
     switch (widget.category) {
       case Keys.actions:
-        return Icons.check_circle_rounded;
+        return ThemeIcons.actionsIcon;
       case Keys.flows:
-        return Icons.replay_circle_filled_rounded;
+        return ThemeIcons.flowsIcon;
       case Keys.moments:
-        return Icons.event_rounded;
+        return ThemeIcons.momentsIcon;
       case Keys.thoughts:
-        return Icons.lightbulb_rounded;
+        return ThemeIcons.thoughtsIcon;
       default:
-        return Icons.task_alt;
+        return ThemeIcons.tasksIcon;
     }
   }
 

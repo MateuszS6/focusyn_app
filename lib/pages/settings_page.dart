@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import '../utils/my_app_bar.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -11,7 +12,7 @@ class SettingsPage extends StatelessWidget {
       appBar: MyAppBar(
         title: Keys.settings,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(ThemeIcons.backIcon),
           onPressed: () => Navigator.pop(context),
         ),
       ),

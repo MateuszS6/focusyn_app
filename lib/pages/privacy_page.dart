@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../utils/my_app_bar.dart';
-import '../pages/login_page.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/utils/my_app_bar.dart';
+import 'package:focusyn_app/pages/login_page.dart';
 
 class PrivacyPage extends StatefulWidget {
   const PrivacyPage({super.key});
@@ -17,7 +18,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
       appBar: MyAppBar(
         title: 'Privacy & Security',
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded),
+          icon: const Icon(ThemeIcons.backIcon),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -72,10 +73,10 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildDataCollectionTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.data_usage_rounded),
+      leading: const Icon(ThemeIcons.dataIcon),
       title: const Text('Data Collection'),
       subtitle: const Text('What data we collect and why'),
-      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 20),
+      trailing: const Icon(ThemeIcons.openIcon, size: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
         showDialog(
@@ -110,10 +111,10 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildDataProtectionTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.shield_rounded),
+      leading: const Icon(ThemeIcons.shieldIcon),
       title: const Text('Data Protection'),
       subtitle: const Text('How we protect your information'),
-      trailing: const Icon(Icons.arrow_forward_ios_rounded, size: 20),
+      trailing: const Icon(ThemeIcons.openIcon, size: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
         showDialog(
@@ -146,7 +147,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildDeleteAccountTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.delete_forever_rounded, color: Colors.red),
+      leading: const Icon(ThemeIcons.deleteIcon, color: Colors.red),
       title: const Text('Delete Account', style: TextStyle(color: Colors.red)),
       subtitle: const Text('Permanently delete your account and all data'),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -202,7 +203,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildContactTile(BuildContext context) {
     return const ListTile(
-      leading: Icon(Icons.mail_rounded),
+      leading: Icon(ThemeIcons.mailIcon),
       title: Text('Questions?'),
       subtitle: Text('mstepien1104@gmail.com'),
     );
