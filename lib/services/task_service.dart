@@ -35,30 +35,12 @@ class TaskService {
     return result;
   }
 
-  Map<String, Set<String>> get hiddenFilters {
-    final hidden = _filterBox.get('hidden');
-    if (hidden is Map) {
-      return Map<String, Set<String>>.fromEntries(
-        hidden.entries.map(
-          (e) => MapEntry(e.key.toString(), Set<String>.from(e.value)),
-        ),
-      );
-    }
-    return {};
-  }
-
   void updateTasks(String category, List<Map<String, dynamic>> list) {
     _taskBox.put(category, list);
   }
 
   void updateFilters(String category, List<String> list) {
     _filterBox.put(category, list);
-  }
-
-  void updateHidden(String category, Set<String> hidden) {
-    final current = Map<String, dynamic>.from(_filterBox.get('hidden') ?? {});
-    current[category] = hidden.toList();
-    _filterBox.put('hidden', current);
   }
 
   // You can keep this in memory

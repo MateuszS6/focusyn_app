@@ -46,7 +46,7 @@ class AppDataInitializer {
           {
             Keys.text: "I should start reading more books",
             Keys.createdAt: DateTime.now().toIso8601String(),
-          }
+          },
         ],
       });
     }
@@ -57,12 +57,6 @@ class AppDataInitializer {
         Keys.flows: [Keys.all, 'Morning', 'Wellness'],
         Keys.moments: [Keys.all, 'Appointments', 'Social'],
         Keys.thoughts: [Keys.all, 'Ideas', 'Journal'],
-        Keys.hidden: {
-          Keys.actions: [],
-          Keys.flows: [],
-          Keys.moments: [],
-          Keys.thoughts: [],
-        },
       });
     }
   }

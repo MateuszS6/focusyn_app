@@ -1,5 +1,5 @@
 abstract class Keys {
-  // Hive Boxes
+  // Hive
   static const String brainBox = 'brainBox';
   static const String taskBox = 'taskBox';
   static const String filterBox = 'filterBox';
@@ -10,13 +10,14 @@ abstract class Keys {
   static const String focuses = 'Focuses';
   static const String planner = 'Planner';
 
-  // Focus Categories
+  // Focuses
   static const String actions = 'Actions';
   static const String flows = 'Flows';
   static const String moments = 'Moments';
   static const String thoughts = 'Thoughts';
 
-  // Task Attributes
+  // Tasks
+  static const String id = 'id';
   static const String title = 'title';
   static const String text = 'text';
   static const String priority = 'priority';
@@ -31,6 +32,5 @@ abstract class Keys {
 
   // Filters
   static const String tag = 'tag';
-  static const String hidden = 'hidden';
   static const String all = 'All';
 }

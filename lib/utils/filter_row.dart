@@ -5,7 +5,6 @@ import 'package:focusyn_app/data/keys.dart';
 class FilterRow extends StatelessWidget {
   final String category;
   final List<String> filters;
-  final Set<String> hidden;
   final String selected;
   final void Function(String) onSelect;
   final VoidCallback onAdd;
@@ -15,7 +14,6 @@ class FilterRow extends StatelessWidget {
     super.key,
     required this.category,
     required this.filters,
-    required this.hidden,
     required this.selected,
     required this.onSelect,
     required this.onAdd,
@@ -24,7 +22,6 @@ class FilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final visibleFilters = filters.where((f) => !hidden.contains(f)).toList();
     final color = TaskService.instance.colours[category]!['main']!;
 
     return SizedBox(
@@ -32,11 +29,11 @@ class FilterRow extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        itemCount: visibleFilters.length + 1,
+        itemCount: filters.length + 1,
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
-          if (index < visibleFilters.length) {
-            final tag = visibleFilters[index];
+          if (index < filters.length) {
+            final tag = filters[index];
             final isSelected = tag == selected;
             return GestureDetector(
               onLongPress: () {

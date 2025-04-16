@@ -25,7 +25,6 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   late List<Map<String, dynamic>> _tasks;
   late List<String> _filters;
-  late Set<String> _hidden;
   String _selectedFilter = Keys.all;
   String _sortBy = 'Date';
 
@@ -78,7 +77,6 @@ class _TaskPageState extends State<TaskPage> {
     super.initState();
     _tasks = TaskService.instance.tasks[widget.category]!;
     _filters = TaskService.instance.filters[widget.category]!;
-    _hidden = TaskService.instance.hiddenFilters[widget.category]!;
   }
 
   @override
@@ -115,14 +113,12 @@ class _TaskPageState extends State<TaskPage> {
               FilterRow(
                 category: widget.category,
                 filters: _filters,
-                hidden: _hidden,
                 selected: _selectedFilter,
                 onSelect: (filter) => setState(() => _selectedFilter = filter),
                 onAdd: _openAddTagDialog,
                 onDelete: (tag) {
                   setState(() {
                     _filters.remove(tag);
-                    _hidden.remove(tag);
                     _tasks.removeWhere((task) => task[Keys.tag] == tag);
                     if (_selectedFilter == tag) _selectedFilter = Keys.all;
                     TaskService.instance.updateTasks(widget.category, _tasks);
@@ -130,7 +126,6 @@ class _TaskPageState extends State<TaskPage> {
                       widget.category,
                       _filters,
                     );
-                    TaskService.instance.updateHidden(widget.category, _hidden);
                   });
                 },
               ),
@@ -487,14 +482,9 @@ class _TaskPageState extends State<TaskPage> {
                   if (newTag.isNotEmpty && !_filters.contains(newTag)) {
                     setState(() {
                       _filters.add(newTag);
-                      _hidden.remove(newTag);
                       TaskService.instance.updateFilters(
                         widget.category,
                         _filters,
-                      );
-                      TaskService.instance.updateHidden(
-                        widget.category,
-                        _hidden,
                       );
                     });
                   }
