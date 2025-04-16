@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/pages/focuses_page.dart';
 import 'package:focusyn_app/pages/today_page.dart';
 import 'package:focusyn_app/pages/planner_page.dart';
+import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:focusyn_app/constants/keys.dart';
+import 'package:hive/hive.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -12,6 +15,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _selectedIndex = 0;
+  bool _isSyncing = false;
 
   static const List<Widget> _pages = [
     TodayPage(),
@@ -20,10 +24,90 @@ class _MainScreenState extends State<MainScreen> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _syncData();
+  }
+
+  Future<void> _syncData() async {
+    if (_isSyncing) return;
+    setState(() => _isSyncing = true);
+
+    try {
+      final taskBox = Hive.box(Keys.taskBox);
+      final filterBox = Hive.box(Keys.filterBox);
+      final brainBox = Hive.box(Keys.brainBox);
+
+      if (!taskBox.isOpen || !filterBox.isOpen || !brainBox.isOpen) {
+        throw Exception('One or more Hive boxes are not open');
+      }
+
+      await CloudSyncService.syncOnLogin(taskBox, filterBox, brainBox);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Sync failed: ${e.toString()}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isSyncing = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: _pages[_selectedIndex],
+      body: Stack(
+        children: [
+          _pages[_selectedIndex],
+          if (_isSyncing)
+            Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                  borderRadius: BorderRadius.circular(8),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withAlpha(26),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Syncing...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         height: 72,
         elevation: 0,

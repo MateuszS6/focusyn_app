@@ -5,6 +5,8 @@ import 'package:focusyn_app/pages/privacy_page.dart';
 import 'package:focusyn_app/pages/settings_page.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import '../pages/login_page.dart';
+import 'package:hive/hive.dart';
+import 'package:focusyn_app/services/cloud_sync_service.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -167,13 +169,31 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
-  void _logout() async {
-    await FirebaseAuth.instance.signOut();
-    if (!mounted) return;
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const LoginPage()),
-      (route) => false,
-    );
+  Future<void> _logout() async {
+    try {
+      // Clear local data
+      await CloudSyncService.clearLocalData(
+        Hive.box(Keys.taskBox),
+        Hive.box(Keys.filterBox),
+        Hive.box(Keys.brainBox),
+      );
+
+      // Sign out from Firebase
+      await FirebaseAuth.instance.signOut();
+
+      // Navigate to login page
+      if (mounted) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Error logging out: $e')));
+      }
+    }
   }
 
   void _showDialog(String title, String content) {

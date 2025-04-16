@@ -78,6 +78,12 @@ class _TaskPageState extends State<TaskPage> {
     super.initState();
     _tasks = TaskService.tasks[widget.category]!;
     _filters = TaskService.filters[widget.category]!;
+
+    // Ensure 'All' tag is always present
+    if (!_filters.contains(Keys.all)) {
+      _filters.insert(0, Keys.all);
+      TaskService.updateFilters(widget.category, _filters);
+    }
   }
 
   @override
@@ -117,14 +123,15 @@ class _TaskPageState extends State<TaskPage> {
                 selected: _selectedFilter,
                 onSelect: (filter) => setState(() => _selectedFilter = filter),
                 onAdd: _openAddTagDialog,
-                onDelete: (tag) {
+                onDelete: (tag) async {
                   setState(() {
                     _filters.remove(tag);
                     _tasks.removeWhere((task) => task[Keys.tag] == tag);
                     if (_selectedFilter == tag) _selectedFilter = Keys.all;
-                    TaskService.updateTasks(widget.category, _tasks);
-                    TaskService.updateFilters(widget.category, _filters);
                   });
+                  // Update both tasks and filters in the cloud
+                  await TaskService.updateTasks(widget.category, _tasks);
+                  await TaskService.updateFilters(widget.category, _filters);
                 },
               ),
               const SizedBox(height: 24),
@@ -421,14 +428,14 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   // Task Operations
-  void _updateTask(Map<String, dynamic> task) {
+  Future<void> _updateTask(Map<String, dynamic> task) async {
     setState(() {});
-    TaskService.updateTasks(widget.category, _tasks);
+    await TaskService.updateTasks(widget.category, _tasks);
   }
 
-  void _removeTask(Map<String, dynamic> task) {
+  Future<void> _removeTask(Map<String, dynamic> task) async {
     setState(() => _tasks.remove(task));
-    TaskService.updateTasks(widget.category, _tasks);
+    await TaskService.updateTasks(widget.category, _tasks);
   }
 
   // Dialog Operations
@@ -436,9 +443,9 @@ class _TaskPageState extends State<TaskPage> {
     showDialog(
       context: context,
       builder: (_) {
-        onAdd(Task task) {
+        onAdd(Task task) async {
           setState(() => _tasks.add(task.toMap()));
-          TaskService.updateTasks(widget.category, _tasks);
+          await TaskService.updateTasks(widget.category, _tasks);
         }
 
         switch (widget.category) {
@@ -476,12 +483,12 @@ class _TaskPageState extends State<TaskPage> {
                 child: const Text("Cancel"),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (newTag.isNotEmpty && !_filters.contains(newTag)) {
                     setState(() {
                       _filters.add(newTag);
-                      TaskService.updateFilters(widget.category, _filters);
                     });
+                    await TaskService.updateFilters(widget.category, _filters);
                   }
                   Navigator.pop(context);
                 },

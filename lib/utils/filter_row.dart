@@ -8,7 +8,7 @@ class FilterRow extends StatelessWidget {
   final String selected;
   final void Function(String) onSelect;
   final VoidCallback onAdd;
-  final void Function(String) onDelete;
+  final Future<void> Function(String) onDelete;
 
   const FilterRow({
     super.key,
@@ -52,9 +52,9 @@ class FilterRow extends StatelessWidget {
                               child: const Text('Cancel'),
                             ),
                             ElevatedButton(
-                              onPressed: () {
-                                onDelete(tag);
+                              onPressed: () async {
                                 Navigator.pop(context);
+                                await onDelete(tag);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
