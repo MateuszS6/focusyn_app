@@ -17,7 +17,7 @@ class ThemeColours {
   static const Color momentsMain = Colors.red;
   static const Color momentsTask = Color(0xFFFFEBEE);
   static const Color thoughtsMain = Colors.orange;
-  static const Color thoughtsTask = Color(0xFFE3F2FD);
+  static const Color thoughtsTask = Color(0xFFFFF3E0);
 
   // Tasks
   static const Color taskMain = Colors.blue;
@@ -27,6 +27,6 @@ class ThemeColours {
     Keys.actions: {'main': Colors.purple, 'task': Color(0xFFF3E5F5)},
     Keys.flows: {'main': Colors.lightGreen, 'task': Color(0xFFE8F5E9)},
     Keys.moments: {'main': Colors.red, 'task': Color(0xFFFFEBEE)},
-    Keys.thoughts: {'main': Colors.orange, 'task': Color(0xFFE3F2FD)},
+    Keys.thoughts: {'main': Colors.orange, 'task': Color(0xFFFFF3E0)},
   };
 }
