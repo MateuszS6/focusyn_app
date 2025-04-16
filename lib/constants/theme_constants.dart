@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/constants/keys.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ThemeConstants {
@@ -8,21 +7,6 @@ class ThemeConstants {
   static const double appBarIconSize = 28.0;
   static const double appBarFontSize = 32.0;
   static const FontWeight appBarFontWeight = FontWeight.w900;
-
-  // Theme colours
-  static const Color scaffoldBackgroundColor = Colors.white;
-  static const Color appBarBackgroundColor = Colors.white;
-  static const Color appBarTextColor = Colors.black;
-  static const Color selectedItemColor = Colors.blue;
-  static const Color unselectedItemColor = Colors.grey;
-
-  // Focus colours
-  static const Map<String, Map<String, Color>> focusColors = {
-    Keys.actions: {'main': Colors.purple, 'task': Color(0xFFF3E5F5)},
-    Keys.flows: {'main': Colors.lightGreen, 'task': Color(0xFFE8F5E9)},
-    Keys.moments: {'main': Colors.red, 'task': Color(0xFFFFEBEE)},
-    Keys.thoughts: {'main': Colors.orange, 'task': Color(0xFFE3F2FD)},
-  };
 
   // Text styles
   static TextTheme get textTheme {

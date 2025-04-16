@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:focusyn_app/constants/theme_constants.dart';
+import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
@@ -88,7 +88,7 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    final color = ThemeConstants.focusColors[widget.category]!['main']!;
+    final color = ThemeColours.focusColors[widget.category]!['main']!;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -288,7 +288,7 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildEmptyState() {
-    final color = ThemeConstants.focusColors[widget.category]!['main']!;
+    final color = ThemeColours.focusColors[widget.category]!['main']!;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -345,7 +345,7 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTaskTile(Map<String, dynamic> task) {
-    final color = ThemeConstants.focusColors[widget.category]!['task']!;
+    final color = ThemeColours.focusColors[widget.category]!['task']!;
     final key = ValueKey(task);
 
     Widget tile;

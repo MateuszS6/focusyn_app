@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/constants/theme_constants.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/pages/focuses_page.dart';
 import 'package:focusyn_app/pages/today_page.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/constants/theme_constants.dart';
+import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 
@@ -23,7 +23,7 @@ class FilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = ThemeConstants.focusColors[category]!['main']!;
+    final color = ThemeColours.focusColors[category]!['main']!;
 
     return SizedBox(
       height: 48,

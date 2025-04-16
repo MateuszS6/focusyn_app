@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_constants.dart';
+import 'package:focusyn_app/constants/theme_colours.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {
@@ -11,20 +12,20 @@ class AppTheme {
         brightness: Brightness.light,
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
-      scaffoldBackgroundColor: ThemeConstants.scaffoldBackgroundColor,
+      scaffoldBackgroundColor: ThemeColours.scaffoldBackgroundColor,
       iconTheme: const IconThemeData(size: ThemeConstants.iconSize),
       appBarTheme: AppBarTheme(
-        backgroundColor: ThemeConstants.appBarBackgroundColor,
+        backgroundColor: ThemeColours.appBarBackgroundColor,
         iconTheme: const IconThemeData(size: ThemeConstants.appBarIconSize),
         titleTextStyle: TextStyle(
-          color: ThemeConstants.appBarTextColor,
+          color: ThemeColours.appBarTextColor,
           fontSize: ThemeConstants.appBarFontSize,
           fontWeight: ThemeConstants.appBarFontWeight,
         ),
       ),
       navigationBarTheme: const NavigationBarThemeData(
-        indicatorColor: ThemeConstants.selectedItemColor,
-        backgroundColor: ThemeConstants.scaffoldBackgroundColor,
+        indicatorColor: ThemeColours.selectedItemColor,
+        backgroundColor: ThemeColours.scaffoldBackgroundColor,
       ),
     );
   }
@@ -39,8 +40,8 @@ class AppTheme {
       ),
       visualDensity: VisualDensity.adaptivePlatformDensity,
       navigationBarTheme: const NavigationBarThemeData(
-        indicatorColor: ThemeConstants.selectedItemColor,
-        backgroundColor: ThemeConstants.scaffoldBackgroundColor,
+        indicatorColor: ThemeColours.selectedItemColor,
+        backgroundColor: ThemeColours.scaffoldBackgroundColor,
       ),
     );
   }

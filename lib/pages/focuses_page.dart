@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/constants/theme_constants.dart';
+import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
@@ -105,7 +105,7 @@ class _FocusesPageState extends State<FocusesPage> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: ThemeConstants.focusColors[mostActive]!['main']!
+                      color: ThemeColours.focusColors[mostActive]!['main']!
                           .withAlpha(26),
                       borderRadius: BorderRadius.circular(20),
                     ),
@@ -115,16 +115,14 @@ class _FocusesPageState extends State<FocusesPage> {
                         Icon(
                           ThemeIcons.streakIcon,
                           size: 16,
-                          color:
-                              ThemeConstants.focusColors[mostActive]!['main']!,
+                          color: ThemeColours.focusColors[mostActive]!['main']!,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           '$mostActive is your most active focus',
                           style: TextStyle(
                             color:
-                                ThemeConstants
-                                    .focusColors[mostActive]!['main']!,
+                                ThemeColours.focusColors[mostActive]!['main']!,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -149,7 +147,7 @@ class _FocusesPageState extends State<FocusesPage> {
                         return FocusCard(
                           icon: category.icon,
                           color:
-                              ThemeConstants.focusColors[category
+                              ThemeColours.focusColors[category
                                   .colorKey]!['main']!,
                           category: category.name,
                           description: category.description,
