@@ -331,11 +331,7 @@ class _TodayPageState extends State<TodayPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
-                      ThemeIcons.plusIcon,
-                      size: 16,
-                      color: Colors.blue[700],
-                    ),
+                    Icon(ThemeIcons.addIcon, size: 16, color: Colors.blue[700]),
                     const SizedBox(width: 4),
                     Text(
                       "Add Points",
