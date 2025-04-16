@@ -6,6 +6,7 @@ class BrainPointsService {
   static final _box = Hive.box(Keys.brainBox);
   static const _pointsKey = Keys.brainPoints;
   static const _dateKey = 'lastReset';
+  static const int _minPoints = 0;
   static const int _maxPoints = 100;
 
   static int getPoints() {
@@ -14,20 +15,30 @@ class BrainPointsService {
   }
 
   static Future<void> setPoints(int value) async {
-    _box.put(_pointsKey, value.clamp(0, _maxPoints));
+    _box.put(_pointsKey, value.clamp(_minPoints, _maxPoints));
     await CloudSyncService.uploadBrainPoints(_box);
   }
 
   static Future<void> addPoints(int value) async {
     _checkReset();
     final current = getPoints();
-    await setPoints(current + value);
+    final newPoints = current + value;
+    if (newPoints > _maxPoints) {
+      await setPoints(_maxPoints);
+    } else {
+      await setPoints(newPoints);
+    }
   }
 
   static Future<void> subtractPoints(int value) async {
     _checkReset();
     final current = getPoints();
-    await setPoints(current - value);
+    final newPoints = current - value;
+    if (newPoints < _minPoints) {
+      await setPoints(_minPoints);
+    } else {
+      await setPoints(newPoints);
+    }
   }
 
   static Future<void> reset() async {
