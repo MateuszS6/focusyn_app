@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/services/brain_points_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 
 class FlowTile extends StatelessWidget {
   final Map<String, dynamic> task;
-  final Color color;
   final Function(String title) onEdit;
   final VoidCallback onComplete;
   final VoidCallback onDelete;
@@ -14,7 +14,6 @@ class FlowTile extends StatelessWidget {
   const FlowTile({
     super.key,
     required this.task,
-    required this.color,
     required this.onEdit,
     required this.onComplete,
     required this.onDelete,
@@ -41,7 +40,7 @@ class FlowTile extends StatelessWidget {
 
     return TaskTile(
       key: key,
-      color: color,
+      color: ThemeColours.flowsTask,
       text: title,
       subtitle: subtitle,
       onInlineEdit: onEdit,

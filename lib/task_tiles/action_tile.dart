@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/services/brain_points_service.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 
 class ActionTile extends StatelessWidget {
   final Task task;
-  final Color color;
   final VoidCallback onEdit;
   final VoidCallback onComplete;
   final VoidCallback onDelete;
@@ -14,7 +14,6 @@ class ActionTile extends StatelessWidget {
   const ActionTile({
     super.key,
     required this.task,
-    required this.color,
     required this.onEdit,
     required this.onComplete,
     required this.onDelete,
@@ -59,7 +58,7 @@ class ActionTile extends StatelessWidget {
         }
       },
       onDelete: onDelete,
-      color: color,
+      color: ThemeColours.actionsTask,
     );
   }
 }

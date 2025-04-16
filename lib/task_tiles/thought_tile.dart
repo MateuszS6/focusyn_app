@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 
 class ThoughtTile extends StatelessWidget {
   final Map<String, dynamic> task;
-  final Color color;
   final Function(String text) onEdit;
   final VoidCallback onDelete;
 
   const ThoughtTile({
     super.key,
     required this.task,
-    required this.color,
     required this.onEdit,
     required this.onDelete,
   });
@@ -23,7 +22,7 @@ class ThoughtTile extends StatelessWidget {
 
     return TaskTile(
       key: key,
-      color: color,
+      color: ThemeColours.thoughtsTask,
       text: text,
       subtitle: tag.isNotEmpty ? tag : null,
       onInlineEdit: onEdit,

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 
 class MomentTile extends StatelessWidget {
   final Map<String, dynamic> task;
-  final Color color;
   final Function(String title) onEdit;
   final VoidCallback onDelete;
 
   const MomentTile({
     super.key,
     required this.task,
-    required this.color,
     required this.onEdit,
     required this.onDelete,
   });
@@ -33,7 +32,7 @@ class MomentTile extends StatelessWidget {
 
     return TaskTile(
       key: key,
-      color: color,
+      color: ThemeColours.momentsTask,
       text: title,
       subtitle: subtitle,
       onInlineEdit: onEdit,

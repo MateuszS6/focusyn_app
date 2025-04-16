@@ -3,6 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
+import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/task_dialogs/add_action_dialog.dart';
@@ -77,12 +78,12 @@ class _TaskPageState extends State<TaskPage> {
   void initState() {
     super.initState();
     _tasks = TaskService.tasks[widget.category]!;
-    _filters = TaskService.filters[widget.category]!;
+    _filters = FilterService.filters[widget.category]!;
 
     // Ensure 'All' tag is always present
     if (!_filters.contains(Keys.all)) {
       _filters.insert(0, Keys.all);
-      TaskService.updateFilters(widget.category, _filters);
+      FilterService.updateFilters(widget.category, _filters);
     }
   }
 
@@ -131,7 +132,7 @@ class _TaskPageState extends State<TaskPage> {
                   });
                   // Update both tasks and filters in the cloud
                   await TaskService.updateTasks(widget.category, _tasks);
-                  await TaskService.updateFilters(widget.category, _filters);
+                  await FilterService.updateFilters(widget.category, _filters);
                 },
               ),
               const SizedBox(height: 24),
@@ -345,7 +346,6 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTaskTile(Map<String, dynamic> task) {
-    final color = ThemeColours.focusColors[widget.category]!['task']!;
     final key = ValueKey(task);
 
     Widget tile;
@@ -363,7 +363,6 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.actions:
         tile = ActionTile(
           key: key,
-          color: color,
           task: Task.fromMap(task),
           onEdit: () => _updateTask(task),
           onComplete: () => _removeTask(task),
@@ -374,7 +373,6 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.flows:
         tile = FlowTile(
           key: key,
-          color: color,
           task: task,
           onEdit: (newTitle) {
             task[Keys.title] = newTitle;
@@ -388,7 +386,6 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.moments:
         tile = MomentTile(
           key: key,
-          color: color,
           task: task,
           onEdit: (newTitle) {
             task[Keys.title] = newTitle;
@@ -401,7 +398,6 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.thoughts:
         tile = ThoughtTile(
           key: key,
-          color: color,
           task: task,
           onEdit: (newText) {
             task[Keys.text] = newText;
@@ -488,7 +484,10 @@ class _TaskPageState extends State<TaskPage> {
                     setState(() {
                       _filters.add(newTag);
                     });
-                    await TaskService.updateFilters(widget.category, _filters);
+                    await FilterService.updateFilters(
+                      widget.category,
+                      _filters,
+                    );
                   }
                   if (!mounted) return;
                   Navigator.pop(context);

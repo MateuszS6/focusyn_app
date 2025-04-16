@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
-import 'package:focusyn_app/services/task_service.dart';
+import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
@@ -22,7 +22,7 @@ class AddActionDialog extends StatelessWidget {
     int priority = 1;
     int brainPoints = 5;
     String tag = Keys.all;
-    final tags = TaskService.filters[Keys.actions] ?? [Keys.all];
+    final tags = FilterService.filters[Keys.actions] ?? [Keys.all];
 
     final inputBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
