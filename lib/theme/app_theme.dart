@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:focusyn_app/theme/theme_constants.dart';
+import 'package:focusyn_app/constants/theme_constants.dart';
 
 class AppTheme {
   static TextTheme get textTheme {

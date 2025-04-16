@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:focusyn_app/data/app_data_initializer.dart';
-import 'package:focusyn_app/data/keys.dart';
+import 'package:focusyn_app/initialization/app_data_initializer.dart';
+import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/firebase_options.dart';
 
 class AppInitializer {
