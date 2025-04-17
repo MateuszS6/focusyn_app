@@ -66,6 +66,7 @@ class _TodayPageState extends State<TodayPage> {
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
+            final scaffoldMessenger = ScaffoldMessenger.of(context);
             try {
               // First sync with Firestore
               await CloudSyncService.syncOnLogin(
@@ -76,10 +77,12 @@ class _TodayPageState extends State<TodayPage> {
               // Then refresh local data
               _cachedCompletions = null; // Force refresh of completions
               _lastUpdateDate = null;
-              setState(() {});
+              if (mounted) {
+                setState(() {});
+              }
             } catch (e) {
               if (!mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
+              scaffoldMessenger.showSnackBar(
                 SnackBar(
                   content: Text('Failed to sync: $e'),
                   backgroundColor: Colors.red,
@@ -963,6 +966,7 @@ class _TodayPageState extends State<TodayPage> {
 
   void _showAddBrainPointsDialog() {
     final controller = TextEditingController(text: "5");
+    final scaffoldMessenger = ScaffoldMessenger.of(context);
     showDialog(
       context: context,
       builder:
@@ -997,15 +1001,17 @@ class _TodayPageState extends State<TodayPage> {
                   if (points > 0 && points <= 100) {
                     BrainPointsService.addPoints(points);
                     Navigator.pop(context);
-                    setState(() {});
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text("Added $points brain points!"),
-                        duration: const Duration(seconds: 2),
-                      ),
-                    );
+                    if (mounted) {
+                      setState(() {});
+                      scaffoldMessenger.showSnackBar(
+                        SnackBar(
+                          content: Text("Added $points brain points!"),
+                          duration: const Duration(seconds: 2),
+                        ),
+                      );
+                    }
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
+                    scaffoldMessenger.showSnackBar(
                       const SnackBar(
                         content: Text(
                           "Please enter a number between 1 and 100",

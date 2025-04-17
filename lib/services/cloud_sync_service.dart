@@ -391,7 +391,10 @@ class CloudSyncService {
     }
   }
 
-  static Future<void> updateUserProfile(String displayName) async {
+  static Future<void> updateUserProfile(
+    String displayName, {
+    String? newEmail,
+  }) async {
     final user = _auth.currentUser;
     if (user == null) {
       print('DEBUG: No user found in updateUserProfile');
@@ -404,7 +407,7 @@ class CloudSyncService {
     try {
       await profileRef.set({
         'displayName': displayName,
-        'email': user.email,
+        'email': newEmail ?? user.email,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
       print('DEBUG: User profile updated successfully');

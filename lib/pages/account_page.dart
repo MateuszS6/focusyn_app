@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/pages/privacy_page.dart';
-import 'package:focusyn_app/pages/settings_page.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import '../pages/login_page.dart';
 import 'package:hive/hive.dart';
@@ -192,6 +191,140 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
+  Future<void> _updateEmail() async {
+    if (!mounted) return;
+
+    // First get the current password for reauthentication
+    final currentPasswordController = TextEditingController();
+    final currentPasswordResult = await showDialog<String>(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: const Text("Current Password"),
+            content: TextField(
+              controller: currentPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: "Enter current password",
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed:
+                    () => Navigator.pop(
+                      context,
+                      currentPasswordController.text.trim(),
+                    ),
+                child: const Text("Continue"),
+              ),
+            ],
+          ),
+    );
+
+    if (currentPasswordResult == null || !mounted) return;
+
+    try {
+      // Reauthenticate user
+      final credentials = EmailAuthProvider.credential(
+        email: FirebaseAuth.instance.currentUser?.email ?? '',
+        password: currentPasswordResult,
+      );
+      await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential(
+        credentials,
+      );
+
+      if (!mounted) return;
+
+      // Now prompt for new email
+      final newEmailController = TextEditingController();
+      final newEmail = await showDialog<String>(
+        context: context,
+        builder:
+            (_) => AlertDialog(
+              title: const Text("New Email"),
+              content: TextField(
+                controller: newEmailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: "Enter new email address",
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel"),
+                ),
+                ElevatedButton(
+                  onPressed:
+                      () => Navigator.pop(
+                        context,
+                        newEmailController.text.trim(),
+                      ),
+                  child: const Text("Update"),
+                ),
+              ],
+            ),
+      );
+
+      if (!mounted) return;
+
+      if (newEmail != null && newEmail.isNotEmpty) {
+        // Update email in Firebase Auth with verification
+        await FirebaseAuth.instance.currentUser?.verifyBeforeUpdateEmail(
+          newEmail,
+        );
+
+        // Update email in Firestore profile
+        await CloudSyncService.updateUserProfile(
+          FirebaseAuth.instance.currentUser?.displayName ?? '',
+          newEmail: newEmail,
+        );
+
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "Verification email sent to $newEmail. Please check your inbox to complete the change.",
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.all(16),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        );
+        setState(() {}); // Refresh the UI
+      }
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.message ?? "Failed to update email."),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("An error occurred while updating email: $e"),
+          backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+      );
+    }
+  }
+
   Future<void> _logout() async {
     try {
       // Clear local data
@@ -330,21 +463,16 @@ class _AccountPageState extends State<AccountPage> {
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: ThemeIcons.lockIcon,
-                    label: 'Change Password',
-                    onTap: _updatePassword,
+                    icon: ThemeIcons.emailIcon,
+                    label: 'Change Email',
+                    onTap: _updateEmail,
                   ),
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: ThemeIcons.settingsIcon,
-                    label: Keys.settings,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => const SettingsPage()),
-                      );
-                    },
+                    icon: ThemeIcons.lockIcon,
+                    label: 'Change Password',
+                    onTap: _updatePassword,
                   ),
                   _buildDivider(),
                   _buildSettingItem(
