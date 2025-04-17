@@ -229,7 +229,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             decoration: InputDecoration(
                               labelText: 'Email',
                               prefixIcon: Icon(
-                                ThemeIcons.mailIcon,
+                                ThemeIcons.emailFilledIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(

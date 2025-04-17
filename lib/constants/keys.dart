@@ -1,6 +1,7 @@
 abstract class Keys {
   // App
   static const String appName = 'Focusyn';
+  static const String aiName = 'Synthe';
 
   // Hive
   static const String brainBox = 'brainBox';

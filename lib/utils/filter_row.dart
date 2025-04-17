@@ -23,7 +23,13 @@ class FilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = ThemeColours.focusColors[category]!['main']!;
+    final color = switch (category) {
+      Keys.actions => ThemeColours.actionsMain,
+      Keys.flows => ThemeColours.flowsMain,
+      Keys.moments => ThemeColours.momentsMain,
+      Keys.thoughts => ThemeColours.thoughtsMain,
+      _ => ThemeColours.taskMain,
+    };
 
     return SizedBox(
       height: 48,

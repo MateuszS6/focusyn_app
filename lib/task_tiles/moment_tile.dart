@@ -32,7 +32,7 @@ class MomentTile extends StatelessWidget {
 
     return TaskTile(
       key: key,
-      color: ThemeColours.momentsTask,
+      color: ThemeColours.momentsAlt,
       text: title,
       subtitle: subtitle,
       onInlineEdit: onEdit,

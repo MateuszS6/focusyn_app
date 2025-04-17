@@ -58,7 +58,7 @@ class ActionTile extends StatelessWidget {
         }
       },
       onDelete: onDelete,
-      color: ThemeColours.actionsTask,
+      color: ThemeColours.actionsMain,
     );
   }
 }

@@ -40,7 +40,7 @@ class FlowTile extends StatelessWidget {
 
     return TaskTile(
       key: key,
-      color: ThemeColours.flowsTask,
+      color: ThemeColours.flowsAlt,
       text: title,
       subtitle: subtitle,
       onInlineEdit: onEdit,

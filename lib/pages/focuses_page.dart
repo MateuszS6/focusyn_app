@@ -79,6 +79,13 @@ class _FocusesPageState extends State<FocusesPage> {
   Widget build(BuildContext context) {
     final totalTasks = _totalTasks;
     final mostActive = _mostActiveFocus;
+    final mostActiveColor = switch (mostActive) {
+      Keys.actions => ThemeColours.actionsMain,
+      Keys.flows => ThemeColours.flowsMain,
+      Keys.moments => ThemeColours.momentsMain,
+      Keys.thoughts => ThemeColours.thoughtsMain,
+      _ => ThemeColours.taskMain,
+    };
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -105,8 +112,7 @@ class _FocusesPageState extends State<FocusesPage> {
                       vertical: 6,
                     ),
                     decoration: BoxDecoration(
-                      color: ThemeColours.focusColors[mostActive]!['main']!
-                          .withAlpha(26),
+                      color: mostActiveColor.withAlpha(26),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -115,14 +121,13 @@ class _FocusesPageState extends State<FocusesPage> {
                         Icon(
                           ThemeIcons.streakIcon,
                           size: 16,
-                          color: ThemeColours.focusColors[mostActive]!['main']!,
+                          color: mostActiveColor,
                         ),
                         const SizedBox(width: 6),
                         Text(
                           '$mostActive is your most active focus',
                           style: TextStyle(
-                            color:
-                                ThemeColours.focusColors[mostActive]!['main']!,
+                            color: mostActiveColor,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -146,9 +151,13 @@ class _FocusesPageState extends State<FocusesPage> {
                       _categories.map((category) {
                         return FocusCard(
                           icon: category.icon,
-                          color:
-                              ThemeColours.focusColors[category
-                                  .colorKey]!['main']!,
+                          color: switch (category.colorKey) {
+                            Keys.actions => ThemeColours.actionsMain,
+                            Keys.flows => ThemeColours.flowsMain,
+                            Keys.moments => ThemeColours.momentsMain,
+                            Keys.thoughts => ThemeColours.thoughtsMain,
+                            _ => ThemeColours.taskMain,
+                          },
                           category: category.name,
                           description: category.description,
                           onUpdate: () => setState(() {}),

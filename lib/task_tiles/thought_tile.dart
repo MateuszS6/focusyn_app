@@ -22,7 +22,7 @@ class ThoughtTile extends StatelessWidget {
 
     return TaskTile(
       key: key,
-      color: ThemeColours.thoughtsTask,
+      color: ThemeColours.thoughtsAlt,
       text: text,
       subtitle: tag.isNotEmpty ? tag : null,
       onInlineEdit: onEdit,

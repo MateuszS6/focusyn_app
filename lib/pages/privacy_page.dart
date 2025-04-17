@@ -46,7 +46,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
           const SizedBox(height: 24),
           _buildSection(
             context,
-            title: 'Data Management',
+            title: 'Danger Zone',
             children: [
               _buildResetDataTile(context),
               const SizedBox(height: 8),
@@ -361,7 +361,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildContactTile(BuildContext context) {
     return const ListTile(
-      leading: Icon(ThemeIcons.mailIcon),
+      leading: Icon(ThemeIcons.emailIcon),
       title: Text('Questions?'),
       subtitle: Text('mstepien1104@gmail.com'),
     );

@@ -89,7 +89,13 @@ class _TaskPageState extends State<TaskPage> {
 
   @override
   Widget build(BuildContext context) {
-    final color = ThemeColours.focusColors[widget.category]!['main']!;
+    final color = switch (widget.category) {
+      Keys.actions => ThemeColours.actionsMain,
+      Keys.flows => ThemeColours.flowsMain,
+      Keys.moments => ThemeColours.momentsMain,
+      Keys.thoughts => ThemeColours.thoughtsMain,
+      _ => ThemeColours.taskMain,
+    };
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -289,7 +295,13 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildEmptyState() {
-    final color = ThemeColours.focusColors[widget.category]!['main']!;
+    final color = switch (widget.category) {
+      Keys.actions => ThemeColours.actionsMain,
+      Keys.flows => ThemeColours.flowsMain,
+      Keys.moments => ThemeColours.momentsMain,
+      Keys.thoughts => ThemeColours.thoughtsMain,
+      _ => ThemeColours.taskMain,
+    };
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -44,9 +44,10 @@ class ThemeIcons {
   // User Symbols
   static const IconData userIcon = Icons.person_outline_rounded;
   static const IconData userFilledIcon = Icons.person_rounded;
+  static const IconData emailIcon = Icons.email_outlined;
+  static const IconData emailFilledIcon = Icons.email_rounded;
   static const IconData lockIcon = Icons.lock_outline_rounded;
   static const IconData lockFilledIcon = Icons.lock_rounded;
-  static const IconData mailIcon = Icons.mail_rounded;
 
   // Data Symbols
   static const IconData securityIcon = Icons.security_outlined;

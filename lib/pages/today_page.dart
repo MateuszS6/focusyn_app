@@ -361,7 +361,7 @@ class _TodayPageState extends State<TodayPage> {
                     Icon(ThemeIcons.addIcon, size: 16, color: Colors.blue[700]),
                     const SizedBox(width: 4),
                     Text(
-                      "Add Points",
+                      "Add",
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.blue[700],
