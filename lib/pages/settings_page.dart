@@ -1,10 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:hive/hive.dart';
 import '../utils/my_app_bar.dart';
 
-class SettingsPage extends StatelessWidget {
+class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
+
+  @override
+  State<SettingsPage> createState() => _SettingsPageState();
+}
+
+class _SettingsPageState extends State<SettingsPage> {
+  // Settings keys
+  static const String _themeKey = 'theme_mode';
+  static const String _dailyGoalKey = 'daily_focus_goal';
+  static const String _weekStartKey = 'week_start_day';
+  static const String _notificationsKey = 'notifications_enabled';
+
+  // Default values
+  ThemeMode _themeMode = ThemeMode.system;
+  int _dailyGoal = 3;
+  String _weekStart = 'Monday';
+  bool _notificationsEnabled = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  Future<void> _loadSettings() async {
+    final settingsBox = Hive.box(Keys.settingsBox);
+
+    setState(() {
+      _themeMode =
+          ThemeMode.values[settingsBox.get(_themeKey, defaultValue: 0)];
+      _dailyGoal = settingsBox.get(_dailyGoalKey, defaultValue: 3);
+      _weekStart = settingsBox.get(_weekStartKey, defaultValue: 'Monday');
+      _notificationsEnabled = settingsBox.get(
+        _notificationsKey,
+        defaultValue: true,
+      );
+    });
+  }
+
+  Future<void> _saveSetting(String key, dynamic value) async {
+    final settingsBox = Hive.box(Keys.settingsBox);
+    await settingsBox.put(key, value);
+
+    // Sync to cloud if needed
+    try {
+      await CloudSyncService.uploadSettings(settingsBox);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to sync settings: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,22 +85,18 @@ class SettingsPage extends StatelessWidget {
           const SizedBox(height: 24),
           _buildSection(
             context,
-            title: 'Backup',
-            children: [
-              _buildBackupButton(context),
-              const SizedBox(height: 8),
-              _buildRestoreButton(context),
-            ],
-          ),
-          const SizedBox(height: 24),
-          _buildSection(
-            context,
-            title: 'Preferences',
+            title: 'Focus',
             children: [
               _buildDailyGoalSelector(context),
               const SizedBox(height: 8),
               _buildWeekStartSelector(context),
             ],
+          ),
+          const SizedBox(height: 24),
+          _buildSection(
+            context,
+            title: 'Notifications',
+            children: [_buildNotificationToggle(context)],
           ),
         ],
       ),
@@ -74,7 +128,7 @@ class SettingsPage extends StatelessWidget {
       leading: const Icon(Icons.palette_rounded),
       title: const Text('Theme'),
       trailing: DropdownButton<ThemeMode>(
-        value: ThemeMode.system,
+        value: _themeMode,
         items: const [
           DropdownMenuItem(
             value: ThemeMode.system,
@@ -84,29 +138,26 @@ class SettingsPage extends StatelessWidget {
           DropdownMenuItem(value: ThemeMode.dark, child: Text('Dark')),
         ],
         onChanged: (ThemeMode? newValue) {
-          // TODO: Implement theme change
+          if (newValue != null) {
+            setState(() {
+              _themeMode = newValue;
+            });
+            _saveSetting(_themeKey, newValue.index);
+            // Apply theme change
+            // This would typically be handled by a theme provider in a real app
+            // For now, we'll just show a message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  'Theme changed to ${newValue.toString().split('.').last}',
+                ),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+          }
         },
       ),
-    );
-  }
-
-  Widget _buildBackupButton(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.cloud_upload_rounded),
-      title: const Text('Backup to Cloud'),
-      onTap: () {
-        // TODO: Implement backup
-      },
-    );
-  }
-
-  Widget _buildRestoreButton(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.cloud_download_rounded),
-      title: const Text('Restore from Cloud'),
-      onTap: () {
-        // TODO: Implement restore
-      },
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 
@@ -115,7 +166,7 @@ class SettingsPage extends StatelessWidget {
       leading: const Icon(Icons.flag_rounded),
       title: const Text('Daily Focus Goal'),
       trailing: DropdownButton<int>(
-        value: 3,
+        value: _dailyGoal,
         items:
             List.generate(5, (index) => index + 1)
                 .map(
@@ -126,9 +177,15 @@ class SettingsPage extends StatelessWidget {
                 )
                 .toList(),
         onChanged: (int? newValue) {
-          // TODO: Implement goal change
+          if (newValue != null) {
+            setState(() {
+              _dailyGoal = newValue;
+            });
+            _saveSetting(_dailyGoalKey, newValue);
+          }
         },
       ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 
@@ -137,15 +194,37 @@ class SettingsPage extends StatelessWidget {
       leading: const Icon(Icons.calendar_today_rounded),
       title: const Text('Start Week On'),
       trailing: DropdownButton<String>(
-        value: 'Monday',
+        value: _weekStart,
         items: const [
           DropdownMenuItem(value: 'Monday', child: Text('Monday')),
           DropdownMenuItem(value: 'Sunday', child: Text('Sunday')),
         ],
         onChanged: (String? newValue) {
-          // TODO: Implement week start change
+          if (newValue != null) {
+            setState(() {
+              _weekStart = newValue;
+            });
+            _saveSetting(_weekStartKey, newValue);
+          }
         },
       ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    );
+  }
+
+  Widget _buildNotificationToggle(BuildContext context) {
+    return SwitchListTile(
+      secondary: const Icon(Icons.notifications_rounded),
+      title: const Text('Enable Notifications'),
+      subtitle: const Text('Get reminders for your tasks and flows'),
+      value: _notificationsEnabled,
+      onChanged: (bool value) {
+        setState(() {
+          _notificationsEnabled = value;
+        });
+        _saveSetting(_notificationsKey, value);
+      },
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
+import 'package:flutter/foundation.dart';
 
 class CloudSyncService {
   static final _auth = FirebaseAuth.instance;
@@ -369,47 +370,23 @@ class CloudSyncService {
   }
 
   static Future<void> deleteUserData() async {
-    final user = _auth.currentUser;
-    if (user == null) {
-      print('DEBUG: No user found in deleteUserData');
-      return;
-    }
-
-    print('DEBUG: Starting user data deletion for user: ${user.uid}');
-    final userDataRef = _firestore.collection('user_data').doc(user.uid);
-    final profileRef = _firestore.collection('profiles').doc(user.uid);
-
     try {
-      // Delete brain points subcollection
-      final brainPointsRef = userDataRef.collection('brainPoints');
-      final brainPointsDocs = await brainPointsRef.get();
-      for (var doc in brainPointsDocs.docs) {
-        await doc.reference.delete();
-      }
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
 
-      // Delete tasks subcollection
-      final tasksRef = userDataRef.collection('tasks');
-      final tasksDocs = await tasksRef.get();
-      for (var doc in tasksDocs.docs) {
-        await doc.reference.delete();
-      }
+      final userRef = _firestore.collection('users').doc(user.uid);
 
-      // Delete filters subcollection
-      final filtersRef = userDataRef.collection('filters');
-      final filtersDocs = await filtersRef.get();
-      for (var doc in filtersDocs.docs) {
-        await doc.reference.delete();
-      }
+      // Delete all subcollections
+      await _deleteCollection(userRef.collection('brainPoints'));
+      await _deleteCollection(userRef.collection('tasks'));
+      await _deleteCollection(userRef.collection('filters'));
+      await _deleteCollection(userRef.collection('settings'));
 
-      // Delete the profile document
-      await profileRef.delete();
-
-      // Finally delete the user data document itself
-      await userDataRef.delete();
-
-      print('DEBUG: User data deletion complete');
+      // Delete the user document
+      await userRef.delete();
+      debugPrint('User data deleted successfully');
     } catch (e) {
-      print('DEBUG: Error in deleteUserData: $e');
+      debugPrint('Error deleting user data: $e');
       rethrow;
     }
   }
@@ -476,6 +453,63 @@ class CloudSyncService {
     } catch (e) {
       print('DEBUG: Error in clearAppData: $e');
       rethrow;
+    }
+  }
+
+  static Future<void> uploadSettings(Box settingsBox) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
+      final userRef = _firestore.collection('user_data').doc(user.uid);
+      await userRef.collection('settings').doc('preferences').set({
+        'themeMode': settingsBox.get('themeMode', defaultValue: 'system'),
+        'dailyGoal': settingsBox.get('dailyGoal', defaultValue: 120),
+        'weekStart': settingsBox.get(
+          'weekStart',
+          defaultValue: 1,
+        ), // 1 = Monday
+        'notifications': settingsBox.get('notifications', defaultValue: true),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      debugPrint('Settings uploaded successfully');
+    } catch (e) {
+      debugPrint('Error uploading settings: $e');
+      rethrow;
+    }
+  }
+
+  static Future<void> downloadSettings(Box settingsBox) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user == null) return;
+
+      final userRef = _firestore.collection('user_data').doc(user.uid);
+      final settingsDoc =
+          await userRef.collection('settings').doc('preferences').get();
+
+      if (settingsDoc.exists) {
+        final data = settingsDoc.data() as Map<String, dynamic>;
+        await settingsBox.putAll({
+          'themeMode': data['themeMode'] ?? 'system',
+          'dailyGoal': data['dailyGoal'] ?? 120,
+          'weekStart': data['weekStart'] ?? 1,
+          'notifications': data['notifications'] ?? true,
+        });
+        debugPrint('Settings downloaded successfully');
+      }
+    } catch (e) {
+      debugPrint('Error downloading settings: $e');
+      rethrow;
+    }
+  }
+
+  static Future<void> _deleteCollection(
+    CollectionReference collectionRef,
+  ) async {
+    final snapshot = await collectionRef.get();
+    for (var doc in snapshot.docs) {
+      await doc.reference.delete();
     }
   }
 }
