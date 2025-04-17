@@ -380,7 +380,6 @@ class CloudSyncService {
       await _deleteCollection(userRef.collection('brainPoints'));
       await _deleteCollection(userRef.collection('tasks'));
       await _deleteCollection(userRef.collection('filters'));
-      await _deleteCollection(userRef.collection('settings'));
 
       // Delete the user document
       await userRef.delete();
@@ -455,54 +454,6 @@ class CloudSyncService {
       print('DEBUG: App data cleared successfully');
     } catch (e) {
       print('DEBUG: Error in clearAppData: $e');
-      rethrow;
-    }
-  }
-
-  static Future<void> uploadSettings(Box settingsBox) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return;
-
-      final userRef = _firestore.collection('user_data').doc(user.uid);
-      await userRef.collection('settings').doc('preferences').set({
-        'themeMode': settingsBox.get('themeMode', defaultValue: 'system'),
-        'dailyGoal': settingsBox.get('dailyGoal', defaultValue: 120),
-        'weekStart': settingsBox.get(
-          'weekStart',
-          defaultValue: 1,
-        ), // 1 = Monday
-        'notifications': settingsBox.get('notifications', defaultValue: true),
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-      debugPrint('Settings uploaded successfully');
-    } catch (e) {
-      debugPrint('Error uploading settings: $e');
-      rethrow;
-    }
-  }
-
-  static Future<void> downloadSettings(Box settingsBox) async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return;
-
-      final userRef = _firestore.collection('user_data').doc(user.uid);
-      final settingsDoc =
-          await userRef.collection('settings').doc('preferences').get();
-
-      if (settingsDoc.exists) {
-        final data = settingsDoc.data() as Map<String, dynamic>;
-        await settingsBox.putAll({
-          'themeMode': data['themeMode'] ?? 'system',
-          'dailyGoal': data['dailyGoal'] ?? 120,
-          'weekStart': data['weekStart'] ?? 1,
-          'notifications': data['notifications'] ?? true,
-        });
-        debugPrint('Settings downloaded successfully');
-      }
-    } catch (e) {
-      debugPrint('Error downloading settings: $e');
       rethrow;
     }
   }

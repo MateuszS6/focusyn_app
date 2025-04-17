@@ -7,12 +7,10 @@ abstract class Keys {
   static const String brainBox = 'brainBox';
   static const String taskBox = 'taskBox';
   static const String filterBox = 'filterBox';
-  static const String settingsBox = 'settingsBox';
 
   // Pages
   static const String today = 'Today';
   static const String account = 'Account';
-  static const String settings = 'Settings';
   static const String focuses = 'Focuses';
   static const String planner = 'Planner';
 
