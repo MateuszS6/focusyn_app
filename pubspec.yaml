@@ -44,8 +44,6 @@ dependencies:
   firebase_core: ^2.25.4
   firebase_auth: ^4.17.4
   cloud_firestore: ^4.13.1
-  firebase_messaging: ^14.7.5
-  flutter_local_notifications: ^16.2.0
 
   # Slidable
   flutter_slidable: ^4.0.0
@@ -55,6 +53,10 @@ dependencies:
 
   # Fonts
   google_fonts: ^6.2.1
+
+  # Local Notifications
+  # flutter_local_notifications: ^19.1.0
+  timezone: ^0.10.0
 
   # Image
   # cached_network_image: ^3.4.1
