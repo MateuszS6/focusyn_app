@@ -58,6 +58,9 @@ dependencies:
   flutter_local_notifications: ^19.1.0
   timezone: ^0.10.0
 
+  # HTTP
+  http: ^1.1.0
+
   # Image
   # cached_network_image: ^3.4.1
   
