@@ -6,6 +6,7 @@ class AppDataInit {
     final taskBox = Hive.box(Keys.taskBox);
     final filterBox = Hive.box(Keys.filterBox);
     final brainBox = Hive.box(Keys.brainBox);
+    final notificationBox = Hive.box(Keys.notificationBox);
 
     // Ensure boxes are initialized with empty lists if they don't exist
     if (!taskBox.containsKey(Keys.actions)) {
@@ -41,6 +42,17 @@ class AppDataInit {
     }
     if (!brainBox.containsKey('lastReset')) {
       brainBox.put('lastReset', DateTime.now().toIso8601String());
+    }
+
+    // Initialize notification settings
+    if (!notificationBox.containsKey('notifications')) {
+      notificationBox.put('notifications', false);
+    }
+    if (!notificationBox.containsKey('notificationHour')) {
+      notificationBox.put('notificationHour', 9);
+    }
+    if (!notificationBox.containsKey('notificationMinute')) {
+      notificationBox.put('notificationMinute', 0);
     }
   }
 }
