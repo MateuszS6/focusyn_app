@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/ai_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
+import 'package:focusyn_app/constants/keys.dart';
+import 'package:hive/hive.dart';
 
 class AiPage extends StatefulWidget {
   const AiPage({super.key});
@@ -19,10 +21,84 @@ class _AiPageState extends State<AiPage> {
   @override
   void initState() {
     super.initState();
-    // Add a welcome message
-    _addMessage(
-      text: "Hello! I'm Synthe, your AI assistant. How can I help you today?",
-      isUser: false,
+    _loadMessages();
+    _scrollToBottom();
+  }
+
+  void _loadMessages() {
+    final box = Hive.box(Keys.chatBox);
+    final savedMessages = box.get(
+      'messages',
+      defaultValue: <Map<String, dynamic>>[],
+    );
+
+    setState(() {
+      _messages.clear();
+      if (savedMessages.isEmpty) {
+        // Add welcome message if no saved messages
+        _addMessage(
+          text:
+              "Hello! I'm Synthe, your AI assistant. How can I help you today?",
+          isUser: false,
+          save: true,
+        );
+      } else {
+        for (final msg in savedMessages) {
+          _messages.add(
+            ChatMessage(
+              text: msg['text'] as String,
+              isUser: msg['isUser'] as bool,
+            ),
+          );
+        }
+      }
+    });
+  }
+
+  void _saveMessages() {
+    final box = Hive.box(Keys.chatBox);
+    final messagesToSave =
+        _messages
+            .map((msg) => {'text': msg.text, 'isUser': msg.isUser})
+            .toList();
+    box.put('messages', messagesToSave);
+  }
+
+  void _clearChat() {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Clear Chat History'),
+            content: const Text(
+              'Are you sure you want to clear all messages? This cannot be undone.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() => _messages.clear());
+                  _saveMessages();
+                  Navigator.pop(context);
+                  // Add welcome message back
+                  _addMessage(
+                    text:
+                        "Hello! I'm Synthe, your AI assistant. How can I help you today?",
+                    isUser: false,
+                    save: true,
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Clear'),
+              ),
+            ],
+          ),
     );
   }
 
@@ -33,10 +109,17 @@ class _AiPageState extends State<AiPage> {
     super.dispose();
   }
 
-  void _addMessage({required String text, required bool isUser}) {
+  void _addMessage({
+    required String text,
+    required bool isUser,
+    bool save = true,
+  }) {
     setState(() {
       _messages.add(ChatMessage(text: text, isUser: isUser));
     });
+    if (save) {
+      _saveMessages();
+    }
     _scrollToBottom();
   }
 
@@ -61,11 +144,14 @@ class _AiPageState extends State<AiPage> {
     setState(() => _isTyping = true);
 
     try {
-      final reply = await AIService.askSynthe(text); // real API call
+      // Convert messages to format expected by AIService
+      final chatHistory =
+          _messages
+              .map((msg) => {'text': msg.text, 'isUser': msg.isUser})
+              .toList();
 
-      // Optional: add tiny delay to simulate a natural response
+      final reply = await AIService.askSynthe(text, chatHistory);
       await Future.delayed(const Duration(milliseconds: 600));
-
       _addMessage(text: reply, isUser: false);
     } catch (e) {
       _addMessage(
@@ -82,24 +168,74 @@ class _AiPageState extends State<AiPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: MyAppBar(
-        title: 'Synthe AI',
+        title: 'Synthe',
         actions: [
           IconButton(
+            icon: const Icon(ThemeIcons.clearIcon),
+            tooltip: 'Clear Chat',
+            onPressed: _clearChat,
+          ),
+          IconButton(
             icon: const Icon(ThemeIcons.infoIcon),
+            tooltip: 'About Synthe',
             onPressed: () {
-              // Show info about Synthe
               showDialog(
                 context: context,
                 builder:
                     (context) => AlertDialog(
-                      title: const Text('About Synthe'),
-                      content: const Text(
-                        'Synthe is your AI assistant that can help you with tasks, answer questions, and provide information. The API integration is coming soon!',
+                      title: Row(
+                        children: [
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.purple[100],
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              ThemeIcons.robotIcon,
+                              color: Colors.purple,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Text('About Synthe'),
+                        ],
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'What can Synthe do?',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            '• Help organize your tasks and schedule\n'
+                            '• Answer questions about productivity\n'
+                            '• Provide suggestions for better focus\n'
+                            '• Explain app features and functionality\n'
+                            '• Offer general assistance and support',
+                          ),
+                          const SizedBox(height: 16),
+                          Text(
+                            'Coming Soon',
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            '• Task creation and management\n'
+                            '• Calendar integration\n'
+                            '• Personalized recommendations\n'
+                            '• Advanced AI capabilities',
+                          ),
+                        ],
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text('Close'),
+                          child: const Text('Got it'),
                         ),
                       ],
                     ),

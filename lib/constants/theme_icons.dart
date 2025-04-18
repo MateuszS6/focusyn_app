@@ -29,6 +29,7 @@ class ThemeIcons {
   static const IconData openIcon = Icons.chevron_right_rounded;
   static const IconData closeIcon = Icons.close_rounded;
   static const IconData sendIcon = Icons.send_rounded;
+  static const IconData clearIcon = Icons.clear_all_rounded;
 
   // General Symbols
   static const IconData infoIcon = Icons.info_rounded;
