@@ -1,7 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:focusyn_app/constants/quotes.dart';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
@@ -78,7 +77,6 @@ class NotificationService {
     }
 
     // Get a random quote
-    final random = Random();
     final quote = Quotes.getRandomQuote();
 
     // Schedule the notification
@@ -146,7 +144,7 @@ class NotificationService {
     }
 
     final androidSettings =
-        await _plugin
+        _plugin
             .resolvePlatformSpecificImplementation<
               AndroidFlutterLocalNotificationsPlugin
             >();
