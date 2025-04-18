@@ -3,6 +3,7 @@ import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/pages/focuses_page.dart';
 import 'package:focusyn_app/pages/today_page.dart';
 import 'package:focusyn_app/pages/planner_page.dart';
+import 'package:focusyn_app/pages/ai_page.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
@@ -21,6 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   static const List<Widget> _pages = [
     TodayPage(),
     FocusesPage(),
+    AiPage(),
     PlannerPage(),
   ];
 
@@ -127,6 +129,10 @@ class _MainScreenState extends State<MainScreen> {
           NavigationDestination(
             icon: Icon(ThemeIcons.focusesIcon),
             label: Keys.focuses,
+          ),
+          NavigationDestination(
+            icon: Icon(ThemeIcons.aiIcon),
+            label: Keys.aiName,
           ),
           NavigationDestination(
             icon: Icon(ThemeIcons.plannerIcon),
