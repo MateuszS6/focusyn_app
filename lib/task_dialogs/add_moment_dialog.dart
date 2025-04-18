@@ -11,8 +11,9 @@ class AddMomentDialog extends StatefulWidget {
   static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
+  final String? defaultList;
 
-  const AddMomentDialog({super.key, required this.onAdd});
+  const AddMomentDialog({super.key, required this.onAdd, this.defaultList});
 
   @override
   State<AddMomentDialog> createState() => _AddMomentDialogState();
@@ -31,6 +32,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
   void initState() {
     super.initState();
     lists = FilterService.filters[Keys.moments] ?? [Keys.all];
+    list = widget.defaultList ?? Keys.all;
   }
 
   @override

@@ -458,13 +458,13 @@ class _TaskPageState extends State<TaskPage> {
 
         switch (widget.category) {
           case Keys.actions:
-            return AddActionDialog(onAdd: onAdd);
+            return AddActionDialog(onAdd: onAdd, defaultList: _selectedFilter);
           case Keys.flows:
-            return AddFlowDialog(onAdd: onAdd);
+            return AddFlowDialog(onAdd: onAdd, defaultList: _selectedFilter);
           case Keys.moments:
-            return AddMomentDialog(onAdd: onAdd);
+            return AddMomentDialog(onAdd: onAdd, defaultList: _selectedFilter);
           case Keys.thoughts:
-            return AddThoughtDialog(onAdd: onAdd);
+            return AddThoughtDialog(onAdd: onAdd, defaultList: _selectedFilter);
           default:
             return const SizedBox.shrink();
         }

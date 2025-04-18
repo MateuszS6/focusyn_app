@@ -11,8 +11,9 @@ class AddFlowDialog extends StatefulWidget {
   static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
+  final String? defaultList;
 
-  const AddFlowDialog({super.key, required this.onAdd});
+  const AddFlowDialog({super.key, required this.onAdd, this.defaultList});
 
   @override
   State<AddFlowDialog> createState() => _AddFlowDialogState();
@@ -32,6 +33,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
   void initState() {
     super.initState();
     lists = FilterService.filters[Keys.flows] ?? [Keys.all];
+    list = widget.defaultList ?? Keys.all;
   }
 
   @override

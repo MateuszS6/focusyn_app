@@ -13,15 +13,16 @@ class AddActionDialog extends StatelessWidget {
   static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
+  final String? defaultList;
 
-  const AddActionDialog({super.key, required this.onAdd});
+  const AddActionDialog({super.key, required this.onAdd, this.defaultList});
 
   @override
   Widget build(BuildContext context) {
     String title = '';
     int priority = 1;
     int brainPoints = 5;
-    String list = Keys.all;
+    String list = defaultList ?? Keys.all;
     final lists = FilterService.filters[Keys.actions] ?? [Keys.all];
 
     final inputBorder = OutlineInputBorder(

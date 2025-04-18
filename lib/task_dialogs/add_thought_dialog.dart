@@ -11,8 +11,9 @@ class AddThoughtDialog extends StatefulWidget {
   static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
+  final String? defaultList;
 
-  const AddThoughtDialog({super.key, required this.onAdd});
+  const AddThoughtDialog({super.key, required this.onAdd, this.defaultList});
 
   @override
   State<AddThoughtDialog> createState() => _AddThoughtDialogState();
@@ -27,6 +28,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
   void initState() {
     super.initState();
     lists = FilterService.filters[Keys.thoughts] ?? [Keys.all];
+    list = widget.defaultList ?? Keys.all;
   }
 
   @override
