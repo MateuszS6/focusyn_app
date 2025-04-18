@@ -9,7 +9,7 @@ class ThemeIcons {
 
   // Other Pages
   static const IconData notificationsIcon = Icons.notifications_rounded;
-  static const IconData onboardingIcon = Icons.school_outlined;
+  static const IconData onboardingIcon = Icons.school_rounded;
   static const IconData settingsIcon = Icons.settings_outlined;
 
   // Focuses
@@ -30,8 +30,9 @@ class ThemeIcons {
   static const IconData closeIcon = Icons.close_rounded;
 
   // General Symbols
+  static const IconData infoIcon = Icons.info_rounded;
+  static const IconData helpIcon = Icons.help_rounded;
   static const IconData robotIcon = Icons.smart_toy_rounded;
-  static const IconData infoIcon = Icons.info_outline_rounded;
   static const IconData streakIcon = Icons.local_fire_department_rounded;
   static const IconData noEventsIcon = Icons.event_available_rounded;
 

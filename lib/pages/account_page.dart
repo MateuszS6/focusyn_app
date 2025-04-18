@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
-import 'package:focusyn_app/pages/onboarding_page.dart';
+import 'package:focusyn_app/pages/notifications_page.dart';
 import 'package:focusyn_app/pages/privacy_page.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import '../pages/login_page.dart';
@@ -383,13 +383,13 @@ class _AccountPageState extends State<AccountPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(ThemeIcons.onboardingIcon),
-            tooltip: 'Replay Onboarding',
+            icon: const Icon(ThemeIcons.notificationsIcon),
+            tooltip: 'Notifications',
             onPressed:
                 () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const OnboardingPage(),
+                    builder: (context) => const NotificationsPage(),
                   ),
                 ),
           ),

@@ -9,7 +9,7 @@ import 'package:focusyn_app/pages/task_page.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
-import 'package:focusyn_app/pages/notifications_page.dart';
+import 'package:focusyn_app/pages/onboarding_page.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:hive/hive.dart';
 
@@ -116,12 +116,13 @@ class _TodayPageState extends State<TodayPage> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(ThemeIcons.notificationsIcon),
+                          icon: const Icon(ThemeIcons.onboardingIcon),
+                          tooltip: 'Replay Onboarding',
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const NotificationsPage(),
+                                builder: (_) => const OnboardingPage(),
                               ),
                             );
                           },

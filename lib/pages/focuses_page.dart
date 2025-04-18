@@ -104,7 +104,7 @@ class _FocusesPageState extends State<FocusesPage> {
                     style: Theme.of(context).textTheme.displayLarge,
                   ),
                   IconButton(
-                    icon: const Icon(Icons.help_outline),
+                    icon: const Icon(ThemeIcons.helpIcon),
                     onPressed: () {
                       Navigator.push(
                         context,
