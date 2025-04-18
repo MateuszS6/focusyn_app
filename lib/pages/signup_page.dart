@@ -62,7 +62,7 @@ class _SignUpPageState extends State<SignUpPage> {
       taskBox.putAll({
         Keys.actions: [
           {
-            Keys.title: "Complete Focusyn App",
+            Keys.text: "Complete Focusyn App",
             Keys.priority: 1,
             Keys.brainPoints: 10,
             Keys.list: "Work",
@@ -71,7 +71,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ],
         Keys.flows: [
           {
-            Keys.title: "Morning Routine",
+            Keys.text: "Morning Routine",
             Keys.date: "2025-03-30",
             Keys.time: "07:30",
             Keys.duration: 15,
@@ -84,7 +84,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ],
         Keys.moments: [
           {
-            Keys.title: "Doctor's Appointment",
+            Keys.text: "Doctor's Appointment",
             Keys.date: "2025-04-03",
             Keys.time: "10:30",
             Keys.duration: 30,

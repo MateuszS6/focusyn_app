@@ -26,9 +26,7 @@ class TaskService {
     try {
       print('DEBUG: Updating tasks for category: $category');
       print('DEBUG: Current task count: ${list.length}');
-      print(
-        'DEBUG: Task details: ${list.map((t) => t[Keys.title]).join(', ')}',
-      );
+      print('DEBUG: Task details: ${list.map((t) => t[Keys.text]).join(', ')}');
 
       // Update local storage
       await _taskBox.put(category, list);

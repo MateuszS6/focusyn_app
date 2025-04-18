@@ -387,11 +387,11 @@ class _TaskPageState extends State<TaskPage> {
           key: key,
           task: Task.fromMap(task),
           onEdit: (newTitle) {
-            task[Keys.title] = newTitle;
+            task[Keys.text] = newTitle;
             _updateTask(task);
           },
           onComplete: (updatedTask) {
-            task = updatedTask.toMap();
+            setState(() => _tasks[_tasks.indexOf(task)] = updatedTask.toMap());
             _updateTask(task);
           },
           onDelete: () => _removeTask(task),
@@ -403,7 +403,7 @@ class _TaskPageState extends State<TaskPage> {
           key: key,
           task: Task.fromMap(task),
           onEdit: (newTitle) {
-            task[Keys.title] = newTitle;
+            task[Keys.text] = newTitle;
             _updateTask(task);
           },
           onDelete: () => _removeTask(task),

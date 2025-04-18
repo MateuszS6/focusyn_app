@@ -50,22 +50,24 @@ class Task {
 
   factory Task.fromMap(Map<String, dynamic> map) {
     return Task(
-      id: map[Keys.id] ?? '',
-      text: map[Keys.text] ?? '',
-      priority: map[Keys.priority] ?? 1,
-      brainPoints: map[Keys.brainPoints] ?? 0,
-      list: map[Keys.list] ?? 'All',
-      date: map[Keys.date] as String?,
-      time: map[Keys.time] as String?,
-      duration: map[Keys.duration] ?? 15,
-      location: map[Keys.location] as String?,
-      repeat: map[Keys.repeat] ?? 'Repeat?',
+      id: map[Keys.id]?.toString() ?? '',
+      text: map[Keys.text]?.toString() ?? '',
+      priority: int.tryParse(map[Keys.priority]?.toString() ?? '') ?? 1,
+      brainPoints: int.tryParse(map[Keys.brainPoints]?.toString() ?? '') ?? 0,
+      list: map[Keys.list]?.toString() ?? 'All',
+      date: map[Keys.date]?.toString(),
+      time: map[Keys.time]?.toString(),
+      duration: int.tryParse(map[Keys.duration]?.toString() ?? '') ?? 15,
+      location: map[Keys.location]?.toString(),
+      repeat: map[Keys.repeat]?.toString() ?? 'Repeat?',
       history:
           (map[Keys.history] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],
-      createdAt: DateTime.parse(map[Keys.createdAt] as String),
+      createdAt: DateTime.parse(
+        map[Keys.createdAt]?.toString() ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 }

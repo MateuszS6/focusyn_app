@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/models/task_model.dart';
 
 class PlannerPage extends StatefulWidget {
   const PlannerPage({super.key});
@@ -13,20 +14,22 @@ class PlannerPage extends StatefulWidget {
 class _PlannerPageState extends State<PlannerPage> {
   DateTime selectedDate = DateTime.now();
 
-  List<Map<String, dynamic>> get allScheduledTasks {
+  List<Task> get allScheduledTasks {
     final formattedDate = _formatDate(selectedDate);
     final flows =
         TaskService.tasks[Keys.flows]!
-            .where((t) => t[Keys.date] == formattedDate)
+            .where((t) => Task.fromMap(t).date == formattedDate)
+            .map((t) => Task.fromMap(t))
             .toList();
 
     final moments =
         TaskService.tasks[Keys.moments]!
-            .where((t) => t[Keys.date] == formattedDate)
+            .where((t) => Task.fromMap(t).date == formattedDate)
+            .map((t) => Task.fromMap(t))
             .toList();
 
     return [...flows, ...moments]..sort(
-      (a, b) => _parseTime(a[Keys.time]).compareTo(_parseTime(b[Keys.time])),
+      (a, b) => _parseTime(a.time ?? '').compareTo(_parseTime(b.time ?? '')),
     );
   }
 
@@ -147,12 +150,12 @@ class _PlannerPageState extends State<PlannerPage> {
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (_, i) {
         final task = allScheduledTasks[i];
-        final isMoment = TaskService.tasks[Keys.moments]!.any(
-          (m) =>
-              m[Keys.title] == task[Keys.title] &&
-              m[Keys.date] == task[Keys.date] &&
-              m[Keys.time] == task[Keys.time],
-        );
+        final isMoment = TaskService.tasks[Keys.moments]!.any((m) {
+          final moment = Task.fromMap(m);
+          return moment.text == task.text &&
+              moment.date == task.date &&
+              moment.time == task.time;
+        });
         final color = isMoment ? Colors.red : Colors.green;
 
         return Container(
@@ -197,16 +200,16 @@ class _PlannerPageState extends State<PlannerPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            task[Keys.title],
+                            task.text,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          if (isMoment && task[Keys.location] != null) ...[
+                          if (isMoment && task.location != null) ...[
                             const SizedBox(height: 4),
                             Text(
-                              task[Keys.location],
+                              task.location!,
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey[600],
@@ -221,17 +224,17 @@ class _PlannerPageState extends State<PlannerPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          task[Keys.time],
+                          task.time ?? '',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w500,
                             color: color.shade700,
                           ),
                         ),
-                        if (task[Keys.duration] != null) ...[
+                        if (task.duration != null) ...[
                           const SizedBox(height: 4),
                           Text(
-                            "${task[Keys.duration]} min",
+                            "${task.duration} min",
                             style: TextStyle(
                               fontSize: 13,
                               color: Colors.grey[600],

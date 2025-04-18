@@ -6,6 +6,7 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/pages/task_page.dart';
+import 'package:focusyn_app/models/task_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
@@ -468,21 +469,28 @@ class _TodayPageState extends State<TodayPage> {
     final moments = TaskService.tasks[Keys.moments] ?? [];
 
     final todayFlows =
-        flows.where((flow) => flow[Keys.date] == formattedDate).toList();
+        flows
+            .where((flow) => Task.fromMap(flow).date == formattedDate)
+            .map((flow) => Task.fromMap(flow))
+            .toList();
     final todayMoments =
-        moments.where((moment) => moment[Keys.date] == formattedDate).toList();
+        moments
+            .where((moment) => Task.fromMap(moment).date == formattedDate)
+            .map((moment) => Task.fromMap(moment))
+            .toList();
 
     // Calculate total brain points from uncompleted actions and overdue flows
     final totalActionBrainPoints = actions.fold<int>(
       0,
-      (sum, action) => sum + ((action[Keys.brainPoints] as int?) ?? 0),
+      (sum, action) => sum + Task.fromMap(action).brainPoints.toInt(),
     );
     final totalFlowBrainPoints = flows.fold<int>(0, (sum, flow) {
-      final flowDate = DateTime.tryParse(flow[Keys.date] as String);
+      final task = Task.fromMap(flow);
+      final flowDate = DateTime.tryParse(task.date ?? '');
       if (flowDate == null) return sum;
       // Only count flows that are due today or before today
       if (flowDate.isBefore(today) || _isSameDate(flowDate, today)) {
-        return sum + ((flow[Keys.brainPoints] as int?) ?? 0);
+        return sum + task.brainPoints.toInt();
       }
       return sum;
     });
@@ -608,14 +616,14 @@ class _TodayPageState extends State<TodayPage> {
                       if (nextFlow != null)
                         _buildNextTask(
                           icon: ThemeIcons.flowsIcon,
-                          title: nextFlow[Keys.title],
-                          time: nextFlow[Keys.time],
+                          title: nextFlow.text,
+                          time: nextFlow.time ?? '',
                         ),
                       if (nextMoment != null)
                         _buildNextTask(
                           icon: ThemeIcons.momentsIcon,
-                          title: nextMoment[Keys.title],
-                          time: nextMoment[Keys.time],
+                          title: nextMoment.text,
+                          time: nextMoment.time ?? '',
                         ),
                     ],
                   ),

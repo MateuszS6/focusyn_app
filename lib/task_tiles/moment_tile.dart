@@ -23,7 +23,7 @@ class MomentTile extends StatelessWidget {
       '${task.duration}m',
       task.location,
       task.list,
-    ].join(" • ");
+    ].where((item) => item != null && item.isNotEmpty).join(" • ");
 
     return TaskTile(
       key: key,
