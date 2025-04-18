@@ -6,7 +6,7 @@ class AppDataInit {
     final taskBox = Hive.box(Keys.taskBox);
     final filterBox = Hive.box(Keys.filterBox);
     final brainBox = Hive.box(Keys.brainBox);
-    final notificationBox = Hive.box(Keys.notificationBox);
+    final notificationBox = Hive.box(Keys.settingBox);
 
     // Ensure boxes are initialized with empty lists if they don't exist
     if (!taskBox.containsKey(Keys.actions)) {

@@ -48,7 +48,7 @@ class NotificationService {
 
   static Future<void> restoreFromSettings() async {
     debugPrint('Restoring notification settings from storage');
-    final box = Hive.box(Keys.notificationBox);
+    final box = Hive.box(Keys.settingBox);
     final enabled = box.get('notifications', defaultValue: false);
     final hour = box.get('notificationHour', defaultValue: 9);
     final min = box.get('notificationMinute', defaultValue: 0);

@@ -15,7 +15,7 @@ class NotificationsPage extends StatefulWidget {
 class _NotificationsPageState extends State<NotificationsPage> {
   bool _notificationsEnabled = false;
   TimeOfDay _notificationTime = const TimeOfDay(hour: 9, minute: 0);
-  final _notificationBox = Hive.box(Keys.notificationBox);
+  final _notificationBox = Hive.box(Keys.settingBox);
 
   @override
   void initState() {
