@@ -39,7 +39,7 @@ class ActionTile extends StatelessWidget {
     final subtitle = [
       _getPriorityText(task.priority),
       '${task.brainPoints} BP',
-      if (task.tag != 'All') task.tag,
+      if (task.list != 'All') task.list,
     ].join(' • ');
 
     return TaskTile(

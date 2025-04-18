@@ -10,7 +10,7 @@ class AddActionDialog extends StatelessWidget {
   static const String _titleLabel = "Title";
   static const String _priorityLabel = "Priority";
   static const String _brainPointsLabel = "Brain Points";
-  static const String _tagLabel = "Tag";
+  static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
 
@@ -21,8 +21,8 @@ class AddActionDialog extends StatelessWidget {
     String title = '';
     int priority = 1;
     int brainPoints = 5;
-    String tag = Keys.all;
-    final tags = FilterService.filters[Keys.actions] ?? [Keys.all];
+    String list = Keys.all;
+    final lists = FilterService.filters[Keys.actions] ?? [Keys.all];
 
     final inputBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
@@ -47,7 +47,7 @@ class AddActionDialog extends StatelessWidget {
             title: title,
             priority: priority,
             brainPoints: brainPoints,
-            tag: tag,
+            list: list,
           ),
       fields: [
         TextField(
@@ -83,16 +83,16 @@ class AddActionDialog extends StatelessWidget {
           onChanged: (val) => brainPoints = int.tryParse(val) ?? 5,
         ),
         DropdownButtonFormField<String>(
-          value: tag,
+          value: list,
           decoration: inputDecoration.copyWith(
-            labelText: _tagLabel,
+            labelText: _listLabel,
             prefixIcon: const Icon(ThemeIcons.tagIcon),
           ),
           items:
-              tags
+              lists
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                   .toList(),
-          onChanged: (val) => tag = val ?? Keys.all,
+          onChanged: (val) => list = val ?? Keys.all,
         ),
       ],
     );

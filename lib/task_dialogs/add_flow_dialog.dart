@@ -8,7 +8,7 @@ import 'package:focusyn_app/utils/task_dialog.dart';
 class AddFlowDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Flow";
   static const String _titleLabel = "Title";
-  static const String _tagLabel = "Tag";
+  static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
 
@@ -25,13 +25,13 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
   Duration duration = const Duration(minutes: 15);
   String repeat = 'Daily';
   int brainPoints = 5;
-  String tag = Keys.all;
-  late final List<String> tags;
+  String list = Keys.all;
+  late final List<String> lists;
 
   @override
   void initState() {
     super.initState();
-    tags = FilterService.filters[Keys.flows] ?? [Keys.all];
+    lists = FilterService.filters[Keys.flows] ?? [Keys.all];
   }
 
   @override
@@ -57,7 +57,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
       buildTask:
           () => Task(
             title: title,
-            tag: tag,
+            list: list,
             brainPoints: brainPoints,
             duration: duration.inMinutes.toString(),
             date: selectedDate.toIso8601String().split('T')[0],
@@ -221,16 +221,16 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
               (val) => setState(() => brainPoints = int.tryParse(val) ?? 5),
         ),
         DropdownButtonFormField<String>(
-          value: tag,
+          value: list,
           decoration: inputDecoration.copyWith(
-            labelText: AddFlowDialog._tagLabel,
+            labelText: AddFlowDialog._listLabel,
             prefixIcon: const Icon(ThemeIcons.tagIcon),
           ),
           items:
-              tags
+              lists
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                   .toList(),
-          onChanged: (val) => setState(() => tag = val ?? Keys.all),
+          onChanged: (val) => setState(() => list = val ?? Keys.all),
         ),
       ],
     );

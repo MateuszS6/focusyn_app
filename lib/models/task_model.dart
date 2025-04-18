@@ -5,7 +5,7 @@ class Task {
   final String title;
   final int priority;
   final int brainPoints;
-  final String tag;
+  final String list;
   final String? text;
   final String? date;
   final String? time;
@@ -20,7 +20,7 @@ class Task {
     required this.title,
     this.priority = 1,
     this.brainPoints = 0,
-    this.tag = 'All',
+    this.list = 'All',
     this.text,
     this.date,
     this.time,
@@ -39,7 +39,7 @@ class Task {
       Keys.title: title,
       Keys.priority: priority,
       Keys.brainPoints: brainPoints,
-      Keys.tag: tag,
+      Keys.list: list,
       if (text != null) Keys.text: text,
       if (date != null) Keys.date: date,
       if (time != null) Keys.time: time,
@@ -57,7 +57,7 @@ class Task {
       title: map[Keys.title] ?? '',
       priority: map[Keys.priority] ?? 1,
       brainPoints: map[Keys.brainPoints] ?? 0,
-      tag: map[Keys.tag] ?? 'All',
+      list: map[Keys.list] ?? 'All',
       text: map[Keys.text] as String?,
       date: map[Keys.date] as String?,
       time: map[Keys.time] as String?,

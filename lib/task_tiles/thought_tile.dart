@@ -18,7 +18,7 @@ class ThoughtTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final text = task[Keys.text] ?? '';
-    final tag = task[Keys.tag] ?? '';
+    final tag = task[Keys.list] ?? '';
 
     return TaskTile(
       key: key,

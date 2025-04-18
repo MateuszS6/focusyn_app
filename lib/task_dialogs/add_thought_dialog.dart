@@ -8,7 +8,7 @@ import 'package:focusyn_app/utils/task_dialog.dart';
 class AddThoughtDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Thought";
   static const String _textLabel = "Text";
-  static const String _tagLabel = "Tag";
+  static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
 
@@ -20,13 +20,13 @@ class AddThoughtDialog extends StatefulWidget {
 
 class _AddThoughtDialogState extends State<AddThoughtDialog> {
   String text = '';
-  String tag = Keys.all;
-  late final List<String> tags;
+  String list = Keys.all;
+  late final List<String> lists;
 
   @override
   void initState() {
     super.initState();
-    tags = FilterService.filters[Keys.thoughts] ?? [Keys.all];
+    lists = FilterService.filters[Keys.thoughts] ?? [Keys.all];
   }
 
   @override
@@ -49,7 +49,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
       title: AddThoughtDialog._dialogTitle,
       onAdd: widget.onAdd,
       validateInput: () => text.trim().isNotEmpty,
-      buildTask: () => Task(title: text, tag: tag, text: text),
+      buildTask: () => Task(title: text, list: list, text: text),
       fields: [
         TextField(
           decoration: inputDecoration.copyWith(
@@ -61,16 +61,16 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
           onChanged: (val) => setState(() => text = val),
         ),
         DropdownButtonFormField<String>(
-          value: tag,
+          value: list,
           decoration: inputDecoration.copyWith(
-            labelText: AddThoughtDialog._tagLabel,
+            labelText: AddThoughtDialog._listLabel,
             prefixIcon: const Icon(ThemeIcons.tagIcon),
           ),
           items:
-              tags
+              lists
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                   .toList(),
-          onChanged: (val) => setState(() => tag = val ?? Keys.all),
+          onChanged: (val) => setState(() => list = val ?? Keys.all),
         ),
       ],
     );

@@ -80,21 +80,21 @@ class HelpPage extends StatelessWidget {
             title: 'Tags & Organization',
             children: [
               _buildInfoCard(
-                title: 'Using Tags',
+                title: 'Using Lists',
                 content:
-                    'Tags help you organize items within each category. You can:\n\n'
-                    '• Add multiple tags to any item\n'
-                    '• Filter items by tags\n'
-                    '• Create custom tags for your needs\n'
-                    '• Use tags to group similar items',
+                    'Lists help you organize items within each category. You can:\n\n'
+                    '• Add multiple lists to any item\n'
+                    '• Filter items by lists\n'
+                    '• Create custom lists for your needs\n'
+                    '• Use lists to group similar items',
                 icon: Icons.filter_list,
                 color: ThemeColours.taskMain,
               ),
               const SizedBox(height: 16),
               _buildInfoCard(
-                title: 'Default Tags',
+                title: 'Default Lists',
                 content:
-                    'Each category comes with default tags:\n\n'
+                    'Each category comes with default lists:\n\n'
                     '• Actions: Home, Work, Errands\n'
                     '• Flows: Morning, Evening, Wellness\n'
                     '• Moments: Appointments, Social, Work\n'

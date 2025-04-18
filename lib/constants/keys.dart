@@ -36,6 +36,6 @@ abstract class Keys {
   static const String createdAt = 'createdAt';
 
   // Filters
-  static const String tag = 'tag';
+  static const String list = 'list';
   static const String all = 'All';
 }

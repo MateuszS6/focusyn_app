@@ -35,7 +35,7 @@ class _TaskPageState extends State<TaskPage> {
         _selectedFilter == Keys.all
             ? _tasks
             : _tasks
-                .where((task) => task[Keys.tag] == _selectedFilter)
+                .where((task) => task[Keys.list] == _selectedFilter)
                 .toList();
 
     // Sort tasks
@@ -133,7 +133,7 @@ class _TaskPageState extends State<TaskPage> {
                 onDelete: (tag) async {
                   setState(() {
                     _filters.remove(tag);
-                    _tasks.removeWhere((task) => task[Keys.tag] == tag);
+                    _tasks.removeWhere((task) => task[Keys.list] == tag);
                     if (_selectedFilter == tag) _selectedFilter = Keys.all;
                   });
                   // Update both tasks and filters in the cloud

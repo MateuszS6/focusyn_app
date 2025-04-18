@@ -40,16 +40,16 @@ class FilterRow extends StatelessWidget {
         separatorBuilder: (_, __) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           if (index < filters.length) {
-            final tag = filters[index];
-            final isSelected = tag == selected;
+            final list = filters[index];
+            final isSelected = list == selected;
             return GestureDetector(
               onLongPress: () {
-                if (tag != Keys.all) {
+                if (list != Keys.all) {
                   showDialog(
                     context: context,
                     builder:
                         (context) => AlertDialog(
-                          title: Text('Delete "$tag"?'),
+                          title: Text('Delete "$list"?'),
                           content: const Text(
                             'This will remove the list and all its tasks.',
                           ),
@@ -61,7 +61,7 @@ class FilterRow extends StatelessWidget {
                             ElevatedButton(
                               onPressed: () async {
                                 Navigator.pop(context);
-                                await onDelete(tag);
+                                await onDelete(list);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.red,
@@ -76,7 +76,7 @@ class FilterRow extends StatelessWidget {
               },
               child: ActionChip(
                 label: Text(
-                  tag,
+                  list,
                   style: TextStyle(
                     color: isSelected ? Colors.white : Colors.black87,
                     fontSize: 14,
@@ -85,7 +85,7 @@ class FilterRow extends StatelessWidget {
                   ),
                 ),
                 shape: const StadiumBorder(),
-                onPressed: () => onSelect(tag),
+                onPressed: () => onSelect(list),
                 backgroundColor: isSelected ? color : Colors.grey[200],
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 side: BorderSide.none,

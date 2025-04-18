@@ -8,7 +8,7 @@ import 'package:focusyn_app/utils/task_dialog.dart';
 class AddMomentDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Moment";
   static const String _titleLabel = "Title";
-  static const String _tagLabel = "Tag";
+  static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
 
@@ -24,13 +24,13 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
   Duration duration = const Duration(minutes: 30);
-  String tag = Keys.all;
-  late final List<String> tags;
+  String list = Keys.all;
+  late final List<String> lists;
 
   @override
   void initState() {
     super.initState();
-    tags = FilterService.filters[Keys.moments] ?? [Keys.all];
+    lists = FilterService.filters[Keys.moments] ?? [Keys.all];
   }
 
   @override
@@ -56,7 +56,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
       buildTask:
           () => Task(
             title: title,
-            tag: tag,
+            list: list,
             date: selectedDate.toIso8601String().split('T')[0],
             time: selectedTime.format(context),
             location: location.isNotEmpty ? location : null,
@@ -205,16 +205,16 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           onChanged: (val) => setState(() => location = val),
         ),
         DropdownButtonFormField<String>(
-          value: tag,
+          value: list,
           decoration: inputDecoration.copyWith(
-            labelText: AddMomentDialog._tagLabel,
+            labelText: AddMomentDialog._listLabel,
             prefixIcon: const Icon(ThemeIcons.tagIcon),
           ),
           items:
-              tags
+              lists
                   .map((t) => DropdownMenuItem(value: t, child: Text(t)))
                   .toList(),
-          onChanged: (val) => setState(() => tag = val ?? Keys.all),
+          onChanged: (val) => setState(() => list = val ?? Keys.all),
         ),
       ],
     );

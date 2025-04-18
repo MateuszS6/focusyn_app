@@ -19,7 +19,7 @@ class MomentTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final title = task[Keys.title] ?? '';
     final location = task[Keys.location] ?? '';
-    final tag = task[Keys.tag] ?? '';
+    final tag = task[Keys.list] ?? '';
     final date = task[Keys.date] ?? '';
     final time = task[Keys.time] ?? '';
 

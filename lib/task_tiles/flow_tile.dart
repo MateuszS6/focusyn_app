@@ -27,7 +27,7 @@ class FlowTile extends StatelessWidget {
     final duration = task[Keys.duration] ?? 15;
     final repeat = task[Keys.repeat] ?? 'Repeat?';
     final bp = task[Keys.brainPoints] ?? 0;
-    final tag = task[Keys.tag] ?? 'All';
+    final tag = task[Keys.list] ?? 'All';
 
     final subtitle = [
       if (date.isNotEmpty) date,
