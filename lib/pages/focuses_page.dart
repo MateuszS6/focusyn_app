@@ -4,6 +4,7 @@ import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/utils/focus_card.dart';
+import 'package:focusyn_app/pages/help_page.dart';
 
 class FocusCategory {
   final String name;
@@ -95,7 +96,25 @@ class _FocusesPageState extends State<FocusesPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Focuses', style: Theme.of(context).textTheme.displayLarge),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Focuses',
+                    style: Theme.of(context).textTheme.displayLarge,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.help_outline),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const HelpPage()),
+                      );
+                    },
+                    tooltip: 'Help & Definitions',
+                  ),
+                ],
+              ),
               const SizedBox(height: 12),
               if (totalTasks > 0) ...[
                 Text(
