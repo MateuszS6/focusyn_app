@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class ThemeIcons {
-  // Pages
-  static const IconData todayIcon = Icons.calendar_today_rounded;
+  // Main Pages
+  static const IconData todayIcon = Icons.today_rounded;
   static const IconData focusesIcon = Icons.auto_awesome_motion_rounded;
   static const IconData aiIcon = Icons.auto_awesome_rounded;
   static const IconData plannerIcon = Icons.calendar_month_rounded;
+
+  // Other Pages
   static const IconData notificationsIcon = Icons.notifications_rounded;
   static const IconData settingsIcon = Icons.settings_outlined;
 
