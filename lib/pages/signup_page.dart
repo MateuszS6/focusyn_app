@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
-import '../main_screen.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/pages/onboarding_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -118,7 +118,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const MainScreen()),
+        MaterialPageRoute(builder: (_) => const OnboardingPage()),
         (route) => false,
       );
     } catch (e) {
