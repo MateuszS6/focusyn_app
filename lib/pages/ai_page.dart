@@ -166,6 +166,8 @@ class _AiPageState extends State<AiPage> {
                 style: TextStyle(
                   color: message.isUser ? Colors.white : Colors.black87,
                   fontSize: 16,
+                  fontFamily: null,
+                  fontStyle: FontStyle.normal,
                 ),
               ),
             ),
