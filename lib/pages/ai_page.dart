@@ -153,7 +153,7 @@ class _AiPageState extends State<AiPage> {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: Colors.black.withAlpha(13),
                     blurRadius: 5,
                     offset: const Offset(0, 2),
                   ),
@@ -209,7 +209,7 @@ class _AiPageState extends State<AiPage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: Colors.black.withAlpha(13),
                   blurRadius: 5,
                   offset: const Offset(0, 2),
                 ),
@@ -234,7 +234,7 @@ class _AiPageState extends State<AiPage> {
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: Colors.purple.withOpacity(0.7),
+              color: Colors.purple.withAlpha(179),
               shape: BoxShape.circle,
             ),
           );
@@ -250,7 +250,7 @@ class _AiPageState extends State<AiPage> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(13),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),

@@ -9,6 +9,7 @@ class ThemeIcons {
 
   // Other Pages
   static const IconData notificationsIcon = Icons.notifications_rounded;
+  static const IconData onboardingIcon = Icons.school_outlined;
   static const IconData settingsIcon = Icons.settings_outlined;
 
   // Focuses
