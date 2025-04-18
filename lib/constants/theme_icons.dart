@@ -4,6 +4,7 @@ class ThemeIcons {
   // Pages
   static const IconData todayIcon = Icons.calendar_today_rounded;
   static const IconData focusesIcon = Icons.auto_awesome_motion_rounded;
+  static const IconData aiIcon = Icons.auto_awesome_rounded;
   static const IconData plannerIcon = Icons.calendar_month_rounded;
   static const IconData notificationsIcon = Icons.notifications_rounded;
   static const IconData settingsIcon = Icons.settings_outlined;
@@ -26,6 +27,7 @@ class ThemeIcons {
   static const IconData closeIcon = Icons.close_rounded;
 
   // General Symbols
+  static const IconData robotIcon = Icons.smart_toy_rounded;
   static const IconData infoIcon = Icons.info_outline_rounded;
   static const IconData streakIcon = Icons.local_fire_department_rounded;
   static const IconData noEventsIcon = Icons.event_available_rounded;
