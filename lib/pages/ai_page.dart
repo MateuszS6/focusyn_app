@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/services/ai_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 
 class AiPage extends StatefulWidget {
@@ -51,28 +52,29 @@ class _AiPageState extends State<AiPage> {
     });
   }
 
-  void _handleSubmitted(String text) {
+  void _handleSubmitted(String text) async {
     if (text.trim().isEmpty) return;
 
     _messageController.clear();
     _addMessage(text: text, isUser: true);
 
-    // Simulate AI response (will be replaced with actual API call)
-    setState(() {
-      _isTyping = true;
-    });
+    setState(() => _isTyping = true);
 
-    // Simulate typing delay
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {
-        _isTyping = false;
-      });
+    try {
+      final reply = await AIService.askSynthe(text); // real API call
+
+      // Optional: add tiny delay to simulate a natural response
+      await Future.delayed(const Duration(milliseconds: 600));
+
+      _addMessage(text: reply, isUser: false);
+    } catch (e) {
       _addMessage(
-        text:
-            "I'm still learning! This is a placeholder response. When the API is connected, I'll be able to help you with your questions.",
+        text: "Synthe had trouble replying. Please try again later.",
         isUser: false,
       );
-    });
+    } finally {
+      setState(() => _isTyping = false);
+    }
   }
 
   @override
@@ -284,7 +286,7 @@ class _AiPageState extends State<AiPage> {
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              icon: const Icon(Icons.send, color: Colors.white),
+              icon: const Icon(ThemeIcons.sendIcon, color: Colors.white),
               onPressed: () => _handleSubmitted(_messageController.text),
             ),
           ),
