@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/services/brain_points_service.dart';
-import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
+import 'package:focusyn_app/models/task_model.dart';
 
 class FlowTile extends StatelessWidget {
-  final Map<String, dynamic> task;
+  final Task task;
   final Function(String title) onEdit;
-  final VoidCallback onComplete;
+  final Function(Task updatedTask) onComplete;
   final VoidCallback onDelete;
 
   const FlowTile({
@@ -21,46 +21,48 @@ class FlowTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = task[Keys.title] ?? '';
-    final date = task[Keys.date] ?? '';
-    final time = task[Keys.time] ?? '';
-    final duration = task[Keys.duration] ?? 15;
-    final repeat = task[Keys.repeat] ?? 'Repeat?';
-    final bp = task[Keys.brainPoints] ?? 0;
-    final tag = task[Keys.list] ?? 'All';
-
     final subtitle = [
-      if (date.isNotEmpty) date,
-      if (time.isNotEmpty) time,
-      duration,
-      if (repeat.isNotEmpty) repeat,
-      '$bp BP',
-      if (tag.isNotEmpty) tag,
+      task.date,
+      task.time,
+      '${task.duration}m',
+      task.repeat,
+      '${task.brainPoints} BP',
+      task.list,
     ].join(" • ");
 
     return TaskTile(
       key: key,
       color: ThemeColours.flowsAlt,
-      text: title,
+      text: task.text,
       subtitle: subtitle,
       onInlineEdit: onEdit,
       onDelete: onDelete,
       leading: IconButton(
         icon: const Icon(ThemeIcons.checkIcon),
         onPressed: () {
-          BrainPointsService.subtractPoints(bp);
+          BrainPointsService.subtractPoints(task.brainPoints);
 
-          // Record completion
-          final history = (task[Keys.history] as List<dynamic>?) ?? [];
-          history.add(DateTime.now().toIso8601String());
-          task[Keys.history] = history;
+          // Record completion and update date
+          final history = List<String>.from(task.history)
+            ..add(DateTime.now().toIso8601String());
+          final nextDate = _calculateNextDate(task.repeat ?? 'Daily');
 
-          // Update to next scheduled date
-          final repeat = task[Keys.repeat] ?? 'Daily';
-          final nextDate = _calculateNextDate(repeat);
-          task[Keys.date] = nextDate.toIso8601String().split('T').first;
+          final updatedTask = Task(
+            id: task.id,
+            text: task.text,
+            priority: task.priority,
+            brainPoints: task.brainPoints,
+            list: task.list,
+            date: nextDate.toIso8601String().split('T').first,
+            time: task.time,
+            duration: task.duration,
+            location: task.location,
+            repeat: task.repeat,
+            history: history,
+            createdAt: task.createdAt,
+          );
 
-          onComplete();
+          onComplete(updatedTask);
         },
       ),
     );

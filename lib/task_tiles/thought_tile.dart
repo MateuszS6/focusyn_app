@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
+import 'package:focusyn_app/models/task_model.dart';
 
 class ThoughtTile extends StatelessWidget {
-  final Map<String, dynamic> task;
+  final Task task;
   final Function(String text) onEdit;
   final VoidCallback onDelete;
 
@@ -17,14 +17,11 @@ class ThoughtTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final text = task[Keys.text] ?? '';
-    final tag = task[Keys.list] ?? '';
-
     return TaskTile(
       key: key,
       color: ThemeColours.thoughtsAlt,
-      text: text,
-      subtitle: tag.isNotEmpty ? tag : null,
+      text: task.text,
+      subtitle: task.list,
       onInlineEdit: onEdit,
       onDelete: onDelete,
     );

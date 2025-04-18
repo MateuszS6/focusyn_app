@@ -58,10 +58,10 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
           () => Task(
-            title: title,
+            text: title,
             list: list,
             brainPoints: brainPoints,
-            duration: duration.inMinutes.toString(),
+            duration: duration.inMinutes,
             date: selectedDate.toIso8601String().split('T')[0],
             time: selectedTime.format(context),
             repeat: repeat,

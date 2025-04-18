@@ -57,12 +57,12 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
           () => Task(
-            title: title,
+            text: title,
             list: list,
             date: selectedDate.toIso8601String().split('T')[0],
             time: selectedTime.format(context),
             location: location.isNotEmpty ? location : null,
-            duration: duration.inMinutes.toString(),
+            duration: duration.inMinutes,
           ),
       fields: [
         TextField(

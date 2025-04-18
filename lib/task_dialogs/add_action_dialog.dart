@@ -45,7 +45,7 @@ class AddActionDialog extends StatelessWidget {
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
           () => Task(
-            title: title,
+            text: title,
             priority: priority,
             brainPoints: brainPoints,
             list: list,

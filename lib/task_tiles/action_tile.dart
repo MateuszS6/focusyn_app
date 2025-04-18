@@ -50,7 +50,7 @@ class ActionTile extends StatelessWidget {
           onComplete();
         },
       ),
-      text: task.title,
+      text: task.text,
       subtitle: subtitle,
       onInlineEdit: (newTitle) {
         if (newTitle.isNotEmpty) {

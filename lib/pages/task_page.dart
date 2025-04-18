@@ -385,12 +385,15 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.flows:
         tile = FlowTile(
           key: key,
-          task: task,
+          task: Task.fromMap(task),
           onEdit: (newTitle) {
             task[Keys.title] = newTitle;
             _updateTask(task);
           },
-          onComplete: () => _updateTask(task),
+          onComplete: (updatedTask) {
+            task = updatedTask.toMap();
+            _updateTask(task);
+          },
           onDelete: () => _removeTask(task),
         );
         break;
@@ -398,7 +401,7 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.moments:
         tile = MomentTile(
           key: key,
-          task: task,
+          task: Task.fromMap(task),
           onEdit: (newTitle) {
             task[Keys.title] = newTitle;
             _updateTask(task);
@@ -410,7 +413,7 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.thoughts:
         tile = ThoughtTile(
           key: key,
-          task: task,
+          task: Task.fromMap(task),
           onEdit: (newText) {
             task[Keys.text] = newText;
             _updateTask(task);

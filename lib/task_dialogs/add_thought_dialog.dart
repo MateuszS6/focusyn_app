@@ -51,7 +51,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
       title: AddThoughtDialog._dialogTitle,
       onAdd: widget.onAdd,
       validateInput: () => text.trim().isNotEmpty,
-      buildTask: () => Task(title: text, list: list, text: text),
+      buildTask: () => Task(text: text, list: list),
       fields: [
         TextField(
           decoration: inputDecoration.copyWith(
