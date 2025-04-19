@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
-import 'package:flutter/foundation.dart';
 
 class CloudSyncService {
   static final _auth = FirebaseAuth.instance;
@@ -372,20 +371,34 @@ class CloudSyncService {
   static Future<void> deleteUserData() async {
     try {
       final user = FirebaseAuth.instance.currentUser;
-      if (user == null) return;
+      if (user == null) {
+        print('DEBUG: No user found in deleteUserData');
+        return;
+      }
 
-      final userRef = _firestore.collection('users').doc(user.uid);
+      print('DEBUG: Starting user data deletion for user: ${user.uid}');
+      final userRef = _firestore.collection('user_data').doc(user.uid);
+      final profileRef = _firestore.collection('profiles').doc(user.uid);
 
       // Delete all subcollections
       await _deleteCollection(userRef.collection('brainPoints'));
       await _deleteCollection(userRef.collection('tasks'));
       await _deleteCollection(userRef.collection('filters'));
+      await _deleteCollection(userRef.collection('settings'));
 
-      // Delete the user document
-      await userRef.delete();
-      debugPrint('User data deleted successfully');
+      // Delete the user document and profile
+      await Future.wait([userRef.delete(), profileRef.delete()]);
+      print('DEBUG: User data and profile deleted successfully from Firestore');
+
+      // Clear local data
+      await clearLocalData(
+        Hive.box(Keys.taskBox),
+        Hive.box(Keys.filterBox),
+        Hive.box(Keys.brainBox),
+      );
+      print('DEBUG: Local data cleared successfully');
     } catch (e) {
-      debugPrint('Error deleting user data: $e');
+      print('DEBUG: Error in deleteUserData: $e');
       rethrow;
     }
   }
