@@ -7,7 +7,12 @@ import 'package:focusyn_app/utils/task_dialog.dart';
 
 class AddFlowDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Flow";
-  static const String _titleLabel = "Title";
+  static const String _titleLabel = "Title *";
+  static const String _dateLabel = "Start Date";
+  static const String _timeLabel = "Reminder Time";
+  static const String _durationLabel = "Duration (minutes)";
+  static const String _repeatLabel = "Repeat";
+  static const String _brainPointsLabel = "Brain Points";
   static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
@@ -70,6 +75,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddFlowDialog._titleLabel,
+            hintText: 'Describe the routine',
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => setState(() => title = val),
@@ -88,102 +94,25 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
           },
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
-              labelText: "Start Date",
+              labelText: AddFlowDialog._dateLabel,
               prefixIcon: const Icon(ThemeIcons.date),
             ),
             child: Text("${selectedDate.toLocal()}".split(' ')[0]),
           ),
         ),
         InkWell(
-          onTap: () {
-            showDialog(
+          onTap: () async {
+            final picked = await showTimePicker(
               context: context,
-              builder:
-                  (context) => StatefulBuilder(
-                    builder:
-                        (context, setDialogState) => AlertDialog(
-                          title: const Text('Set Time'),
-                          content: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: DropdownButtonFormField<int>(
-                                  value: selectedTime.hour,
-                                  decoration: inputDecoration.copyWith(
-                                    labelText: 'Hour',
-                                  ),
-                                  items: List.generate(
-                                    24,
-                                    (index) => DropdownMenuItem(
-                                      value: index,
-                                      child: Text(
-                                        index.toString().padLeft(2, '0'),
-                                      ),
-                                    ),
-                                  ),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setDialogState(() {
-                                        setState(() {
-                                          selectedTime = TimeOfDay(
-                                            hour: value,
-                                            minute: selectedTime.minute,
-                                          );
-                                        });
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: DropdownButtonFormField<int>(
-                                  value: selectedTime.minute,
-                                  decoration: inputDecoration.copyWith(
-                                    labelText: 'Minute',
-                                  ),
-                                  items: List.generate(
-                                    60,
-                                    (index) => DropdownMenuItem(
-                                      value: index,
-                                      child: Text(
-                                        index.toString().padLeft(2, '0'),
-                                      ),
-                                    ),
-                                  ),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setDialogState(() {
-                                        setState(() {
-                                          selectedTime = TimeOfDay(
-                                            hour: selectedTime.hour,
-                                            minute: value,
-                                          );
-                                        });
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                  ),
+              initialTime: selectedTime,
             );
+            if (picked != null) {
+              setState(() => selectedTime = picked);
+            }
           },
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
-              labelText: "Reminder Time",
+              labelText: AddFlowDialog._timeLabel,
               prefixIcon: const Icon(ThemeIcons.time),
             ),
             child: Text(selectedTime.format(context)),
@@ -191,7 +120,8 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
         ),
         TextField(
           decoration: inputDecoration.copyWith(
-            labelText: "Duration (minutes)",
+            labelText: AddFlowDialog._durationLabel,
+            hintText: 'Default: 15 minutes',
             prefixIcon: const Icon(ThemeIcons.duration),
           ),
           keyboardType: TextInputType.number,
@@ -203,7 +133,8 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
         DropdownButtonFormField<String>(
           value: repeat,
           decoration: inputDecoration.copyWith(
-            labelText: "Repeat",
+            labelText: AddFlowDialog._repeatLabel,
+            hintText: 'Default: Daily',
             prefixIcon: const Icon(ThemeIcons.repeat),
           ),
           items: const [
@@ -215,7 +146,8 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
         ),
         TextField(
           decoration: inputDecoration.copyWith(
-            labelText: "Brain Points",
+            labelText: AddFlowDialog._brainPointsLabel,
+            hintText: 'Default: 5',
             prefixIcon: const Icon(ThemeIcons.brainPoints),
           ),
           keyboardType: TextInputType.number,

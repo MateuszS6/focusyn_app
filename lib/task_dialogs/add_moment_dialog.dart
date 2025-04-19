@@ -7,7 +7,11 @@ import 'package:focusyn_app/utils/task_dialog.dart';
 
 class AddMomentDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Moment";
-  static const String _titleLabel = "Title";
+  static const String _titleLabel = "Title *";
+  static const String _dateLabel = "Date";
+  static const String _timeLabel = "Time";
+  static const String _durationLabel = "Duration (minutes)";
+  static const String _locationLabel = "Location";
   static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
@@ -68,6 +72,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddMomentDialog._titleLabel,
+            hintText: 'Describe the event',
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => setState(() => title = val),
@@ -86,102 +91,25 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           },
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
-              labelText: "Date",
+              labelText: AddMomentDialog._dateLabel,
               prefixIcon: const Icon(ThemeIcons.date),
             ),
             child: Text("${selectedDate.toLocal()}".split(' ')[0]),
           ),
         ),
         InkWell(
-          onTap: () {
-            showDialog(
+          onTap: () async {
+            final picked = await showTimePicker(
               context: context,
-              builder:
-                  (context) => StatefulBuilder(
-                    builder:
-                        (context, setDialogState) => AlertDialog(
-                          title: const Text('Set Time'),
-                          content: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: DropdownButtonFormField<int>(
-                                  value: selectedTime.hour,
-                                  decoration: inputDecoration.copyWith(
-                                    labelText: 'Hour',
-                                  ),
-                                  items: List.generate(
-                                    24,
-                                    (index) => DropdownMenuItem(
-                                      value: index,
-                                      child: Text(
-                                        index.toString().padLeft(2, '0'),
-                                      ),
-                                    ),
-                                  ),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setDialogState(() {
-                                        setState(() {
-                                          selectedTime = TimeOfDay(
-                                            hour: value,
-                                            minute: selectedTime.minute,
-                                          );
-                                        });
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: DropdownButtonFormField<int>(
-                                  value: selectedTime.minute,
-                                  decoration: inputDecoration.copyWith(
-                                    labelText: 'Minute',
-                                  ),
-                                  items: List.generate(
-                                    60,
-                                    (index) => DropdownMenuItem(
-                                      value: index,
-                                      child: Text(
-                                        index.toString().padLeft(2, '0'),
-                                      ),
-                                    ),
-                                  ),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setDialogState(() {
-                                        setState(() {
-                                          selectedTime = TimeOfDay(
-                                            hour: selectedTime.hour,
-                                            minute: value,
-                                          );
-                                        });
-                                      });
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
-                          actions: [
-                            TextButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('Cancel'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: const Text('OK'),
-                            ),
-                          ],
-                        ),
-                  ),
+              initialTime: selectedTime,
             );
+            if (picked != null) {
+              setState(() => selectedTime = picked);
+            }
           },
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
-              labelText: "Time",
+              labelText: AddMomentDialog._timeLabel,
               prefixIcon: const Icon(ThemeIcons.time),
             ),
             child: Text(selectedTime.format(context)),
@@ -189,7 +117,8 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
         ),
         TextField(
           decoration: inputDecoration.copyWith(
-            labelText: "Duration (minutes)",
+            labelText: AddMomentDialog._durationLabel,
+            hintText: 'Default: 30 minutes',
             prefixIcon: const Icon(ThemeIcons.duration),
           ),
           keyboardType: TextInputType.number,
@@ -200,8 +129,8 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
         ),
         TextField(
           decoration: inputDecoration.copyWith(
-            labelText: "Location (optional)",
-            hintText: "Enter location if applicable",
+            labelText: AddMomentDialog._locationLabel,
+            hintText: 'Default: None',
             prefixIcon: const Icon(ThemeIcons.location),
           ),
           onChanged: (val) => setState(() => location = val),

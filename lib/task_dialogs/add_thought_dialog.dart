@@ -7,7 +7,7 @@ import 'package:focusyn_app/utils/task_dialog.dart';
 
 class AddThoughtDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Thought";
-  static const String _textLabel = "Text";
+  static const String _textLabel = "Text *";
   static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
@@ -56,6 +56,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddThoughtDialog._textLabel,
+            hintText: 'Describe the thought or reflection for later',
             prefixIcon: const Icon(ThemeIcons.text),
             alignLabelWithHint: true,
           ),

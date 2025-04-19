@@ -7,7 +7,7 @@ import 'package:focusyn_app/utils/task_dialog.dart';
 
 class AddActionDialog extends StatelessWidget {
   static const String _dialogTitle = "Add Action";
-  static const String _titleLabel = "Title";
+  static const String _titleLabel = "Title *";
   static const String _priorityLabel = "Priority";
   static const String _brainPointsLabel = "Brain Points";
   static const String _listLabel = "List";
@@ -54,6 +54,7 @@ class AddActionDialog extends StatelessWidget {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _titleLabel,
+            hintText: 'Describe the task',
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => title = val,
@@ -62,15 +63,16 @@ class AddActionDialog extends StatelessWidget {
           value: priority,
           decoration: inputDecoration.copyWith(
             labelText: _priorityLabel,
+            hintText: 'Default: Urgent, Important',
             prefixIcon: const Icon(ThemeIcons.priority),
           ),
           items: const [
-            DropdownMenuItem(value: 1, child: Text("Urgent & Important")),
-            DropdownMenuItem(value: 2, child: Text("Not Urgent but Important")),
-            DropdownMenuItem(value: 3, child: Text("Urgent but Not Important")),
+            DropdownMenuItem(value: 1, child: Text("Urgent, Important")),
+            DropdownMenuItem(value: 2, child: Text("Not Urgent, Important")),
+            DropdownMenuItem(value: 3, child: Text("Urgent, Not Important")),
             DropdownMenuItem(
               value: 4,
-              child: Text("Not Urgent & Not Important"),
+              child: Text("Not Urgent, Not Important"),
             ),
           ],
           onChanged: (val) => priority = val ?? 1,
@@ -78,6 +80,7 @@ class AddActionDialog extends StatelessWidget {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _brainPointsLabel,
+            hintText: 'Default: 5',
             prefixIcon: const Icon(ThemeIcons.brainPoints),
           ),
           keyboardType: TextInputType.number,

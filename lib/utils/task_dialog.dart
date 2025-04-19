@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/models/task_model.dart';
 
 class TaskDialog extends StatefulWidget {
@@ -40,7 +42,7 @@ class _TaskDialogState extends State<TaskDialog> {
           children: [
             // Fixed header
             Padding(
-              padding: const EdgeInsets.fromLTRB(24, 20, 24, 16),
+              padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
               child: Text(
                 widget.title,
                 style: const TextStyle(
@@ -52,19 +54,22 @@ class _TaskDialogState extends State<TaskDialog> {
             ),
             // Scrollable content
             Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children:
-                      widget.fields
-                          .map(
-                            (field) => Padding(
-                              padding: const EdgeInsets.only(bottom: 16),
-                              child: field,
-                            ),
-                          )
-                          .toList(),
+              child: ScrollShadow(
+                color: Colors.grey.shade300,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children:
+                        widget.fields
+                            .map(
+                              (field) => Padding(
+                                padding: const EdgeInsets.only(bottom: 16),
+                                child: field,
+                              ),
+                            )
+                            .toList(),
+                  ),
                 ),
               ),
             ),
@@ -76,7 +81,7 @@ class _TaskDialogState extends State<TaskDialog> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text("Cancel"),
+                    child: const Icon(ThemeIcons.close, size: 24),
                   ),
                   const SizedBox(width: 12),
                   ElevatedButton(
@@ -87,12 +92,12 @@ class _TaskDialogState extends State<TaskDialog> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      minimumSize: const Size(100, 44),
+                      minimumSize: const Size(44, 44),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(24),
                       ),
                     ),
-                    child: const Text("Add"),
+                    child: const Icon(ThemeIcons.check, size: 24),
                   ),
                 ],
               ),

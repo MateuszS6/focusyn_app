@@ -50,7 +50,7 @@ class ThemeIcons {
   static const IconData priority = Icons.priority_high_rounded;
   static const IconData brainPoints = Icons.psychology_rounded;
   static const IconData date = Icons.today_rounded;
-  static const IconData time = Icons.access_time_rounded;
+  static const IconData time = Icons.access_time_filled_rounded;
   static const IconData duration = Icons.timer_rounded;
   static const IconData repeat = Icons.repeat_rounded;
   static const IconData location = Icons.location_on_rounded;
