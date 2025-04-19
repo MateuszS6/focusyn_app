@@ -70,21 +70,10 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Logo and Title
-                    Icon(
-                      ThemeIcons.focusesIcon,
-                      size: 64,
-                      color: Colors.blue[300],
+                    Image.asset(
+                      'assets/logo_transparent_text.png',
+                      height: 200,
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Focusyn",
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue[300],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
                     Text(
                       "Sign in to continue",
                       style: TextStyle(

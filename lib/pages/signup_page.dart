@@ -162,21 +162,10 @@ class _SignUpPageState extends State<SignUpPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Logo and Title
-                    Icon(
-                      ThemeIcons.focusesIcon,
-                      size: 64,
-                      color: Colors.blue[300],
+                    Image.asset(
+                      'assets/logo_transparent_text.png',
+                      height: 200,
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Focusyn",
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.blue[300],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
                     Text(
                       "Create your account",
                       style: TextStyle(
