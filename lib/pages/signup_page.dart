@@ -114,7 +114,12 @@ class _SignUpPageState extends State<SignUpPage> {
       brainBox.put('lastReset', DateTime.now().toIso8601String());
 
       // Sync initialized data to Firestore
-      await CloudSyncService.syncOnLogin(taskBox, filterBox, brainBox);
+      await CloudSyncService.syncOnLogin(
+        taskBox,
+        filterBox,
+        brainBox,
+        Hive.box(Keys.historyBox),
+      );
 
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(

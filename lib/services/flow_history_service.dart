@@ -1,4 +1,5 @@
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:hive/hive.dart';
 
 class FlowHistoryService {
@@ -23,13 +24,17 @@ class FlowHistoryService {
     // Add the new date
     history.add(date.toIso8601String());
 
-    // Save back to Hive
+    // Save to Hive
     await historyBox.put(_historyKey, history);
+
+    // Sync to cloud
+    await CloudSyncService.uploadFlowHistory(historyBox);
   }
 
   /// Clear all history
   static Future<void> clearHistory() async {
     final historyBox = Hive.box(Keys.historyBox);
     await historyBox.put(_historyKey, <String>[]);
+    await CloudSyncService.uploadFlowHistory(historyBox);
   }
 }

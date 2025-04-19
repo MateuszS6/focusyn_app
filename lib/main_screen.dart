@@ -40,12 +40,21 @@ class _MainScreenState extends State<MainScreen> {
       final taskBox = Hive.box(Keys.taskBox);
       final filterBox = Hive.box(Keys.filterBox);
       final brainBox = Hive.box(Keys.brainBox);
+      final historyBox = Hive.box(Keys.historyBox);
 
-      if (!taskBox.isOpen || !filterBox.isOpen || !brainBox.isOpen) {
+      if (!taskBox.isOpen ||
+          !filterBox.isOpen ||
+          !brainBox.isOpen ||
+          !historyBox.isOpen) {
         throw Exception('One or more Hive boxes are not open');
       }
 
-      await CloudSyncService.syncOnLogin(taskBox, filterBox, brainBox);
+      await CloudSyncService.syncOnLogin(
+        taskBox,
+        filterBox,
+        brainBox,
+        historyBox,
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(

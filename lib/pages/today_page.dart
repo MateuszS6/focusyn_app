@@ -76,6 +76,7 @@ class _TodayPageState extends State<TodayPage> {
                 Hive.box(Keys.taskBox),
                 Hive.box(Keys.filterBox),
                 Hive.box(Keys.brainBox),
+                Hive.box(Keys.historyBox),
               );
               // Then refresh local data
               _cachedCompletions = null; // Force refresh of completions

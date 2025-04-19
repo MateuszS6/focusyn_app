@@ -159,6 +159,34 @@ class CloudSyncService {
     }
   }
 
+  static Future<void> uploadFlowHistory(Box<dynamic> historyBox) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      print('DEBUG: No user found in uploadFlowHistory');
+      return;
+    }
+
+    print('DEBUG: Starting flow history upload for user: ${user.uid}');
+    final historyRef = _firestore
+        .collection('user_data')
+        .doc(user.uid)
+        .collection('history')
+        .doc('flow');
+
+    try {
+      final history = historyBox.get('flow_history') as List<dynamic>? ?? [];
+      print('DEBUG: Uploading flow history: ${history.length} items');
+      await historyRef.set({
+        'items': history,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+      print('DEBUG: Flow history upload complete');
+    } catch (e) {
+      print('DEBUG: Error in uploadFlowHistory: $e');
+      rethrow;
+    }
+  }
+
   static Future<void> downloadTasks(
     Box<dynamic> taskBox,
     Box<dynamic> filterBox,
@@ -287,10 +315,54 @@ class CloudSyncService {
     }
   }
 
+  static Future<void> downloadFlowHistory(Box<dynamic> historyBox) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      print('DEBUG: No user found in downloadFlowHistory');
+      return;
+    }
+
+    print('DEBUG: Starting flow history download for user: ${user.uid}');
+    final historyRef = _firestore
+        .collection('user_data')
+        .doc(user.uid)
+        .collection('history')
+        .doc('flow');
+
+    try {
+      final historyDoc = await historyRef.get();
+      if (historyDoc.exists) {
+        final data = historyDoc.data();
+        if (data != null && data['items'] != null) {
+          // Check if local data exists
+          final localHistory =
+              historyBox.get('flow_history') as List<dynamic>? ?? [];
+
+          // Only update if cloud data is not empty or if local data is empty
+          if (data['items'].isNotEmpty || localHistory.isEmpty) {
+            await historyBox.put('flow_history', data['items']);
+            print(
+              'DEBUG: Downloaded ${data['items'].length} flow history items',
+            );
+          } else {
+            print(
+              'DEBUG: Preserving local flow history (${localHistory.length} items)',
+            );
+          }
+        }
+      }
+      print('DEBUG: Flow history download complete');
+    } catch (e) {
+      print('DEBUG: Error in downloadFlowHistory: $e');
+      rethrow;
+    }
+  }
+
   static Future<void> syncOnLogin(
     Box<dynamic> taskBox,
     Box<dynamic> filterBox,
     Box<dynamic> brainBox,
+    Box<dynamic> historyBox,
   ) async {
     print('DEBUG: Starting sync on login');
     try {
@@ -314,14 +386,17 @@ class CloudSyncService {
         await uploadTasks(taskBox);
         await uploadFilters(filterBox);
         await uploadBrainPoints(brainBox);
+        await uploadFlowHistory(historyBox);
       } else {
         print('DEBUG: Existing user, syncing with cloud');
         // For existing users, download from cloud
         await downloadTasks(taskBox, filterBox, brainBox);
+        await downloadFlowHistory(historyBox);
         // Then upload any changes
         await uploadTasks(taskBox);
         await uploadFilters(filterBox);
         await uploadBrainPoints(brainBox);
+        await uploadFlowHistory(historyBox);
       }
       print('DEBUG: Sync on login complete');
     } catch (e) {
