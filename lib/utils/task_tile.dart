@@ -9,6 +9,7 @@ class TaskTile extends StatefulWidget {
   final Color color;
   final EdgeInsets padding;
   final TextStyle? subtitleStyle;
+  final TextStyle? titleStyle;
 
   const TaskTile({
     super.key,
@@ -20,6 +21,7 @@ class TaskTile extends StatefulWidget {
     this.color = const Color(0xFFF5F5F5),
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     this.subtitleStyle,
+    this.titleStyle,
   });
 
   @override
@@ -51,7 +53,10 @@ class _TaskTileState extends State<TaskTile> {
         leading: widget.leading,
         title: GestureDetector(
           onTap: _showEditDialog,
-          child: Text(widget.text, style: const TextStyle(fontSize: 18)),
+          child: Text(
+            widget.text,
+            style: widget.titleStyle ?? const TextStyle(fontSize: 18),
+          ),
         ),
         subtitle:
             widget.subtitle != null

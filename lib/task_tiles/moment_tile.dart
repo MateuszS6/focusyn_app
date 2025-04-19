@@ -48,6 +48,10 @@ class MomentTile extends StatelessWidget {
         color: isOverdue ? Colors.red : null,
         fontSize: 14,
       ),
+      titleStyle: TextStyle(
+        fontSize: 18,
+        fontWeight: isOverdue ? FontWeight.bold : null,
+      ),
       onInlineEdit: onEdit,
       onDelete: onDelete,
     );
