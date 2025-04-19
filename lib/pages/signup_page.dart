@@ -165,6 +165,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     Image.asset(
                       'assets/logo_transparent_text.png',
                       height: 200,
+                      fit: BoxFit.contain,
                     ),
                     Text(
                       "Create your account",
@@ -197,7 +198,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               labelText: 'Display Name',
                               hintText: 'Enter your display name',
                               prefixIcon: Icon(
-                                ThemeIcons.userIcon,
+                                ThemeIcons.user,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
@@ -218,7 +219,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             decoration: InputDecoration(
                               labelText: 'Email',
                               prefixIcon: Icon(
-                                ThemeIcons.emailIcon,
+                                ThemeIcons.email,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
@@ -239,7 +240,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             decoration: InputDecoration(
                               labelText: 'Password (min 6 chars)',
                               prefixIcon: Icon(
-                                ThemeIcons.lockIcon,
+                                ThemeIcons.lock,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(

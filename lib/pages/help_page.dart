@@ -12,7 +12,7 @@ class HelpPage extends StatelessWidget {
       appBar: MyAppBar(
         title: 'Help & Definitions',
         leading: IconButton(
-          icon: const Icon(ThemeIcons.backIcon),
+          icon: const Icon(ThemeIcons.back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -23,7 +23,7 @@ class HelpPage extends StatelessWidget {
             title: 'Focus Categories',
             children: [
               _buildCategoryCard(
-                icon: ThemeIcons.actionsIcon,
+                icon: ThemeIcons.actions,
                 title: 'Actions',
                 description:
                     'One-time tasks or to-dos that need to be completed. These are your immediate tasks that have a clear endpoint.',
@@ -36,7 +36,7 @@ class HelpPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildCategoryCard(
-                icon: ThemeIcons.flowsIcon,
+                icon: ThemeIcons.flows,
                 title: 'Flows',
                 description:
                     'Recurring routines or processes that you want to maintain. These are your habits and regular activities.',
@@ -49,7 +49,7 @@ class HelpPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildCategoryCard(
-                icon: ThemeIcons.momentsIcon,
+                icon: ThemeIcons.moments,
                 title: 'Moments',
                 description:
                     'Time-specific events or appointments. These are your scheduled activities with a specific date and time.',
@@ -62,7 +62,7 @@ class HelpPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildCategoryCard(
-                icon: ThemeIcons.thoughtsIcon,
+                icon: ThemeIcons.thoughts,
                 title: 'Thoughts',
                 description:
                     'Ideas, notes, or reflections you want to remember. These are your mental notes and creative thoughts.',
@@ -99,7 +99,7 @@ class HelpPage extends StatelessWidget {
                     '• Flows: Morning, Evening, Wellness\n'
                     '• Moments: Appointments, Social, Work\n'
                     '• Thoughts: Ideas, Journal, Tasks',
-                icon: ThemeIcons.tagIcon,
+                icon: ThemeIcons.tag,
                 color: ThemeColours.actionsMain,
               ),
               const SizedBox(height: 16),

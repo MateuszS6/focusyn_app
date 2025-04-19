@@ -129,7 +129,7 @@ class _PlannerPageState extends State<PlannerPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(ThemeIcons.noEventsIcon, size: 48, color: Colors.grey[400]),
+            Icon(ThemeIcons.noEvents, size: 48, color: Colors.grey[400]),
             const SizedBox(height: 16),
             Text(
               "No scheduled tasks",
@@ -188,9 +188,7 @@ class _PlannerPageState extends State<PlannerPage> {
                       radius: 20,
                       backgroundColor: color.withAlpha(179),
                       child: Icon(
-                        isMoment
-                            ? ThemeIcons.momentsIcon
-                            : ThemeIcons.flowsIcon,
+                        isMoment ? ThemeIcons.moments : ThemeIcons.flows,
                         color: Colors.white,
                       ),
                     ),

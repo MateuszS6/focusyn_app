@@ -21,35 +21,35 @@ class _OnboardingPageState extends State<OnboardingPage> {
       title: 'Welcome to Focusyn',
       description:
           'Your personal productivity companion that helps you stay focused, organized, and motivated.',
-      icon: Icons.apps,
+      imagePath: 'assets/logo_transparent.png',
       color: Colors.blue,
     ),
     OnboardingItem(
       title: 'Focus on What Matters',
       description:
           'Organize your tasks into Flows, Actions, Moments, and Thoughts to maintain clarity and focus.',
-      icon: Icons.check_circle,
+      icon: ThemeIcons.actions,
       color: Colors.orange,
     ),
     OnboardingItem(
       title: 'Track Brain Points',
       description:
           'Completing tasks uses Brain Points. Plan your day to maximize your productivity.',
-      icon: Icons.psychology,
+      icon: ThemeIcons.brainPoints,
       color: Colors.purple,
     ),
     OnboardingItem(
       title: 'Meet Synthe AI',
       description:
           'Your AI assistant that helps you stay on track, answers questions, and provides personalized guidance.',
-      icon: ThemeIcons.robotIcon,
+      icon: ThemeIcons.robot,
       color: Colors.teal,
     ),
     OnboardingItem(
       title: 'Ready to Get Started?',
       description:
           'Swipe to begin your journey with Focusyn and take control of your productivity today!',
-      icon: Icons.play_arrow,
+      icon: ThemeIcons.play,
       color: Colors.green,
     ),
   ];
@@ -115,7 +115,12 @@ class _OnboardingPageState extends State<OnboardingPage> {
               color: item.color.withAlpha(13),
               shape: BoxShape.circle,
             ),
-            child: Center(child: Icon(item.icon, size: 60, color: item.color)),
+            child: Center(
+              child:
+                  item.imagePath != null
+                      ? Image.asset(item.imagePath!, width: 100, height: 100)
+                      : Icon(item.icon, size: 60, color: item.color),
+            ),
           ),
           const SizedBox(height: 40),
           Text(
@@ -215,13 +220,15 @@ class _OnboardingPageState extends State<OnboardingPage> {
 class OnboardingItem {
   final String title;
   final String description;
-  final IconData icon;
+  final IconData? icon;
+  final String? imagePath;
   final Color color;
 
-  OnboardingItem({
+  const OnboardingItem({
     required this.title,
     required this.description,
-    required this.icon,
+    this.icon,
+    this.imagePath,
     required this.color,
   });
 }

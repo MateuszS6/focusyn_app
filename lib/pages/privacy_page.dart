@@ -21,7 +21,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
       appBar: MyAppBar(
         title: 'Privacy & Security',
         leading: IconButton(
-          icon: const Icon(ThemeIcons.backIcon),
+          icon: const Icon(ThemeIcons.back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -80,10 +80,10 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildDataCollectionTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(ThemeIcons.dataIcon),
+      leading: const Icon(ThemeIcons.data),
       title: const Text('Data Collection'),
       subtitle: const Text('What data we collect and why'),
-      trailing: const Icon(ThemeIcons.openIcon, size: 20),
+      trailing: const Icon(ThemeIcons.open, size: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
         showDialog(
@@ -118,10 +118,10 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildDataProtectionTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(ThemeIcons.privacyIcon),
+      leading: const Icon(ThemeIcons.privacy),
       title: const Text('Data Protection'),
       subtitle: const Text('How we protect your information'),
-      trailing: const Icon(ThemeIcons.openIcon, size: 20),
+      trailing: const Icon(ThemeIcons.open, size: 20),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
         showDialog(
@@ -154,7 +154,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildDeleteAccountTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(ThemeIcons.deleteIcon, color: Colors.red),
+      leading: const Icon(ThemeIcons.delete, color: Colors.red),
       title: const Text('Delete Account', style: TextStyle(color: Colors.red)),
       subtitle: const Text('Permanently delete your account and all data'),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -166,7 +166,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildResetDataTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(ThemeIcons.deleteIcon, color: Colors.red),
+      leading: const Icon(ThemeIcons.delete, color: Colors.red),
       title: const Text('Reset App Data', style: TextStyle(color: Colors.red)),
       subtitle: const Text('Clear all tasks, filters, and brain points'),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -361,7 +361,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildContactTile(BuildContext context) {
     return const ListTile(
-      leading: Icon(ThemeIcons.emailIcon),
+      leading: Icon(ThemeIcons.email),
       title: Text('Questions?'),
       subtitle: Text('mstepien1104@gmail.com'),
     );

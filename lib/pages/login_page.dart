@@ -73,6 +73,7 @@ class _LoginPageState extends State<LoginPage> {
                     Image.asset(
                       'assets/logo_transparent_text.png',
                       height: 200,
+                      fit: BoxFit.contain,
                     ),
                     Text(
                       "Sign in to continue",
@@ -105,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               labelText: 'Email',
                               prefixIcon: Icon(
-                                ThemeIcons.emailIcon,
+                                ThemeIcons.email,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
@@ -126,7 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               labelText: 'Password',
                               prefixIcon: Icon(
-                                ThemeIcons.lockIcon,
+                                ThemeIcons.lock,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(

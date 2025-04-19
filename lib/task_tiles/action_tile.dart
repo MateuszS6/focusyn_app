@@ -44,7 +44,7 @@ class ActionTile extends StatelessWidget {
 
     return TaskTile(
       leading: IconButton(
-        icon: const Icon(ThemeIcons.checkIcon),
+        icon: const Icon(ThemeIcons.check),
         onPressed: () {
           BrainPointsService.subtractPoints(task.brainPoints);
           onComplete();

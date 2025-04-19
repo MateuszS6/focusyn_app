@@ -370,14 +370,14 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  static const notificationsIcon = ThemeIcons.notificationsIcon;
-  static const userIcon = ThemeIcons.userIcon;
-  static const emailIcon = ThemeIcons.emailIcon;
-  static const lockIcon = ThemeIcons.lockIcon;
+  static const notificationsIcon = ThemeIcons.notifications;
+  static const userIcon = ThemeIcons.user;
+  static const emailIcon = ThemeIcons.email;
+  static const lockIcon = ThemeIcons.lock;
   static const securityIcon = Icons.shield_rounded;
-  static const termsIcon = ThemeIcons.termsIcon;
-  static const infoIcon = ThemeIcons.infoIcon;
-  static const logoutIcon = ThemeIcons.logoutIcon;
+  static const termsIcon = ThemeIcons.terms;
+  static const infoIcon = ThemeIcons.info;
+  static const logoutIcon = ThemeIcons.logout;
 
   @override
   Widget build(BuildContext context) {
@@ -387,7 +387,7 @@ class _AccountPageState extends State<AccountPage> {
       appBar: MyAppBar(
         title: Keys.account,
         leading: IconButton(
-          icon: const Icon(ThemeIcons.backIcon),
+          icon: const Icon(ThemeIcons.back),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
@@ -595,7 +595,7 @@ class _AccountPageState extends State<AccountPage> {
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
-              Icon(ThemeIcons.openIcon, color: Colors.grey.shade400),
+              Icon(ThemeIcons.open, color: Colors.grey.shade400),
             ],
           ),
         ),

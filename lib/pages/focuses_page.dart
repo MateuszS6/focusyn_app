@@ -32,25 +32,25 @@ class _FocusesPageState extends State<FocusesPage> {
     FocusCategory(
       name: Keys.actions,
       description: 'Your unscheduled to-do list',
-      icon: ThemeIcons.actionsIcon,
+      icon: ThemeIcons.actions,
       colorKey: Keys.actions,
     ),
     FocusCategory(
       name: Keys.flows,
       description: 'Your routines and habits',
-      icon: ThemeIcons.flowsIcon,
+      icon: ThemeIcons.flows,
       colorKey: Keys.flows,
     ),
     FocusCategory(
       name: Keys.moments,
       description: 'Your events and deadlines',
-      icon: ThemeIcons.momentsIcon,
+      icon: ThemeIcons.moments,
       colorKey: Keys.moments,
     ),
     FocusCategory(
       name: Keys.thoughts,
       description: 'Your reflections for later',
-      icon: ThemeIcons.thoughtsIcon,
+      icon: ThemeIcons.thoughts,
       colorKey: Keys.thoughts,
     ),
   ];
@@ -104,7 +104,7 @@ class _FocusesPageState extends State<FocusesPage> {
                     style: Theme.of(context).textTheme.displayLarge,
                   ),
                   IconButton(
-                    icon: const Icon(ThemeIcons.helpIcon),
+                    icon: const Icon(ThemeIcons.help),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -138,7 +138,7 @@ class _FocusesPageState extends State<FocusesPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(
-                          ThemeIcons.streakIcon,
+                          ThemeIcons.streak,
                           size: 16,
                           color: mostActiveColor,
                         ),

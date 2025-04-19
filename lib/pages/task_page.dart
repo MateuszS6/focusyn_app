@@ -108,7 +108,7 @@ class _TaskPageState extends State<TaskPage> {
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(ThemeIcons.backIcon),
+                    icon: const Icon(ThemeIcons.back),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const SizedBox(width: 8),
@@ -118,7 +118,7 @@ class _TaskPageState extends State<TaskPage> {
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(ThemeIcons.sortIcon),
+                    icon: const Icon(ThemeIcons.sort),
                     onPressed: _showSortDialog,
                   ),
                 ],
@@ -161,7 +161,7 @@ class _TaskPageState extends State<TaskPage> {
                 elevation: 2,
                 shape: const CircleBorder(),
                 child: const Icon(
-                  ThemeIcons.addIcon,
+                  ThemeIcons.add,
                   size: 32,
                   color: Colors.white,
                 ),
@@ -329,7 +329,7 @@ class _TaskPageState extends State<TaskPage> {
           const SizedBox(height: 32),
           ElevatedButton.icon(
             onPressed: _showAddDialog,
-            icon: const Icon(ThemeIcons.addIcon, color: Colors.white),
+            icon: const Icon(ThemeIcons.add, color: Colors.white),
             label: Text(
               "Add ${widget.category.substring(0, widget.category.length - 1)}",
               style: const TextStyle(color: Colors.white),
@@ -366,7 +366,7 @@ class _TaskPageState extends State<TaskPage> {
         onPressed: (_) => _removeTask(task),
         backgroundColor: Colors.transparent,
         foregroundColor: const Color(0xFFE53935),
-        icon: ThemeIcons.closeIcon,
+        icon: ThemeIcons.close,
         padding: EdgeInsets.zero,
       ),
     ];
@@ -518,15 +518,15 @@ class _TaskPageState extends State<TaskPage> {
   IconData _getEmptyStateIcon() {
     switch (widget.category) {
       case Keys.actions:
-        return ThemeIcons.actionsIcon;
+        return ThemeIcons.actions;
       case Keys.flows:
-        return ThemeIcons.flowsIcon;
+        return ThemeIcons.flows;
       case Keys.moments:
-        return ThemeIcons.momentsIcon;
+        return ThemeIcons.moments;
       case Keys.thoughts:
-        return ThemeIcons.thoughtsIcon;
+        return ThemeIcons.thoughts;
       default:
-        return ThemeIcons.tasksIcon;
+        return ThemeIcons.tasks;
     }
   }
 

@@ -68,7 +68,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddMomentDialog._titleLabel,
-            prefixIcon: const Icon(ThemeIcons.textIcon),
+            prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => setState(() => title = val),
         ),
@@ -87,7 +87,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
               labelText: "Date",
-              prefixIcon: const Icon(ThemeIcons.dateIcon),
+              prefixIcon: const Icon(ThemeIcons.date),
             ),
             child: Text("${selectedDate.toLocal()}".split(' ')[0]),
           ),
@@ -182,7 +182,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
               labelText: "Time",
-              prefixIcon: const Icon(ThemeIcons.timeIcon),
+              prefixIcon: const Icon(ThemeIcons.time),
             ),
             child: Text(selectedTime.format(context)),
           ),
@@ -190,7 +190,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: "Duration (minutes)",
-            prefixIcon: const Icon(ThemeIcons.durationIcon),
+            prefixIcon: const Icon(ThemeIcons.duration),
           ),
           keyboardType: TextInputType.number,
           onChanged:
@@ -202,7 +202,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           decoration: inputDecoration.copyWith(
             labelText: "Location (optional)",
             hintText: "Enter location if applicable",
-            prefixIcon: const Icon(ThemeIcons.locationIcon),
+            prefixIcon: const Icon(ThemeIcons.location),
           ),
           onChanged: (val) => setState(() => location = val),
         ),
@@ -210,7 +210,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
           value: list,
           decoration: inputDecoration.copyWith(
             labelText: AddMomentDialog._listLabel,
-            prefixIcon: const Icon(ThemeIcons.tagIcon),
+            prefixIcon: const Icon(ThemeIcons.tag),
           ),
           items:
               lists

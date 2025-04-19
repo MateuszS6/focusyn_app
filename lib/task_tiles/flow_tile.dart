@@ -38,7 +38,7 @@ class FlowTile extends StatelessWidget {
       onInlineEdit: onEdit,
       onDelete: onDelete,
       leading: IconButton(
-        icon: const Icon(ThemeIcons.checkIcon),
+        icon: const Icon(ThemeIcons.check),
         onPressed: () {
           BrainPointsService.subtractPoints(task.brainPoints);
 

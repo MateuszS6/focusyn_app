@@ -72,7 +72,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
       appBar: MyAppBar(
         title: 'Notifications',
         leading: IconButton(
-          icon: const Icon(ThemeIcons.backIcon),
+          icon: const Icon(ThemeIcons.back),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -140,7 +140,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                     ListTile(
                       title: const Text('Notification Time'),
                       subtitle: Text(_notificationTime.format(context)),
-                      trailing: const Icon(ThemeIcons.timeIcon),
+                      trailing: const Icon(ThemeIcons.time),
                       onTap: _selectTime,
                     ),
                 ],
@@ -158,7 +158,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 children: [
                   Row(
                     children: [
-                      Icon(ThemeIcons.infoIcon, color: Colors.blue[700]),
+                      Icon(ThemeIcons.info, color: Colors.blue[700]),
                       const SizedBox(width: 8),
                       Text(
                         'About Notifications',

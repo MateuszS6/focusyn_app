@@ -56,7 +56,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddThoughtDialog._textLabel,
-            prefixIcon: const Icon(ThemeIcons.textIcon),
+            prefixIcon: const Icon(ThemeIcons.text),
             alignLabelWithHint: true,
           ),
           maxLines: 5,
@@ -66,7 +66,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
           value: list,
           decoration: inputDecoration.copyWith(
             labelText: AddThoughtDialog._listLabel,
-            prefixIcon: const Icon(ThemeIcons.tagIcon),
+            prefixIcon: const Icon(ThemeIcons.tag),
           ),
           items:
               lists

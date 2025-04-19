@@ -117,7 +117,7 @@ class _TodayPageState extends State<TodayPage> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: const Icon(ThemeIcons.onboardingIcon),
+                          icon: const Icon(ThemeIcons.onboarding),
                           tooltip: 'Replay Onboarding',
                           onPressed: () {
                             Navigator.push(
@@ -328,7 +328,7 @@ class _TodayPageState extends State<TodayPage> {
                           );
                         },
                         child: Icon(
-                          ThemeIcons.infoIcon,
+                          ThemeIcons.info,
                           size: 16,
                           color: Colors.blue[700],
                         ),
@@ -363,7 +363,7 @@ class _TodayPageState extends State<TodayPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(ThemeIcons.addIcon, size: 16, color: Colors.blue[700]),
+                    Icon(ThemeIcons.add, size: 16, color: Colors.blue[700]),
                     const SizedBox(width: 4),
                     Text(
                       "Add",
@@ -556,7 +556,7 @@ class _TodayPageState extends State<TodayPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildTaskType(
-                    icon: ThemeIcons.checkIcon,
+                    icon: ThemeIcons.check,
                     count: actionsCount,
                     label: "Actions",
                     onTap:
@@ -568,7 +568,7 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                   ),
                   _buildTaskType(
-                    icon: ThemeIcons.replayIcon,
+                    icon: ThemeIcons.replay,
                     count: todayFlows.length,
                     label: "Flows",
                     onTap:
@@ -580,7 +580,7 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                   ),
                   _buildTaskType(
-                    icon: ThemeIcons.momentsIcon,
+                    icon: ThemeIcons.moments,
                     count: todayMoments.length,
                     label: "Moments",
                     onTap:
@@ -615,13 +615,13 @@ class _TodayPageState extends State<TodayPage> {
                       const SizedBox(height: 8),
                       if (nextFlow != null)
                         _buildNextTask(
-                          icon: ThemeIcons.flowsIcon,
+                          icon: ThemeIcons.flows,
                           title: nextFlow.text,
                           time: nextFlow.time ?? '',
                         ),
                       if (nextMoment != null)
                         _buildNextTask(
-                          icon: ThemeIcons.momentsIcon,
+                          icon: ThemeIcons.moments,
                           title: nextMoment.text,
                           time: nextMoment.time ?? '',
                         ),

@@ -54,7 +54,7 @@ class AddActionDialog extends StatelessWidget {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _titleLabel,
-            prefixIcon: const Icon(ThemeIcons.textIcon),
+            prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => title = val,
         ),
@@ -62,7 +62,7 @@ class AddActionDialog extends StatelessWidget {
           value: priority,
           decoration: inputDecoration.copyWith(
             labelText: _priorityLabel,
-            prefixIcon: const Icon(ThemeIcons.priorityIcon),
+            prefixIcon: const Icon(ThemeIcons.priority),
           ),
           items: const [
             DropdownMenuItem(value: 1, child: Text("Urgent & Important")),
@@ -78,7 +78,7 @@ class AddActionDialog extends StatelessWidget {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _brainPointsLabel,
-            prefixIcon: const Icon(ThemeIcons.brainPointsIcon),
+            prefixIcon: const Icon(ThemeIcons.brainPoints),
           ),
           keyboardType: TextInputType.number,
           onChanged: (val) => brainPoints = int.tryParse(val) ?? 5,
@@ -87,7 +87,7 @@ class AddActionDialog extends StatelessWidget {
           value: list,
           decoration: inputDecoration.copyWith(
             labelText: _listLabel,
-            prefixIcon: const Icon(ThemeIcons.tagIcon),
+            prefixIcon: const Icon(ThemeIcons.tag),
           ),
           items:
               lists

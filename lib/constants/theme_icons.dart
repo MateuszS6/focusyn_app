@@ -2,68 +2,69 @@ import 'package:flutter/material.dart';
 
 class ThemeIcons {
   // Main Pages
-  static const IconData todayIcon = Icons.today_rounded;
-  static const IconData focusesIcon = Icons.auto_awesome_motion_rounded;
-  static const IconData aiIcon = Icons.auto_awesome_rounded;
-  static const IconData plannerIcon = Icons.calendar_month_rounded;
+  static const IconData today = Icons.today_rounded;
+  static const IconData focuses = Icons.auto_awesome_motion_rounded;
+  static const IconData ai = Icons.auto_awesome_rounded;
+  static const IconData planner = Icons.calendar_month_rounded;
 
   // Other Pages
-  static const IconData notificationsIcon = Icons.notifications_rounded;
-  static const IconData onboardingIcon = Icons.school_rounded;
-  static const IconData settingsIcon = Icons.settings_rounded;
+  static const IconData notifications = Icons.notifications_rounded;
+  static const IconData onboarding = Icons.school_rounded;
+  static const IconData settings = Icons.settings_rounded;
 
   // Focuses
-  static const IconData actionsIcon = Icons.check_circle_rounded;
-  static const IconData flowsIcon = Icons.replay_circle_filled_rounded;
-  static const IconData momentsIcon = Icons.event_rounded;
-  static const IconData thoughtsIcon = Icons.lightbulb_rounded;
+  static const IconData actions = Icons.check_circle_rounded;
+  static const IconData flows = Icons.replay_circle_filled_rounded;
+  static const IconData moments = Icons.event_rounded;
+  static const IconData thoughts = Icons.lightbulb_rounded;
 
-  static const IconData tasksIcon = Icons.task_alt;
+  static const IconData tasks = Icons.task_alt;
 
   // Utilities
-  static const IconData backIcon = Icons.arrow_back_ios_rounded;
-  static const IconData checkIcon = Icons.check_rounded;
+  static const IconData back = Icons.arrow_back_ios_rounded;
+  static const IconData check = Icons.check_rounded;
 
-  static const IconData replayIcon = Icons.replay_rounded;
+  static const IconData play = Icons.play_arrow_rounded;
+  static const IconData replay = Icons.replay_rounded;
 
-  static const IconData sortIcon = Icons.sort_rounded;
+  static const IconData sort = Icons.sort_rounded;
 
-  static const IconData addIcon = Icons.add_rounded;
-  static const IconData deleteIcon = Icons.delete_forever_rounded;
+  static const IconData add = Icons.add_rounded;
+  static const IconData delete = Icons.delete_forever_rounded;
 
-  static const IconData openIcon = Icons.chevron_right_rounded;
-  static const IconData closeIcon = Icons.close_rounded;
+  static const IconData open = Icons.chevron_right_rounded;
+  static const IconData close = Icons.close_rounded;
 
-  static const IconData sendIcon = Icons.send_rounded;
-  static const IconData clearIcon = Icons.clear_all_rounded;
+  static const IconData send = Icons.send_rounded;
+  static const IconData clear = Icons.clear_all_rounded;
 
   // General Symbols
-  static const IconData infoIcon = Icons.info_rounded;
-  static const IconData helpIcon = Icons.help_rounded;
-  static const IconData robotIcon = Icons.smart_toy_rounded;
-  static const IconData streakIcon = Icons.local_fire_department_rounded;
-  static const IconData noEventsIcon = Icons.event_available_rounded;
+  static const IconData info = Icons.info_rounded;
+  static const IconData help = Icons.help_rounded;
+  static const IconData robot = Icons.smart_toy_rounded;
+  static const IconData streak = Icons.local_fire_department_rounded;
+  static const IconData noEvents = Icons.event_available_rounded;
 
   // Task Symbols
-  static const IconData textIcon = Icons.title_rounded;
-  static const IconData priorityIcon = Icons.priority_high_rounded;
-  static const IconData brainPointsIcon = Icons.psychology_rounded;
-  static const IconData dateIcon = Icons.today_rounded;
-  static const IconData timeIcon = Icons.access_time_rounded;
-  static const IconData durationIcon = Icons.timer_rounded;
-  static const IconData repeatIcon = Icons.repeat_rounded;
-  static const IconData locationIcon = Icons.location_on_rounded;
-  static const IconData tagIcon = Icons.label_rounded;
+  static const IconData text = Icons.title_rounded;
+  static const IconData priority = Icons.priority_high_rounded;
+  static const IconData brainPoints = Icons.psychology_rounded;
+  static const IconData date = Icons.today_rounded;
+  static const IconData time = Icons.access_time_rounded;
+  static const IconData duration = Icons.timer_rounded;
+  static const IconData repeat = Icons.repeat_rounded;
+  static const IconData location = Icons.location_on_rounded;
+  static const IconData tag = Icons.label_rounded;
 
   // User Symbols
-  static const IconData userIcon = Icons.person_rounded;
-  static const IconData emailIcon = Icons.email_rounded;
-  static const IconData lockIcon = Icons.lock_rounded;
+  static const IconData user = Icons.person_rounded;
+  static const IconData email = Icons.email_rounded;
+  static const IconData lock = Icons.lock_rounded;
 
   // Data Symbols
-  static const IconData dataIcon = Icons.data_usage_rounded;
-  static const IconData securityIcon = Icons.shield_rounded;
-  static const IconData privacyIcon = Icons.privacy_tip_rounded;
-  static const IconData termsIcon = Icons.description_rounded;
-  static const IconData logoutIcon = Icons.logout_rounded;
+  static const IconData data = Icons.data_usage_rounded;
+  static const IconData security = Icons.shield_rounded;
+  static const IconData privacy = Icons.privacy_tip_rounded;
+  static const IconData terms = Icons.description_rounded;
+  static const IconData logout = Icons.logout_rounded;
 }

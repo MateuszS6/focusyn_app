@@ -123,19 +123,16 @@ class _MainScreenState extends State<MainScreen> {
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         destinations: const [
           NavigationDestination(
-            icon: Icon(ThemeIcons.todayIcon),
+            icon: Icon(ThemeIcons.today),
             label: Keys.today,
           ),
           NavigationDestination(
-            icon: Icon(ThemeIcons.focusesIcon),
+            icon: Icon(ThemeIcons.focuses),
             label: Keys.focuses,
           ),
+          NavigationDestination(icon: Icon(ThemeIcons.ai), label: Keys.aiName),
           NavigationDestination(
-            icon: Icon(ThemeIcons.aiIcon),
-            label: Keys.aiName,
-          ),
-          NavigationDestination(
-            icon: Icon(ThemeIcons.plannerIcon),
+            icon: Icon(ThemeIcons.planner),
             label: Keys.planner,
           ),
         ],

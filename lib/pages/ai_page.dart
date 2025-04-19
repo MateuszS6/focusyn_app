@@ -171,12 +171,12 @@ class _AiPageState extends State<AiPage> {
         title: 'Synthe',
         actions: [
           IconButton(
-            icon: const Icon(ThemeIcons.clearIcon),
+            icon: const Icon(ThemeIcons.clear),
             tooltip: 'Clear Chat',
             onPressed: _clearChat,
           ),
           IconButton(
-            icon: const Icon(ThemeIcons.infoIcon),
+            icon: const Icon(ThemeIcons.info),
             tooltip: 'About Synthe',
             onPressed: () {
               showDialog(
@@ -193,7 +193,7 @@ class _AiPageState extends State<AiPage> {
                               shape: BoxShape.circle,
                             ),
                             child: Icon(
-                              ThemeIcons.robotIcon,
+                              ThemeIcons.robot,
                               color: Colors.purple,
                               size: 24,
                             ),
@@ -325,7 +325,7 @@ class _AiPageState extends State<AiPage> {
       ),
       child: Center(
         child: Icon(
-          isUser ? ThemeIcons.userIcon : ThemeIcons.robotIcon,
+          isUser ? ThemeIcons.user : ThemeIcons.robot,
           color: isUser ? Colors.blue : Colors.purple,
           size: 20,
         ),
@@ -424,7 +424,7 @@ class _AiPageState extends State<AiPage> {
               shape: BoxShape.circle,
             ),
             child: IconButton(
-              icon: const Icon(ThemeIcons.sendIcon, color: Colors.white),
+              icon: const Icon(ThemeIcons.send, color: Colors.white),
               onPressed: () => _handleSubmitted(_messageController.text),
             ),
           ),

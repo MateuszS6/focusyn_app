@@ -93,7 +93,7 @@ class FilterRow extends StatelessWidget {
             );
           } else {
             return ActionChip(
-              label: Icon(ThemeIcons.addIcon, size: 20, color: color),
+              label: Icon(ThemeIcons.add, size: 20, color: color),
               shape: const StadiumBorder(),
               onPressed: onAdd,
               backgroundColor: Colors.grey[200],
