@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/constants/quotes.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/notification_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
@@ -26,12 +27,12 @@ class _NotificationsPageState extends State<NotificationsPage> {
   void _loadSettings() {
     setState(() {
       _notificationsEnabled = _notificationBox.get(
-        'notifications',
+        Keys.notificationsEnabled,
         defaultValue: false,
       );
-      final hour = _notificationBox.get('notificationHour', defaultValue: 9);
+      final hour = _notificationBox.get(Keys.notificationHour, defaultValue: 9);
       final minute = _notificationBox.get(
-        'notificationMinute',
+        Keys.notificationMinute,
         defaultValue: 0,
       );
       _notificationTime = TimeOfDay(hour: hour, minute: minute);
@@ -39,15 +40,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
   }
 
   Future<void> _saveSettings() async {
-    await _notificationBox.put('notifications', _notificationsEnabled);
-    await _notificationBox.put('notificationHour', _notificationTime.hour);
-    await _notificationBox.put('notificationMinute', _notificationTime.minute);
-
-    // Schedule or cancel notifications based on settings
-    await NotificationService.scheduleQuoteNotification(
-      hour: _notificationTime.hour,
-      minute: _notificationTime.minute,
-      isEnabled: _notificationsEnabled,
+    await _notificationBox.put(
+      Keys.notificationsEnabled,
+      _notificationsEnabled,
+    );
+    await _notificationBox.put(Keys.notificationHour, _notificationTime.hour);
+    await _notificationBox.put(
+      Keys.notificationMinute,
+      _notificationTime.minute,
     );
   }
 
@@ -105,11 +105,34 @@ class _NotificationsPageState extends State<NotificationsPage> {
                           : 'Notifications are disabled',
                     ),
                     value: _notificationsEnabled,
-                    onChanged: (bool value) {
+                    onChanged: (bool value) async {
                       setState(() {
                         _notificationsEnabled = value;
                       });
-                      _saveSettings();
+
+                      // Save settings first
+                      await _saveSettings();
+
+                      // Then handle notifications
+                      if (_notificationsEnabled) {
+                        // Cancel any existing notifications first
+                        await NotificationService.cancelAllNotifications();
+                        // Schedule the new notification
+                        await NotificationService.schedule(
+                          title: 'Daily Quote',
+                          body: Quotes.getRandomQuote().text,
+                          hour: _notificationTime.hour,
+                          minute: _notificationTime.minute,
+                        );
+                        // Show a test notification immediately
+                        await NotificationService.show(
+                          title: 'Notifications Enabled',
+                          body:
+                              'You will receive daily quotes at ${_notificationTime.format(context)}',
+                        );
+                      } else {
+                        await NotificationService.cancelAllNotifications();
+                      }
                     },
                     activeColor: Colors.blue,
                   ),

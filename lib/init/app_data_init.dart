@@ -45,14 +45,14 @@ class AppDataInit {
     }
 
     // Initialize notification settings
-    if (!notificationBox.containsKey('notifications')) {
-      notificationBox.put('notifications', false);
+    if (!notificationBox.containsKey(Keys.notificationsEnabled)) {
+      notificationBox.put(Keys.notificationsEnabled, false);
     }
-    if (!notificationBox.containsKey('notificationHour')) {
-      notificationBox.put('notificationHour', 9);
+    if (!notificationBox.containsKey(Keys.notificationHour)) {
+      notificationBox.put(Keys.notificationHour, 9);
     }
-    if (!notificationBox.containsKey('notificationMinute')) {
-      notificationBox.put('notificationMinute', 0);
+    if (!notificationBox.containsKey(Keys.notificationMinute)) {
+      notificationBox.put(Keys.notificationMinute, 0);
     }
   }
 }

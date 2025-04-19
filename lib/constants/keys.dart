@@ -3,7 +3,7 @@ abstract class Keys {
   static const String appName = 'Focusyn';
   static const String aiName = 'Synthe';
 
-  // Hive
+  // Hive Boxes
   static const String brainBox = 'brainBox';
   static const String taskBox = 'taskBox';
   static const String filterBox = 'filterBox';
@@ -38,4 +38,9 @@ abstract class Keys {
   // Filters
   static const String list = 'list';
   static const String all = 'All';
+
+  // Settings
+  static const String notificationsEnabled = 'notificationsEnabled';
+  static const String notificationHour = 'notificationHour';
+  static const String notificationMinute = 'notificationMinute';
 }

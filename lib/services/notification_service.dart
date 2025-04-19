@@ -1,86 +1,135 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:focusyn_app/constants/quotes.dart';
-import 'package:flutter/material.dart';
-import 'package:focusyn_app/constants/keys.dart';
-import 'package:hive/hive.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 class NotificationService {
-  static final FlutterLocalNotificationsPlugin _plugin =
+  static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
+
   static bool _isInitialized = false;
 
-  static Future<void> init() async {
-    if (_isInitialized) return;
+  static bool get isInitialized => _isInitialized;
 
-    // Set the local timezone
-    tz.setLocalLocation(tz.getLocation('Europe/London')); // Default timezone
+  // Initialize the notification service
+  static Future<void> initialize() async {
+    if (_isInitialized) return; // Already initialized
 
-    const androidSettings = AndroidInitializationSettings(
+    print('Initializing notification service...');
+
+    // Initialize timezone
+    tz.initializeTimeZones();
+    String currentTimeZone = 'Europe/London';
+    try {
+      currentTimeZone = await FlutterTimezone.getLocalTimezone();
+      print('Using timezone: $currentTimeZone');
+    } catch (e) {
+      print('Error getting local timezone, defaulting to London: $e');
+    }
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+    // Initialize the Android settings
+    const initializationSettingsAndroid = AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     );
-    const initSettings = InitializationSettings(android: androidSettings);
 
-    await _plugin.initialize(
-      initSettings,
+    // Initialize the iOS settings
+    const initializationSettingsIOS = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+
+    const initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    // Initialize the notification service
+    final bool? result = await _notificationsPlugin.initialize(
+      initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // Handle notification tap
-        debugPrint('Notification tapped: ${response.payload}');
-        // TODO: Navigate to appropriate screen when notification is tapped
+        print('Notification clicked: ${response.payload}');
       },
     );
+    print('Notification initialization result: $result');
+
+    // Request permissions
+    final bool? permissionResult =
+        await _notificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >()
+            ?.requestNotificationsPermission();
+    print('Android permission result: $permissionResult');
+
+    // Create the Android notification channel
+    await _notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
+        ?.createNotificationChannel(
+          const AndroidNotificationChannel(
+            'daily_channel_id',
+            'Daily Notification',
+            description: 'Daily Notification Channel',
+            importance: Importance.max,
+          ),
+        );
 
     _isInitialized = true;
-    debugPrint('Notification service initialized');
+    print('Notification service initialized successfully');
   }
 
-  static Future<bool> requestPermissions() async {
-    if (!_isInitialized) {
-      await init();
-    }
-
-    // For Android 8, we don't need to request permissions at runtime
-    // This is only needed for Android 13+
-    debugPrint('Permissions requested');
-    return true;
-  }
-
-  static Future<void> restoreFromSettings() async {
-    debugPrint('Restoring notification settings from storage');
-    final box = Hive.box(Keys.settingBox);
-    final enabled = box.get('notifications', defaultValue: false);
-    final hour = box.get('notificationHour', defaultValue: 9);
-    final min = box.get('notificationMinute', defaultValue: 0);
-
-    await scheduleQuoteNotification(
-      hour: hour,
-      minute: min,
-      isEnabled: enabled,
+  // Get notification details
+  static NotificationDetails _getNotificationDetails() {
+    return const NotificationDetails(
+      android: AndroidNotificationDetails(
+        'daily_channel_id',
+        'Daily Notification',
+        channelDescription: 'Daily Notification Channel',
+        importance: Importance.max,
+        priority: Priority.high,
+        showProgress: true,
+        enableVibration: true,
+        enableLights: true,
+      ),
+      iOS: DarwinNotificationDetails(
+        presentAlert: true,
+        presentBadge: true,
+        presentSound: true,
+      ),
     );
   }
 
-  static Future<void> scheduleQuoteNotification({
+  // Show a notification
+  static Future<void> show({int id = 0, String? title, String? body}) async {
+    if (!_isInitialized) await initialize();
+
+    print('Showing notification: $title - $body');
+    return _notificationsPlugin.show(
+      id,
+      title,
+      body,
+      _getNotificationDetails(),
+    );
+  }
+
+  // Schedule a notification
+  static Future<void> schedule({
+    int id = 1,
+    required String title,
+    required String body,
     required int hour,
     required int minute,
-    required bool isEnabled,
   }) async {
-    if (!_isInitialized) {
-      await init();
-    }
+    if (!_isInitialized) await initialize();
 
-    // Cancel existing notifications first
-    await cancelAllNotifications();
-
-    if (!isEnabled) {
-      debugPrint('Notifications disabled');
-      return;
-    }
-
-    // Get a random quote
-    final quote = Quotes.getRandomQuote();
-
-    // Schedule the notification
+    print('Scheduling notification for $hour:$minute');
     final now = tz.TZDateTime.now(tz.local);
+    print('Current time: $now');
+
+    // Create the scheduled time for today
     var scheduledDate = tz.TZDateTime(
       tz.local,
       now.year,
@@ -93,66 +142,46 @@ class NotificationService {
     // If the time has already passed today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
+      print('Time already passed today, scheduling for tomorrow');
     }
 
-    debugPrint('Scheduling notification for $scheduledDate');
-
+    print('Scheduling notification for: $scheduledDate');
     try {
-      await _plugin.zonedSchedule(
-        0, // Notification ID
-        "How are you doing?",
-        quote.text,
+      // First cancel any existing notifications
+      await _notificationsPlugin.cancel(id);
+
+      // Schedule the new notification
+      await _notificationsPlugin.zonedSchedule(
+        id,
+        title,
+        body,
         scheduledDate,
-        NotificationDetails(
-          android: AndroidNotificationDetails(
-            'focusyn_quotes_channel',
-            'Focusyn Quotes',
-            channelDescription: 'Daily motivational quotes from Focusyn',
-            importance: Importance.high,
-            priority: Priority.high,
-            enableVibration: true,
-            enableLights: true,
-            color: Colors.blue,
-          ),
-        ),
+        _getNotificationDetails(),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        matchDateTimeComponents: DateTimeComponents.time, // Repeat daily
-        payload:
-            'quote_notification', // Add payload for handling notification taps
+        matchDateTimeComponents: DateTimeComponents.time,
+        payload: 'daily_quote',
       );
+      print('Notification scheduled successfully');
 
-      debugPrint(
-        'Quote notification scheduled successfully for $scheduledDate',
-      );
+      // Verify the scheduled notification
+      final pendingNotifications =
+          await _notificationsPlugin.pendingNotificationRequests();
+      print('Pending notifications: ${pendingNotifications.length}');
+      for (var notification in pendingNotifications) {
+        print(
+          'Pending notification: id=${notification.id}, title=${notification.title}',
+        );
+      }
     } catch (e) {
-      debugPrint('Error scheduling notification: $e');
+      print('Error scheduling notification: $e');
+      rethrow;
     }
   }
 
+  // Cancel all notifications
   static Future<void> cancelAllNotifications() async {
-    if (!_isInitialized) {
-      await init();
-    }
-
-    await _plugin.cancelAll();
-    debugPrint('All notifications cancelled');
-  }
-
-  static Future<bool> areNotificationsEnabled() async {
-    if (!_isInitialized) {
-      await init();
-    }
-
-    final androidSettings =
-        _plugin
-            .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin
-            >();
-
-    if (androidSettings != null) {
-      return await androidSettings.areNotificationsEnabled() ?? false;
-    }
-
-    return false;
+    if (!_isInitialized) await initialize();
+    print('Cancelling all notifications');
+    await _notificationsPlugin.cancelAll();
   }
 }
