@@ -161,7 +161,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo and Title
+                    // Logo
                     Image.asset(
                       'assets/logo_transparent_text.png',
                       height: 200,
