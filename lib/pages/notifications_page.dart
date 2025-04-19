@@ -178,6 +178,19 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 ],
               ),
             ),
+            ElevatedButton(
+              onPressed:
+                  () => {
+                    NotificationService.cancelAllNotifications(),
+                    NotificationService.schedule(
+                      title: 'Test Notification',
+                      body: 'This is a test notification',
+                      hour: DateTime.now().hour,
+                      minute: DateTime.now().minute + 1,
+                    ),
+                  },
+              child: const Text('Test Notification'),
+            ),
           ],
         ),
       ),

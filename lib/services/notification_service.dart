@@ -117,7 +117,7 @@ class NotificationService {
 
   // Schedule a notification
   static Future<void> schedule({
-    int id = 1,
+    int id = 0,
     required String title,
     required String body,
     required int hour,
@@ -159,7 +159,7 @@ class NotificationService {
         _getNotificationDetails(),
         androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time,
-        payload: 'daily_quote',
+        // payload: 'daily_quote',
       );
       print('Notification scheduled successfully');
 
