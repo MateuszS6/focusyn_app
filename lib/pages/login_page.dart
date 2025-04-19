@@ -69,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo and Title
+                    // Logo
                     Image.asset(
                       'assets/logo_transparent_text.png',
                       height: 200,
