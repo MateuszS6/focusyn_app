@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/services/brain_points_service.dart';
+import 'package:focusyn_app/services/flow_history_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
@@ -28,7 +29,8 @@ class _TodayPageState extends State<TodayPage> {
   @override
   void initState() {
     super.initState();
-    _refreshData();
+    _cachedCompletions = _getFlowCompletions();
+    _lastUpdateDate = DateTime.now();
   }
 
   void _refreshData() {
@@ -206,30 +208,19 @@ class _TodayPageState extends State<TodayPage> {
   }
 
   List<DateTime> _getFlowCompletions() {
-    final flows = TaskService.tasks[Keys.flows] ?? [];
-    final completions = <DateTime>[];
+    // Get all completions from the history service
+    final allCompletions = FlowHistoryService.getCompletions();
 
-    for (final task in flows) {
-      final history = task[Keys.history];
-      if (history is List) {
-        for (final date in history) {
-          if (date is String) {
-            final parsed = DateTime.tryParse(date);
-            if (parsed != null) {
-              // Only add dates from the last 7 days
-              final now = DateTime.now();
-              final sevenDaysAgo = now.subtract(const Duration(days: 7));
-              if (parsed.isAfter(sevenDaysAgo) ||
-                  _isSameDate(parsed, sevenDaysAgo)) {
-                completions.add(parsed);
-              }
-            }
-          }
-        }
-      }
-    }
+    // Filter to only include completions from the last 7 days
+    final now = DateTime.now();
+    final sevenDaysAgo = now.subtract(const Duration(days: 7));
 
-    return completions;
+    return allCompletions
+        .where(
+          (date) =>
+              date.isAfter(sevenDaysAgo) || _isSameDate(date, sevenDaysAgo),
+        )
+        .toList();
   }
 
   bool _isSameDate(DateTime a, DateTime b) =>
@@ -1002,7 +993,7 @@ class _TodayPageState extends State<TodayPage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel"),
+                child: const Icon(ThemeIcons.close, size: 24),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -1030,7 +1021,7 @@ class _TodayPageState extends State<TodayPage> {
                     );
                   }
                 },
-                child: const Text("Add"),
+                child: const Icon(ThemeIcons.check, size: 24),
               ),
             ],
           ),

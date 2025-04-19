@@ -23,6 +23,7 @@ class AppInit {
     await Hive.openBox(Keys.filterBox);
     await Hive.openBox(Keys.settingBox);
     await Hive.openBox(Keys.chatBox);
+    await Hive.openBox(Keys.historyBox);
   }
 
   static Future<void> _initializeFirebase() async {

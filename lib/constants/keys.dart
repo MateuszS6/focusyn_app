@@ -9,6 +9,7 @@ abstract class Keys {
   static const String filterBox = 'filterBox';
   static const String settingBox = 'settingBox';
   static const String chatBox = 'chatBox';
+  static const String historyBox = 'historyBox';
 
   // Pages
   static const String today = 'Today';

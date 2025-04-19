@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/services/brain_points_service.dart';
+import 'package:focusyn_app/services/flow_history_service.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 import 'package:focusyn_app/models/task_model.dart';
 
@@ -61,12 +62,13 @@ class FlowTile extends StatelessWidget {
       onDelete: onDelete,
       leading: IconButton(
         icon: const Icon(ThemeIcons.check),
-        onPressed: () {
+        onPressed: () async {
           BrainPointsService.subtractPoints(task.brainPoints);
 
-          // Record completion and update date
-          final history = List<String>.from(task.history)
-            ..add(DateTime.now().toIso8601String());
+          // Record completion in the history service
+          await FlowHistoryService.addCompletion(DateTime.now());
+
+          // Calculate next date
           final nextDate = _calculateNextDate(task.repeat ?? 'Daily');
 
           final updatedTask = Task(
@@ -80,7 +82,7 @@ class FlowTile extends StatelessWidget {
             duration: task.duration,
             location: task.location,
             repeat: task.repeat,
-            history: history,
+            history: task.history, // Keep the task's own history for reference
             createdAt: task.createdAt,
           );
 

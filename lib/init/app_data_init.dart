@@ -7,6 +7,7 @@ class AppDataInit {
     final filterBox = Hive.box(Keys.filterBox);
     final brainBox = Hive.box(Keys.brainBox);
     final notificationBox = Hive.box(Keys.settingBox);
+    final historyBox = Hive.box(Keys.historyBox);
 
     // Ensure boxes are initialized with empty lists if they don't exist
     if (!taskBox.containsKey(Keys.actions)) {
@@ -53,6 +54,11 @@ class AppDataInit {
     }
     if (!notificationBox.containsKey(Keys.notificationMinute)) {
       notificationBox.put(Keys.notificationMinute, 0);
+    }
+
+    // Initialize flow history
+    if (!historyBox.containsKey('flow_history')) {
+      historyBox.put('flow_history', <String>[]);
     }
   }
 }
