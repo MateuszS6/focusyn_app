@@ -128,7 +128,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         await NotificationService.show(
                           title: 'Notifications Enabled',
                           body:
-                              'You will receive daily quotes at ${_notificationTime.format(context)}',
+                              'You will receive daily quotes at ${_notificationTime.hour}:${_notificationTime.minute}',
                         );
                       } else {
                         await NotificationService.cancelAllNotifications();
@@ -177,19 +177,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
                   ),
                 ],
               ),
-            ),
-            ElevatedButton(
-              onPressed:
-                  () => {
-                    NotificationService.cancelAllNotifications(),
-                    NotificationService.schedule(
-                      title: 'Test Notification',
-                      body: 'This is a test notification',
-                      hour: DateTime.now().hour,
-                      minute: DateTime.now().minute + 1,
-                    ),
-                  },
-              child: const Text('Test Notification'),
             ),
           ],
         ),
