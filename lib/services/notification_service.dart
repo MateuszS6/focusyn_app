@@ -157,7 +157,7 @@ class NotificationService {
         body,
         scheduledDate,
         _getNotificationDetails(),
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
         matchDateTimeComponents: DateTimeComponents.time,
         payload: 'daily_quote',
       );
