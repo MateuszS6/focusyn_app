@@ -68,7 +68,7 @@ class _AddMomentDialogState extends State<AddMomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddMomentDialog._titleLabel,
-            prefixIcon: const Icon(ThemeIcons.titleIcon),
+            prefixIcon: const Icon(ThemeIcons.textIcon),
           ),
           onChanged: (val) => setState(() => title = val),
         ),

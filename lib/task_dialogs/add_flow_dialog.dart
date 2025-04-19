@@ -70,7 +70,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: AddFlowDialog._titleLabel,
-            prefixIcon: const Icon(ThemeIcons.titleIcon),
+            prefixIcon: const Icon(ThemeIcons.textIcon),
           ),
           onChanged: (val) => setState(() => title = val),
         ),

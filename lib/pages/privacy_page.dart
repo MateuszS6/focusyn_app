@@ -118,7 +118,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
 
   Widget _buildDataProtectionTile(BuildContext context) {
     return ListTile(
-      leading: const Icon(ThemeIcons.shieldIcon),
+      leading: const Icon(ThemeIcons.privacyIcon),
       title: const Text('Data Protection'),
       subtitle: const Text('How we protect your information'),
       trailing: const Icon(ThemeIcons.openIcon, size: 20),

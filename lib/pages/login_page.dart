@@ -116,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               labelText: 'Email',
                               prefixIcon: Icon(
-                                ThemeIcons.emailFilledIcon,
+                                ThemeIcons.emailIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
@@ -137,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               labelText: 'Password',
                               prefixIcon: Icon(
-                                ThemeIcons.lockFilledIcon,
+                                ThemeIcons.lockIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(

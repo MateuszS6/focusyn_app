@@ -370,6 +370,15 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
+  static const notificationsIcon = ThemeIcons.notificationsIcon;
+  static const userIcon = ThemeIcons.userIcon;
+  static const emailIcon = ThemeIcons.emailIcon;
+  static const lockIcon = ThemeIcons.lockIcon;
+  static const securityIcon = Icons.shield_rounded;
+  static const termsIcon = ThemeIcons.termsIcon;
+  static const infoIcon = ThemeIcons.infoIcon;
+  static const logoutIcon = ThemeIcons.logoutIcon;
+
   @override
   Widget build(BuildContext context) {
     final currentUser = FirebaseAuth.instance.currentUser;
@@ -383,7 +392,7 @@ class _AccountPageState extends State<AccountPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(ThemeIcons.notificationsIcon),
+            icon: const Icon(notificationsIcon),
             tooltip: 'Notifications',
             onPressed:
                 () => Navigator.push(
@@ -470,28 +479,28 @@ class _AccountPageState extends State<AccountPage> {
                 children: [
                   _buildSettingItem(
                     context,
-                    icon: ThemeIcons.userIcon,
+                    icon: userIcon,
                     label: 'Edit Display Name',
                     onTap: _updateDisplayName,
                   ),
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: ThemeIcons.emailIcon,
+                    icon: emailIcon,
                     label: 'Change Email',
                     onTap: _updateEmail,
                   ),
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: ThemeIcons.lockIcon,
+                    icon: lockIcon,
                     label: 'Change Password',
                     onTap: _updatePassword,
                   ),
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: ThemeIcons.securityIcon,
+                    icon: securityIcon,
                     label: 'Privacy & Security',
                     onTap: () {
                       Navigator.push(
@@ -503,7 +512,7 @@ class _AccountPageState extends State<AccountPage> {
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: ThemeIcons.termsIcon,
+                    icon: termsIcon,
                     label: 'Terms of Use',
                     onTap:
                         () => _showDialog(
@@ -519,7 +528,7 @@ class _AccountPageState extends State<AccountPage> {
                   _buildDivider(),
                   _buildSettingItem(
                     context,
-                    icon: ThemeIcons.infoIcon,
+                    icon: infoIcon,
                     label: 'About',
                     onTap:
                         () => _showDialog(
@@ -545,7 +554,7 @@ class _AccountPageState extends State<AccountPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(ThemeIcons.logoutIcon),
+                  const Icon(logoutIcon),
                   const SizedBox(width: 8),
                   Text(
                     'Log Out',

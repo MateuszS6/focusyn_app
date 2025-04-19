@@ -54,7 +54,7 @@ class AddActionDialog extends StatelessWidget {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _titleLabel,
-            prefixIcon: const Icon(ThemeIcons.titleIcon),
+            prefixIcon: const Icon(ThemeIcons.textIcon),
           ),
           onChanged: (val) => title = val,
         ),

@@ -325,7 +325,7 @@ class _AiPageState extends State<AiPage> {
       ),
       child: Center(
         child: Icon(
-          isUser ? ThemeIcons.userFilledIcon : ThemeIcons.robotIcon,
+          isUser ? ThemeIcons.userIcon : ThemeIcons.robotIcon,
           color: isUser ? Colors.blue : Colors.purple,
           size: 20,
         ),

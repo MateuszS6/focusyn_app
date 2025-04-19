@@ -208,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               labelText: 'Display Name',
                               hintText: 'Enter your display name',
                               prefixIcon: Icon(
-                                ThemeIcons.userFilledIcon,
+                                ThemeIcons.userIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
@@ -229,7 +229,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             decoration: InputDecoration(
                               labelText: 'Email',
                               prefixIcon: Icon(
-                                ThemeIcons.emailFilledIcon,
+                                ThemeIcons.emailIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
@@ -250,7 +250,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             decoration: InputDecoration(
                               labelText: 'Password (min 6 chars)',
                               prefixIcon: Icon(
-                                ThemeIcons.lockFilledIcon,
+                                ThemeIcons.lockIcon,
                                 color: Colors.blue[300],
                               ),
                               border: OutlineInputBorder(
