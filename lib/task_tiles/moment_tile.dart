@@ -15,21 +15,39 @@ class MomentTile extends StatelessWidget {
     required this.onDelete,
   });
 
+  bool _isOverdue() {
+    if (task.date == null || task.date!.isEmpty) return false;
+
+    final taskDate = DateTime.parse(task.date!);
+    final now = DateTime.now();
+
+    // Compare dates without time
+    final taskDateOnly = DateTime(taskDate.year, taskDate.month, taskDate.day);
+    final nowDateOnly = DateTime(now.year, now.month, now.day);
+
+    return taskDateOnly.isBefore(nowDateOnly);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final subtitle = [
+    final isOverdue = _isOverdue();
+    final subtitleParts = [
       task.date,
       task.time,
       '${task.duration}m',
       task.location,
       task.list,
-    ].where((item) => item != null && item.isNotEmpty).join(" • ");
+    ].where((item) => item != null && item.isNotEmpty);
 
     return TaskTile(
       key: key,
       color: ThemeColours.momentsAlt,
       text: task.text,
-      subtitle: subtitle,
+      subtitle: subtitleParts.join(" • "),
+      subtitleStyle: TextStyle(
+        color: isOverdue ? Colors.red : null,
+        fontSize: 14,
+      ),
       onInlineEdit: onEdit,
       onDelete: onDelete,
     );

@@ -8,6 +8,7 @@ class TaskTile extends StatefulWidget {
   final VoidCallback? onDelete;
   final Color color;
   final EdgeInsets padding;
+  final TextStyle? subtitleStyle;
 
   const TaskTile({
     super.key,
@@ -18,6 +19,7 @@ class TaskTile extends StatefulWidget {
     this.onDelete,
     this.color = const Color(0xFFF5F5F5),
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    this.subtitleStyle,
   });
 
   @override
@@ -53,7 +55,10 @@ class _TaskTileState extends State<TaskTile> {
         ),
         subtitle:
             widget.subtitle != null
-                ? Text(widget.subtitle!, style: const TextStyle(fontSize: 14))
+                ? Text(
+                  widget.subtitle!,
+                  style: widget.subtitleStyle ?? const TextStyle(fontSize: 14),
+                )
                 : null,
       ),
     );

@@ -19,22 +19,40 @@ class FlowTile extends StatelessWidget {
     required this.onDelete,
   });
 
+  bool _isOverdue() {
+    if (task.date == null || task.date!.isEmpty) return false;
+
+    final taskDate = DateTime.parse(task.date!);
+    final now = DateTime.now();
+
+    // Compare dates without time
+    final taskDateOnly = DateTime(taskDate.year, taskDate.month, taskDate.day);
+    final nowDateOnly = DateTime(now.year, now.month, now.day);
+
+    return taskDateOnly.isBefore(nowDateOnly);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final subtitle = [
+    final isOverdue = _isOverdue();
+    final subtitleParts = [
       task.date,
       task.time,
       '${task.duration}m',
       task.repeat,
       '${task.brainPoints} BP',
       task.list,
-    ].join(" • ");
+    ];
 
     return TaskTile(
       key: key,
       color: ThemeColours.flowsAlt,
       text: task.text,
-      subtitle: subtitle,
+      subtitle: subtitleParts.join(" • "),
+      subtitleStyle: TextStyle(
+        color: isOverdue ? Colors.red : null,
+        fontSize: 14,
+      ),
       onInlineEdit: onEdit,
       onDelete: onDelete,
       leading: IconButton(
