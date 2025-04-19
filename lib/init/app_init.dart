@@ -47,7 +47,6 @@ class AppInit {
         hour: hour,
         minute: minute,
       );
-      print('Notification scheduled for $hour:$minute');
     }
   }
 }
