@@ -77,7 +77,7 @@ class _MomentDialogState extends State<MomentDialog> {
           ),
           onChanged: (val) => setState(() => title = val),
         ),
-        InkWell(
+        GestureDetector(
           onTap: () async {
             final picked = await showDatePicker(
               context: context,
@@ -97,7 +97,7 @@ class _MomentDialogState extends State<MomentDialog> {
             child: Text("${selectedDate.toLocal()}".split(' ')[0]),
           ),
         ),
-        InkWell(
+        GestureDetector(
           onTap: () async {
             final picked = await showTimePicker(
               context: context,

@@ -80,7 +80,7 @@ class _FlowDialogState extends State<FlowDialog> {
           ),
           onChanged: (val) => setState(() => title = val),
         ),
-        InkWell(
+        GestureDetector(
           onTap: () async {
             final picked = await showDatePicker(
               context: context,
@@ -100,7 +100,7 @@ class _FlowDialogState extends State<FlowDialog> {
             child: Text("${selectedDate.toLocal()}".split(' ')[0]),
           ),
         ),
-        InkWell(
+        GestureDetector(
           onTap: () async {
             final picked = await showTimePicker(
               context: context,
