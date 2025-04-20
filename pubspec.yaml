@@ -45,6 +45,9 @@ dependencies:
   firebase_auth: ^5.5.2
   cloud_firestore: ^5.6.6
 
+  # Nav bar
+  google_nav_bar: ^5.0.7
+
   # Slidable
   flutter_slidable: ^4.0.0
 
