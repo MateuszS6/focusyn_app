@@ -6,7 +6,6 @@ import 'package:focusyn_app/pages/planner_page.dart';
 import 'package:focusyn_app/pages/ai_page.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class MainScreen extends StatefulWidget {
@@ -129,10 +128,14 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: ValueListenableBuilder(
         valueListenable: Hive.box(Keys.settingBox).listenable(),
         builder: (context, box, _) {
-          final showLabels = box.get(
-            Keys.navigationBarTextEnabled,
-            defaultValue: true,
-          );
+          final labelBehavior = NavigationDestinationLabelBehavior.values
+              .byName(
+                box.get(
+                  Keys.navigationBarTextBehaviour,
+                  defaultValue:
+                      NavigationDestinationLabelBehavior.alwaysShow.name,
+                ),
+              );
           return NavigationBar(
             height: 72,
             elevation: 0,
@@ -142,10 +145,7 @@ class _MainScreenState extends State<MainScreen> {
             selectedIndex: _selectedIndex,
             onDestinationSelected:
                 (index) => setState(() => _selectedIndex = index),
-            labelBehavior:
-                showLabels
-                    ? NavigationDestinationLabelBehavior.alwaysShow
-                    : NavigationDestinationLabelBehavior.alwaysHide,
+            labelBehavior: labelBehavior,
             destinations: const [
               NavigationDestination(
                 icon: Icon(ThemeIcons.today),

@@ -14,7 +14,8 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool _navigationBarText = true;
+  String _navigationBarText =
+      NavigationDestinationLabelBehavior.alwaysShow.name;
   bool _notificationsEnabled = false;
   TimeOfDay _notificationTime = const TimeOfDay(hour: 9, minute: 0);
   final _settingBox = Hive.box(Keys.settingBox);
@@ -28,8 +29,8 @@ class _SettingsPageState extends State<SettingsPage> {
   void _loadSettings() {
     setState(() {
       _navigationBarText = _settingBox.get(
-        Keys.navigationBarTextEnabled,
-        defaultValue: true,
+        Keys.navigationBarTextBehaviour,
+        defaultValue: NavigationDestinationLabelBehavior.alwaysShow.name,
       );
       _notificationsEnabled = _settingBox.get(
         Keys.notificationsEnabled,
@@ -41,8 +42,21 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  String _getLabelBehaviorText(String value) {
+    switch (value) {
+      case 'alwaysShow':
+        return 'Always show labels';
+      case 'onlyShowSelected':
+        return 'Show label when selected';
+      case 'alwaysHide':
+        return 'Always hide labels';
+      default:
+        return 'Always show labels';
+    }
+  }
+
   Future<void> _saveSettings() async {
-    await _settingBox.put(Keys.navigationBarTextEnabled, _navigationBarText);
+    await _settingBox.put(Keys.navigationBarTextBehaviour, _navigationBarText);
     await _settingBox.put(Keys.notificationsEnabled, _notificationsEnabled);
     await _settingBox.put(Keys.notificationHour, _notificationTime.hour);
     await _settingBox.put(Keys.notificationMinute, _notificationTime.minute);
@@ -91,25 +105,57 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               child: Column(
                 children: [
-                  SwitchListTile(
+                  ListTile(
                     title: const Text(
-                      'Navigation Bar Text',
+                      'Navigation Bar Labels',
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text(
-                      _navigationBarText
-                          ? 'Always show text on the navigation bar'
-                          : 'Do not show text on the navigation bar',
-                    ),
-                    value: _navigationBarText,
-                    onChanged: (bool value) async {
-                      setState(() {
-                        _navigationBarText = value;
-                      });
-                      await _saveSettings();
-                    },
                   ),
-                  const SizedBox(height: 16),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: DropdownButtonFormField<String>(
+                      value: _navigationBarText,
+                      decoration: const InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                        ),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                      items: [
+                        DropdownMenuItem(
+                          value:
+                              NavigationDestinationLabelBehavior
+                                  .alwaysShow
+                                  .name,
+                          child: const Text('Always show labels'),
+                        ),
+                        DropdownMenuItem(
+                          value:
+                              NavigationDestinationLabelBehavior
+                                  .onlyShowSelected
+                                  .name,
+                          child: const Text('Show label when selected'),
+                        ),
+                        DropdownMenuItem(
+                          value:
+                              NavigationDestinationLabelBehavior
+                                  .alwaysHide
+                                  .name,
+                          child: const Text('Always hide labels'),
+                        ),
+                      ],
+                      onChanged: (String? value) async {
+                        if (value != null) {
+                          setState(() => _navigationBarText = value);
+                          await _saveSettings();
+                        }
+                      },
+                    ),
+                  ),
+                  const Divider(height: 1, color: Color(0xFFE0E0E0)),
                   SwitchListTile(
                     title: const Text(
                       'Daily Quote Notifications',
