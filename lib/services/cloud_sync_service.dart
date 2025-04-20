@@ -409,6 +409,7 @@ class CloudSyncService {
     Box<dynamic> taskBox,
     Box<dynamic> filterBox,
     Box<dynamic> brainBox,
+    Box<dynamic> historyBox,
   ) async {
     print('DEBUG: Clearing local data');
     try {
@@ -436,6 +437,9 @@ class CloudSyncService {
       await brainBox.put(Keys.brainPoints, 100);
       await brainBox.put('lastReset', DateTime.now().toIso8601String());
 
+      // Clear flow history
+      await historyBox.put('flow_history', <String>[]);
+
       print('DEBUG: Local data cleared successfully');
     } catch (e) {
       print('DEBUG: Error clearing local data: $e');
@@ -459,7 +463,7 @@ class CloudSyncService {
       await _deleteCollection(userRef.collection('brainPoints'));
       await _deleteCollection(userRef.collection('tasks'));
       await _deleteCollection(userRef.collection('filters'));
-      await _deleteCollection(userRef.collection('settings'));
+      await _deleteCollection(userRef.collection('history'));
 
       // Delete the user document and profile
       await Future.wait([userRef.delete(), profileRef.delete()]);
@@ -470,6 +474,7 @@ class CloudSyncService {
         Hive.box(Keys.taskBox),
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
+        Hive.box(Keys.historyBox),
       );
       print('DEBUG: Local data cleared successfully');
     } catch (e) {
@@ -538,6 +543,13 @@ class CloudSyncService {
       for (var doc in filtersDocs.docs) {
         await doc.reference.set({'items': []});
       }
+
+      // Clear flow history
+      final historyRef = userDataRef.collection('history').doc('flow');
+      await historyRef.set({
+        'items': [],
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
 
       print('DEBUG: App data cleared successfully');
     } catch (e) {

@@ -333,6 +333,7 @@ class _AccountPageState extends State<AccountPage> {
         Hive.box(Keys.taskBox),
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
+        Hive.box(Keys.historyBox),
       );
 
       // Sign out from Firebase

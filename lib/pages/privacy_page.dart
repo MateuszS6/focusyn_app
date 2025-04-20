@@ -193,9 +193,10 @@ class _PrivacyPageState extends State<PrivacyPage> {
                           .then((_) {
                             // Then clear local data
                             return CloudSyncService.clearLocalData(
+                              Hive.box(Keys.brainBox),
                               Hive.box(Keys.taskBox),
                               Hive.box(Keys.filterBox),
-                              Hive.box(Keys.brainBox),
+                              Hive.box(Keys.historyBox),
                             );
                           })
                           .then((_) {
