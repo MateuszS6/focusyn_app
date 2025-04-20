@@ -29,16 +29,22 @@ class _TodayPageState extends State<TodayPage> {
   @override
   void initState() {
     super.initState();
+    _refreshFlowHistory();
+  }
+
+  void _refreshFlowHistory() {
     _cachedCompletions = _getFlowCompletions();
     _lastUpdateDate = DateTime.now();
+    if (mounted) {
+      setState(() {});
+    }
   }
 
   void _refreshData() {
     final now = DateTime.now();
     // Refresh if there's no cached data or if it's a new day
     if (_lastUpdateDate == null || !_isSameDate(_lastUpdateDate!, now)) {
-      _cachedCompletions = _getFlowCompletions();
-      _lastUpdateDate = now;
+      _refreshFlowHistory();
     }
   }
 
@@ -79,11 +85,7 @@ class _TodayPageState extends State<TodayPage> {
                 Hive.box(Keys.historyBox),
               );
               // Then refresh local data
-              _cachedCompletions = null; // Force refresh of completions
-              _lastUpdateDate = null;
-              if (mounted) {
-                setState(() {});
-              }
+              _refreshFlowHistory();
             } catch (e) {
               if (!mounted) return;
               scaffoldMessenger.showSnackBar(
