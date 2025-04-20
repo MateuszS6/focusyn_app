@@ -63,7 +63,9 @@ class ThoughtDialog extends StatelessWidget {
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => title = val.trim(),
-          controller: TextEditingController(text: title),
+          controller: TextEditingController(
+            text: initialTask != null ? title : '',
+          ),
         ),
         DropdownButtonFormField<String>(
           decoration: inputDecoration.copyWith(

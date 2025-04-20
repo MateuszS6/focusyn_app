@@ -69,7 +69,9 @@ class ActionDialog extends StatelessWidget {
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => title = val.trim(),
-          controller: TextEditingController(text: title),
+          controller: TextEditingController(
+            text: initialTask != null ? title : '',
+          ),
         ),
         DropdownButtonFormField<int>(
           decoration: inputDecoration.copyWith(
@@ -93,7 +95,9 @@ class ActionDialog extends StatelessWidget {
           ),
           keyboardType: TextInputType.number,
           onChanged: (val) => brainPoints = int.tryParse(val) ?? 5,
-          controller: TextEditingController(text: brainPoints.toString()),
+          controller: TextEditingController(
+            text: initialTask != null ? brainPoints.toString() : '',
+          ),
         ),
         DropdownButtonFormField<String>(
           decoration: inputDecoration.copyWith(

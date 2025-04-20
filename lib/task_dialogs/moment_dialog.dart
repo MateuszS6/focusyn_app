@@ -65,9 +65,15 @@ class _MomentDialogState extends State<MomentDialog> {
     list = widget.initialTask?.list ?? widget.defaultList ?? Keys.all;
 
     // Initialize controllers
-    titleController = TextEditingController(text: title);
-    durationController = TextEditingController(text: duration.toString());
-    locationController = TextEditingController(text: location);
+    titleController = TextEditingController(
+      text: widget.initialTask != null ? title : '',
+    );
+    durationController = TextEditingController(
+      text: widget.initialTask != null ? duration.toString() : '',
+    );
+    locationController = TextEditingController(
+      text: widget.initialTask != null ? location : '',
+    );
   }
 
   @override

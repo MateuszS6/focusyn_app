@@ -68,9 +68,15 @@ class _FlowDialogState extends State<FlowDialog> {
     list = widget.initialTask?.list ?? widget.defaultList ?? Keys.all;
 
     // Initialize controllers
-    titleController = TextEditingController(text: title);
-    durationController = TextEditingController(text: duration.toString());
-    brainPointsController = TextEditingController(text: brainPoints.toString());
+    titleController = TextEditingController(
+      text: widget.initialTask != null ? title : '',
+    );
+    durationController = TextEditingController(
+      text: widget.initialTask != null ? duration.toString() : '',
+    );
+    brainPointsController = TextEditingController(
+      text: widget.initialTask != null ? brainPoints.toString() : '',
+    );
   }
 
   @override
