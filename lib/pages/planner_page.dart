@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/pages/task_page.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
@@ -178,7 +179,17 @@ class _PlannerPageState extends State<PlannerPage> {
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(16),
             child: InkWell(
-              onTap: () {}, // Handle task tap
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => TaskPage(
+                          category: isMoment ? Keys.moments : Keys.flows,
+                        ),
+                  ),
+                );
+              }, // Handle task tap
               borderRadius: BorderRadius.circular(16),
               child: Padding(
                 padding: const EdgeInsets.all(16),
