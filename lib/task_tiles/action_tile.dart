@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/services/brain_points_service.dart';
@@ -10,6 +11,7 @@ class ActionTile extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onComplete;
   final VoidCallback onDelete;
+  final String? selectedFilter;
 
   const ActionTile({
     super.key,
@@ -17,6 +19,7 @@ class ActionTile extends StatelessWidget {
     required this.onEdit,
     required this.onComplete,
     required this.onDelete,
+    required this.selectedFilter,
   });
 
   String _getPriorityText(int priority) {
@@ -39,7 +42,7 @@ class ActionTile extends StatelessWidget {
     final subtitle = [
       _getPriorityText(task.priority),
       '${task.brainPoints} BP',
-      if (task.list != 'All') task.list,
+      if (selectedFilter == Keys.all) task.list,
     ].join(' • ');
 
     return TaskTile(
@@ -54,6 +57,7 @@ class ActionTile extends StatelessWidget {
       subtitle: subtitle,
       onDelete: onDelete,
       color: ThemeColours.actionsAlt,
+      selectedFilter: selectedFilter,
     );
   }
 }

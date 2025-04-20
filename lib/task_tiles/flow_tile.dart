@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/services/brain_points_service.dart';
@@ -10,12 +11,14 @@ class FlowTile extends StatelessWidget {
   final Task task;
   final Function(Task updatedTask) onComplete;
   final VoidCallback onDelete;
+  final String? selectedFilter;
 
   const FlowTile({
     super.key,
     required this.task,
     required this.onComplete,
     required this.onDelete,
+    required this.selectedFilter,
   });
 
   bool _isOverdue() {
@@ -35,12 +38,12 @@ class FlowTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isOverdue = _isOverdue();
     final subtitleParts = [
-      task.date,
+      TaskTile.formatDate(task.date),
       task.time,
       '${task.duration}m',
       task.repeat,
       '${task.brainPoints} BP',
-      task.list,
+      if (selectedFilter == Keys.all) task.list,
     ];
 
     return TaskTile(
@@ -57,6 +60,7 @@ class FlowTile extends StatelessWidget {
         fontWeight: isOverdue ? FontWeight.bold : null,
       ),
       onDelete: onDelete,
+      selectedFilter: selectedFilter,
       leading: IconButton(
         icon: const Icon(ThemeIcons.done),
         onPressed: () async {

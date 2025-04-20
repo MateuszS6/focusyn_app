@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
+import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 import 'package:focusyn_app/models/task_model.dart';
 
 class MomentTile extends StatelessWidget {
   final Task task;
   final VoidCallback onDelete;
+  final String? selectedFilter;
 
-  const MomentTile({super.key, required this.task, required this.onDelete});
+  const MomentTile({
+    super.key,
+    required this.task,
+    required this.onDelete,
+    required this.selectedFilter,
+  });
 
   bool _isOverdue() {
     if (task.date == null || task.date!.isEmpty) return false;
@@ -26,11 +33,11 @@ class MomentTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isOverdue = _isOverdue();
     final subtitleParts = [
-      task.date,
+      TaskTile.formatDate(task.date),
       task.time,
       '${task.duration}m',
       task.location,
-      task.list,
+      if (selectedFilter == Keys.all) task.list,
     ].where((item) => item != null && item.isNotEmpty);
 
     return TaskTile(
@@ -47,6 +54,7 @@ class MomentTile extends StatelessWidget {
         fontWeight: isOverdue ? FontWeight.bold : null,
       ),
       onDelete: onDelete,
+      selectedFilter: selectedFilter,
     );
   }
 }

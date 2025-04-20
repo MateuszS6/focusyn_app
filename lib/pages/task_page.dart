@@ -379,6 +379,7 @@ class _TaskPageState extends State<TaskPage> {
           onEdit: () => _updateTask(task),
           onComplete: () => _removeTask(task),
           onDelete: () => _removeTask(task),
+          selectedFilter: _selectedFilter,
         );
         break;
 
@@ -391,6 +392,7 @@ class _TaskPageState extends State<TaskPage> {
             _updateTask(task);
           },
           onDelete: () => _removeTask(task),
+          selectedFilter: _selectedFilter,
         );
         break;
 
@@ -399,6 +401,7 @@ class _TaskPageState extends State<TaskPage> {
           key: key,
           task: Task.fromMap(task),
           onDelete: () => _removeTask(task),
+          selectedFilter: _selectedFilter,
         );
         break;
 
@@ -407,6 +410,7 @@ class _TaskPageState extends State<TaskPage> {
           key: key,
           task: Task.fromMap(task),
           onDelete: () => _removeTask(task),
+          selectedFilter: _selectedFilter,
         );
         break;
 

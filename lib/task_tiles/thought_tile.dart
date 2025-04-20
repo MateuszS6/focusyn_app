@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 import 'package:focusyn_app/models/task_model.dart';
@@ -6,8 +7,14 @@ import 'package:focusyn_app/models/task_model.dart';
 class ThoughtTile extends StatelessWidget {
   final Task task;
   final VoidCallback onDelete;
+  final String? selectedFilter;
 
-  const ThoughtTile({super.key, required this.task, required this.onDelete});
+  const ThoughtTile({
+    super.key,
+    required this.task,
+    required this.onDelete,
+    required this.selectedFilter,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +22,9 @@ class ThoughtTile extends StatelessWidget {
       key: key,
       color: ThemeColours.thoughtsAlt,
       text: task.text,
-      subtitle: task.list,
+      subtitle: selectedFilter == Keys.all ? task.list : null,
       onDelete: onDelete,
+      selectedFilter: selectedFilter,
     );
   }
 }
