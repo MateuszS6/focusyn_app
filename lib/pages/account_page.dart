@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
-import 'package:focusyn_app/pages/notifications_page.dart';
+import 'package:focusyn_app/pages/settings_page.dart';
 import 'package:focusyn_app/pages/privacy_page.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import '../pages/login_page.dart';
@@ -379,7 +379,7 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  static const notificationsIcon = ThemeIcons.notifications;
+  static const settingsIcon = ThemeIcons.settings;
   static const userIcon = ThemeIcons.user;
   static const emailIcon = ThemeIcons.email;
   static const lockIcon = ThemeIcons.lock;
@@ -401,14 +401,12 @@ class _AccountPageState extends State<AccountPage> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(notificationsIcon),
-            tooltip: 'Notifications',
+            icon: const Icon(settingsIcon),
+            tooltip: 'Settings',
             onPressed:
                 () => Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const NotificationsPage(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const SettingsPage()),
                 ),
           ),
         ],

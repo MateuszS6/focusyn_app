@@ -73,31 +73,31 @@ class _TodayPageState extends State<TodayPage> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {
-            final scaffoldMessenger = ScaffoldMessenger.of(context);
-            try {
-              // First sync with Firestore
-              await CloudSyncService.syncOnLogin(
-                Hive.box(Keys.taskBox),
-                Hive.box(Keys.filterBox),
-                Hive.box(Keys.brainBox),
-                Hive.box(Keys.historyBox),
-              );
-              // Then refresh local data
-              _refreshFlowHistory();
-            } catch (e) {
-              if (!mounted) return;
-              scaffoldMessenger.showSnackBar(
-                SnackBar(
-                  content: Text('Failed to sync: $e'),
-                  backgroundColor: Colors.red,
-                ),
-              );
-            }
-          },
-          child: MyScrollShadow(
+      body: MyScrollShadow(
+        child: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              final scaffoldMessenger = ScaffoldMessenger.of(context);
+              try {
+                // First sync with Firestore
+                await CloudSyncService.syncOnLogin(
+                  Hive.box(Keys.taskBox),
+                  Hive.box(Keys.filterBox),
+                  Hive.box(Keys.brainBox),
+                  Hive.box(Keys.historyBox),
+                );
+                // Then refresh local data
+                _refreshFlowHistory();
+              } catch (e) {
+                if (!mounted) return;
+                scaffoldMessenger.showSnackBar(
+                  SnackBar(
+                    content: Text('Failed to sync: $e'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [

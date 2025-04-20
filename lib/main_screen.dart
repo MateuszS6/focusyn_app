@@ -7,6 +7,7 @@ import 'package:focusyn_app/pages/ai_page.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -30,6 +31,11 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _syncData();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   Future<void> _syncData() async {
@@ -120,31 +126,46 @@ class _MainScreenState extends State<MainScreen> {
             ),
         ],
       ),
-      bottomNavigationBar: NavigationBar(
-        height: 72,
-        elevation: 0,
-        backgroundColor: Colors.white,
-        surfaceTintColor: Colors.transparent,
-        indicatorColor: Colors.blue.withAlpha(26),
-        selectedIndex: _selectedIndex,
-        onDestinationSelected:
-            (index) => setState(() => _selectedIndex = index),
-        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(ThemeIcons.today),
-            label: Keys.today,
-          ),
-          NavigationDestination(
-            icon: Icon(ThemeIcons.focuses),
-            label: Keys.focuses,
-          ),
-          NavigationDestination(icon: Icon(ThemeIcons.ai), label: Keys.aiName),
-          NavigationDestination(
-            icon: Icon(ThemeIcons.planner),
-            label: Keys.planner,
-          ),
-        ],
+      bottomNavigationBar: ValueListenableBuilder(
+        valueListenable: Hive.box(Keys.settingBox).listenable(),
+        builder: (context, box, _) {
+          final showLabels = box.get(
+            Keys.navigationBarTextEnabled,
+            defaultValue: true,
+          );
+          return NavigationBar(
+            height: 72,
+            elevation: 0,
+            backgroundColor: Colors.white,
+            surfaceTintColor: Colors.transparent,
+            indicatorColor: Colors.blue.withAlpha(26),
+            selectedIndex: _selectedIndex,
+            onDestinationSelected:
+                (index) => setState(() => _selectedIndex = index),
+            labelBehavior:
+                showLabels
+                    ? NavigationDestinationLabelBehavior.alwaysShow
+                    : NavigationDestinationLabelBehavior.alwaysHide,
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(ThemeIcons.today),
+                label: Keys.today,
+              ),
+              NavigationDestination(
+                icon: Icon(ThemeIcons.focuses),
+                label: Keys.focuses,
+              ),
+              NavigationDestination(
+                icon: Icon(ThemeIcons.ai),
+                label: Keys.aiName,
+              ),
+              NavigationDestination(
+                icon: Icon(ThemeIcons.planner),
+                label: Keys.planner,
+              ),
+            ],
+          );
+        },
       ),
     );
   }

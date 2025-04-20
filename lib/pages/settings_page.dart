@@ -6,17 +6,18 @@ import 'package:focusyn_app/services/notification_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import 'package:hive/hive.dart';
 
-class NotificationsPage extends StatefulWidget {
-  const NotificationsPage({super.key});
+class SettingsPage extends StatefulWidget {
+  const SettingsPage({super.key});
 
   @override
-  State<NotificationsPage> createState() => _NotificationsPageState();
+  State<SettingsPage> createState() => _SettingsPageState();
 }
 
-class _NotificationsPageState extends State<NotificationsPage> {
+class _SettingsPageState extends State<SettingsPage> {
+  bool _navigationBarText = true;
   bool _notificationsEnabled = false;
   TimeOfDay _notificationTime = const TimeOfDay(hour: 9, minute: 0);
-  final _notificationBox = Hive.box(Keys.settingBox);
+  final _settingBox = Hive.box(Keys.settingBox);
 
   @override
   void initState() {
@@ -26,29 +27,25 @@ class _NotificationsPageState extends State<NotificationsPage> {
 
   void _loadSettings() {
     setState(() {
-      _notificationsEnabled = _notificationBox.get(
+      _navigationBarText = _settingBox.get(
+        Keys.navigationBarTextEnabled,
+        defaultValue: true,
+      );
+      _notificationsEnabled = _settingBox.get(
         Keys.notificationsEnabled,
         defaultValue: false,
       );
-      final hour = _notificationBox.get(Keys.notificationHour, defaultValue: 9);
-      final minute = _notificationBox.get(
-        Keys.notificationMinute,
-        defaultValue: 0,
-      );
+      final hour = _settingBox.get(Keys.notificationHour, defaultValue: 9);
+      final minute = _settingBox.get(Keys.notificationMinute, defaultValue: 0);
       _notificationTime = TimeOfDay(hour: hour, minute: minute);
     });
   }
 
   Future<void> _saveSettings() async {
-    await _notificationBox.put(
-      Keys.notificationsEnabled,
-      _notificationsEnabled,
-    );
-    await _notificationBox.put(Keys.notificationHour, _notificationTime.hour);
-    await _notificationBox.put(
-      Keys.notificationMinute,
-      _notificationTime.minute,
-    );
+    await _settingBox.put(Keys.navigationBarTextEnabled, _navigationBarText);
+    await _settingBox.put(Keys.notificationsEnabled, _notificationsEnabled);
+    await _settingBox.put(Keys.notificationHour, _notificationTime.hour);
+    await _settingBox.put(Keys.notificationMinute, _notificationTime.minute);
   }
 
   Future<void> _selectTime() async {
@@ -70,7 +67,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: MyAppBar(
-        title: 'Notifications',
+        title: 'Settings',
         leading: IconButton(
           icon: const Icon(ThemeIcons.back),
           onPressed: () => Navigator.pop(context),
@@ -94,6 +91,25 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ),
               child: Column(
                 children: [
+                  SwitchListTile(
+                    title: const Text(
+                      'Navigation Bar Text',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    subtitle: Text(
+                      _navigationBarText
+                          ? 'Always show text on the navigation bar'
+                          : 'Do not show text on the navigation bar',
+                    ),
+                    value: _navigationBarText,
+                    onChanged: (bool value) async {
+                      setState(() {
+                        _navigationBarText = value;
+                      });
+                      await _saveSettings();
+                    },
+                  ),
+                  const SizedBox(height: 16),
                   SwitchListTile(
                     title: const Text(
                       'Daily Quote Notifications',

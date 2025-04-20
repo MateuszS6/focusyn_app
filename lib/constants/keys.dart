@@ -41,6 +41,7 @@ abstract class Keys {
   static const String all = 'All';
 
   // Settings
+  static const String navigationBarTextEnabled = 'navigationBarTextEnabled';
   static const String notificationsEnabled = 'notificationsEnabled';
   static const String notificationHour = 'notificationHour';
   static const String notificationMinute = 'notificationMinute';
