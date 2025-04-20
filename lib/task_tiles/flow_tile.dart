@@ -8,14 +8,12 @@ import 'package:focusyn_app/models/task_model.dart';
 
 class FlowTile extends StatelessWidget {
   final Task task;
-  final Function(String title) onEdit;
   final Function(Task updatedTask) onComplete;
   final VoidCallback onDelete;
 
   const FlowTile({
     super.key,
     required this.task,
-    required this.onEdit,
     required this.onComplete,
     required this.onDelete,
   });
@@ -58,7 +56,6 @@ class FlowTile extends StatelessWidget {
         fontSize: 18,
         fontWeight: isOverdue ? FontWeight.bold : null,
       ),
-      onInlineEdit: onEdit,
       onDelete: onDelete,
       leading: IconButton(
         icon: const Icon(ThemeIcons.check),

@@ -386,10 +386,6 @@ class _TaskPageState extends State<TaskPage> {
         tile = FlowTile(
           key: key,
           task: Task.fromMap(task),
-          onEdit: (newTitle) {
-            task[Keys.text] = newTitle;
-            _updateTask(task);
-          },
           onComplete: (updatedTask) {
             setState(() => _tasks[_tasks.indexOf(task)] = updatedTask.toMap());
             _updateTask(task);
@@ -402,10 +398,6 @@ class _TaskPageState extends State<TaskPage> {
         tile = MomentTile(
           key: key,
           task: Task.fromMap(task),
-          onEdit: (newTitle) {
-            task[Keys.text] = newTitle;
-            _updateTask(task);
-          },
           onDelete: () => _removeTask(task),
         );
         break;
@@ -414,10 +406,6 @@ class _TaskPageState extends State<TaskPage> {
         tile = ThoughtTile(
           key: key,
           task: Task.fromMap(task),
-          onEdit: (newText) {
-            task[Keys.text] = newText;
-            _updateTask(task);
-          },
           onDelete: () => _removeTask(task),
         );
         break;

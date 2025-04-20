@@ -52,11 +52,6 @@ class ActionTile extends StatelessWidget {
       ),
       text: task.text,
       subtitle: subtitle,
-      onInlineEdit: (newTitle) {
-        if (newTitle.isNotEmpty) {
-          onEdit();
-        }
-      },
       onDelete: onDelete,
       color: ThemeColours.actionsAlt,
     );

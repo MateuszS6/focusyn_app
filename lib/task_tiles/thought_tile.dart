@@ -5,15 +5,9 @@ import 'package:focusyn_app/models/task_model.dart';
 
 class ThoughtTile extends StatelessWidget {
   final Task task;
-  final Function(String text) onEdit;
   final VoidCallback onDelete;
 
-  const ThoughtTile({
-    super.key,
-    required this.task,
-    required this.onEdit,
-    required this.onDelete,
-  });
+  const ThoughtTile({super.key, required this.task, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +16,6 @@ class ThoughtTile extends StatelessWidget {
       color: ThemeColours.thoughtsAlt,
       text: task.text,
       subtitle: task.list,
-      onInlineEdit: onEdit,
       onDelete: onDelete,
     );
   }

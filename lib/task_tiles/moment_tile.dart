@@ -5,15 +5,9 @@ import 'package:focusyn_app/models/task_model.dart';
 
 class MomentTile extends StatelessWidget {
   final Task task;
-  final Function(String title) onEdit;
   final VoidCallback onDelete;
 
-  const MomentTile({
-    super.key,
-    required this.task,
-    required this.onEdit,
-    required this.onDelete,
-  });
+  const MomentTile({super.key, required this.task, required this.onDelete});
 
   bool _isOverdue() {
     if (task.date == null || task.date!.isEmpty) return false;
@@ -52,7 +46,6 @@ class MomentTile extends StatelessWidget {
         fontSize: 18,
         fontWeight: isOverdue ? FontWeight.bold : null,
       ),
-      onInlineEdit: onEdit,
       onDelete: onDelete,
     );
   }
