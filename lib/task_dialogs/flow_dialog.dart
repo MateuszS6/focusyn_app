@@ -4,7 +4,6 @@ import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
-import 'package:focusyn_app/utils/task_tile.dart';
 
 class FlowDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Flow";

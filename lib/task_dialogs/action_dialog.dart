@@ -4,7 +4,6 @@ import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
-import 'package:focusyn_app/utils/task_tile.dart';
 
 class ActionDialog extends StatelessWidget {
   static const String _dialogTitle = "Add Action";
@@ -79,22 +78,10 @@ class ActionDialog extends StatelessWidget {
           ),
           value: priority,
           items: [
-            DropdownMenuItem(
-              value: 1,
-              child: Text(TaskTile.getPriorityText(1)),
-            ),
-            DropdownMenuItem(
-              value: 2,
-              child: Text(TaskTile.getPriorityText(2)),
-            ),
-            DropdownMenuItem(
-              value: 3,
-              child: Text(TaskTile.getPriorityText(3)),
-            ),
-            DropdownMenuItem(
-              value: 4,
-              child: Text(TaskTile.getPriorityText(4)),
-            ),
+            DropdownMenuItem(value: 1, child: Text(Task.getPriorityText(1))),
+            DropdownMenuItem(value: 2, child: Text(Task.getPriorityText(2))),
+            DropdownMenuItem(value: 3, child: Text(Task.getPriorityText(3))),
+            DropdownMenuItem(value: 4, child: Text(Task.getPriorityText(4))),
           ],
           onChanged: (val) => priority = val ?? 1,
         ),

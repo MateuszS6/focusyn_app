@@ -40,7 +40,7 @@ class FlowTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isOverdue = _isOverdue();
     final subtitleParts = [
-      TaskTile.formatDate(task.date),
+      Task.formatDate(task.date),
       task.time,
       '${task.duration}m',
       task.repeat,

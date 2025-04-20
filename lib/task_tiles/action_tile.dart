@@ -25,7 +25,7 @@ class ActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final subtitle = [
-      TaskTile.getPriorityText(task.priority),
+      Task.getPriorityText(task.priority),
       '${task.brainPoints} BP',
       if (selectedFilter == Keys.all) task.list,
     ].join(' • ');

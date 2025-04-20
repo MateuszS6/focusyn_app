@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class TaskTile extends StatefulWidget {
   final Widget? leading;
@@ -29,42 +28,6 @@ class TaskTile extends StatefulWidget {
 
   @override
   State<TaskTile> createState() => _TaskTileState();
-
-  static String getPriorityText(int priority) {
-    switch (priority) {
-      case 1:
-        return 'Urgent, Important';
-      case 2:
-        return 'Not Urgent, Important';
-      case 3:
-        return 'Urgent, Not Important';
-      case 4:
-        return 'Not Urgent, Not Important';
-      default:
-        return 'Unknown Priority';
-    }
-  }
-
-  static String formatDate(String? date) {
-    if (date == null) return '';
-
-    final inputDate = DateTime.tryParse(date);
-    if (inputDate == null) return '';
-
-    final now = DateTime.now();
-    final difference = inputDate.difference(now).inDays;
-
-    if (difference >= 0 && difference < 7) {
-      // If within 7 days from now
-      return DateFormat.EEEE().format(inputDate); // e.g., "Monday"
-    } else if (inputDate.year == now.year) {
-      // If within the same year
-      return DateFormat.MMMd().format(inputDate); // e.g., "Apr 20"
-    } else {
-      // Else, just return the input date
-      return date;
-    }
-  }
 }
 
 class _TaskTileState extends State<TaskTile> {
