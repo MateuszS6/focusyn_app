@@ -58,7 +58,7 @@ class FilterRow extends StatelessWidget {
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
-                                child: const Text('Cancel'),
+                                child: const Icon(ThemeIcons.cancel),
                               ),
                               ElevatedButton(
                                 onPressed: () async {
