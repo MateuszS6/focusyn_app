@@ -5,7 +5,7 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
-class AddActionDialog extends StatelessWidget {
+class ActionDialog extends StatelessWidget {
   static const String _dialogTitle = "Add Action";
   static const String _titleLabel = "Title *";
   static const String _priorityLabel = "Priority";
@@ -15,7 +15,7 @@ class AddActionDialog extends StatelessWidget {
   final void Function(Task) onAdd;
   final String? defaultList;
 
-  const AddActionDialog({super.key, required this.onAdd, this.defaultList});
+  const ActionDialog({super.key, required this.onAdd, this.defaultList});
 
   @override
   Widget build(BuildContext context) {

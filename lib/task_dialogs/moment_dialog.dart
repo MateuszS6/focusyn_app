@@ -5,39 +5,37 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
-class AddFlowDialog extends StatefulWidget {
-  static const String _dialogTitle = "Add Flow";
+class MomentDialog extends StatefulWidget {
+  static const String _dialogTitle = "Add Moment";
   static const String _titleLabel = "Title *";
-  static const String _dateLabel = "Start Date";
-  static const String _timeLabel = "Reminder Time";
+  static const String _dateLabel = "Date";
+  static const String _timeLabel = "Time";
   static const String _durationLabel = "Duration (minutes)";
-  static const String _repeatLabel = "Repeat";
-  static const String _brainPointsLabel = "Brain Points";
+  static const String _locationLabel = "Location";
   static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
   final String? defaultList;
 
-  const AddFlowDialog({super.key, required this.onAdd, this.defaultList});
+  const MomentDialog({super.key, required this.onAdd, this.defaultList});
 
   @override
-  State<AddFlowDialog> createState() => _AddFlowDialogState();
+  State<MomentDialog> createState() => _MomentDialogState();
 }
 
-class _AddFlowDialogState extends State<AddFlowDialog> {
+class _MomentDialogState extends State<MomentDialog> {
   String title = '';
+  String location = '';
   DateTime selectedDate = DateTime.now();
   TimeOfDay selectedTime = TimeOfDay.now();
-  Duration duration = const Duration(minutes: 15);
-  String repeat = 'Daily';
-  int brainPoints = 5;
+  Duration duration = const Duration(minutes: 30);
   String list = Keys.all;
   late final List<String> lists;
 
   @override
   void initState() {
     super.initState();
-    lists = FilterService.filters[Keys.flows] ?? [Keys.all];
+    lists = FilterService.filters[Keys.moments] ?? [Keys.all];
     list = widget.defaultList ?? Keys.all;
   }
 
@@ -58,24 +56,23 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
     );
 
     return TaskDialog(
-      title: AddFlowDialog._dialogTitle,
+      title: MomentDialog._dialogTitle,
       onAdd: widget.onAdd,
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
           () => Task(
             text: title,
             list: list,
-            brainPoints: brainPoints,
-            duration: duration.inMinutes,
             date: selectedDate.toIso8601String().split('T')[0],
             time: selectedTime.format(context),
-            repeat: repeat,
+            location: location.isNotEmpty ? location : null,
+            duration: duration.inMinutes,
           ),
       fields: [
         TextField(
           decoration: inputDecoration.copyWith(
-            labelText: AddFlowDialog._titleLabel,
-            hintText: 'Describe the routine',
+            labelText: MomentDialog._titleLabel,
+            hintText: 'Describe the event',
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => setState(() => title = val),
@@ -94,7 +91,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
           },
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
-              labelText: AddFlowDialog._dateLabel,
+              labelText: MomentDialog._dateLabel,
               prefixIcon: const Icon(ThemeIcons.date),
             ),
             child: Text("${selectedDate.toLocal()}".split(' ')[0]),
@@ -112,7 +109,7 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
           },
           child: InputDecorator(
             decoration: inputDecoration.copyWith(
-              labelText: AddFlowDialog._timeLabel,
+              labelText: MomentDialog._timeLabel,
               prefixIcon: const Icon(ThemeIcons.time),
             ),
             child: Text(selectedTime.format(context)),
@@ -120,44 +117,28 @@ class _AddFlowDialogState extends State<AddFlowDialog> {
         ),
         TextField(
           decoration: inputDecoration.copyWith(
-            labelText: AddFlowDialog._durationLabel,
-            hintText: 'Default: 15 minutes',
+            labelText: MomentDialog._durationLabel,
+            hintText: 'Default: 30 minutes',
             prefixIcon: const Icon(ThemeIcons.duration),
           ),
           keyboardType: TextInputType.number,
           onChanged:
               (val) => setState(
-                () => duration = Duration(minutes: int.tryParse(val) ?? 15),
+                () => duration = Duration(minutes: int.tryParse(val) ?? 30),
               ),
-        ),
-        DropdownButtonFormField<String>(
-          value: repeat,
-          decoration: inputDecoration.copyWith(
-            labelText: AddFlowDialog._repeatLabel,
-            hintText: 'Default: Daily',
-            prefixIcon: const Icon(ThemeIcons.repeat),
-          ),
-          items: const [
-            DropdownMenuItem(value: 'Daily', child: Text('Daily')),
-            DropdownMenuItem(value: 'Weekly', child: Text('Weekly')),
-            DropdownMenuItem(value: 'Monthly', child: Text('Monthly')),
-          ],
-          onChanged: (val) => setState(() => repeat = val ?? 'Daily'),
         ),
         TextField(
           decoration: inputDecoration.copyWith(
-            labelText: AddFlowDialog._brainPointsLabel,
-            hintText: 'Default: 5',
-            prefixIcon: const Icon(ThemeIcons.brainPoints),
+            labelText: MomentDialog._locationLabel,
+            hintText: 'Default: None',
+            prefixIcon: const Icon(ThemeIcons.location),
           ),
-          keyboardType: TextInputType.number,
-          onChanged:
-              (val) => setState(() => brainPoints = int.tryParse(val) ?? 5),
+          onChanged: (val) => setState(() => location = val),
         ),
         DropdownButtonFormField<String>(
           value: list,
           decoration: inputDecoration.copyWith(
-            labelText: AddFlowDialog._listLabel,
+            labelText: MomentDialog._listLabel,
             prefixIcon: const Icon(ThemeIcons.tag),
           ),
           items:

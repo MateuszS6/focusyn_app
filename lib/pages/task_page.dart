@@ -6,10 +6,10 @@ import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
-import 'package:focusyn_app/task_dialogs/add_action_dialog.dart';
-import 'package:focusyn_app/task_dialogs/add_flow_dialog.dart';
-import 'package:focusyn_app/task_dialogs/add_moment_dialog.dart';
-import 'package:focusyn_app/task_dialogs/add_thought_dialog.dart';
+import 'package:focusyn_app/task_dialogs/action_dialog.dart';
+import 'package:focusyn_app/task_dialogs/flow_dialog.dart';
+import 'package:focusyn_app/task_dialogs/moment_dialog.dart';
+import 'package:focusyn_app/task_dialogs/thought_dialog.dart';
 import 'package:focusyn_app/task_tiles/action_tile.dart';
 import 'package:focusyn_app/task_tiles/flow_tile.dart';
 import 'package:focusyn_app/task_tiles/moment_tile.dart';
@@ -463,11 +463,11 @@ class _TaskPageState extends State<TaskPage> {
           case Keys.actions:
             return ActionDialog(onAdd: onAdd, defaultList: _selectedFilter);
           case Keys.flows:
-            return AddFlowDialog(onAdd: onAdd, defaultList: _selectedFilter);
+            return FlowDialog(onAdd: onAdd, defaultList: _selectedFilter);
           case Keys.moments:
-            return AddMomentDialog(onAdd: onAdd, defaultList: _selectedFilter);
+            return MomentDialog(onAdd: onAdd, defaultList: _selectedFilter);
           case Keys.thoughts:
-            return AddThoughtDialog(onAdd: onAdd, defaultList: _selectedFilter);
+            return ThoughtDialog(onAdd: onAdd, defaultList: _selectedFilter);
           default:
             return const SizedBox.shrink();
         }

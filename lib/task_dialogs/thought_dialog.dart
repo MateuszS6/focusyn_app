@@ -5,7 +5,7 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
-class AddThoughtDialog extends StatefulWidget {
+class ThoughtDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Thought";
   static const String _textLabel = "Text *";
   static const String _listLabel = "List";
@@ -13,13 +13,13 @@ class AddThoughtDialog extends StatefulWidget {
   final void Function(Task) onAdd;
   final String? defaultList;
 
-  const AddThoughtDialog({super.key, required this.onAdd, this.defaultList});
+  const ThoughtDialog({super.key, required this.onAdd, this.defaultList});
 
   @override
-  State<AddThoughtDialog> createState() => _AddThoughtDialogState();
+  State<ThoughtDialog> createState() => _ThoughtDialogState();
 }
 
-class _AddThoughtDialogState extends State<AddThoughtDialog> {
+class _ThoughtDialogState extends State<ThoughtDialog> {
   String text = '';
   String list = Keys.all;
   late final List<String> lists;
@@ -48,14 +48,14 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
     );
 
     return TaskDialog(
-      title: AddThoughtDialog._dialogTitle,
+      title: ThoughtDialog._dialogTitle,
       onAdd: widget.onAdd,
       validateInput: () => text.trim().isNotEmpty,
       buildTask: () => Task(text: text, list: list),
       fields: [
         TextField(
           decoration: inputDecoration.copyWith(
-            labelText: AddThoughtDialog._textLabel,
+            labelText: ThoughtDialog._textLabel,
             hintText: 'Describe the thought or reflection for later',
             prefixIcon: const Icon(ThemeIcons.text),
             alignLabelWithHint: true,
@@ -66,7 +66,7 @@ class _AddThoughtDialogState extends State<AddThoughtDialog> {
         DropdownButtonFormField<String>(
           value: list,
           decoration: inputDecoration.copyWith(
-            labelText: AddThoughtDialog._listLabel,
+            labelText: ThoughtDialog._listLabel,
             prefixIcon: const Icon(ThemeIcons.tag),
           ),
           items:
