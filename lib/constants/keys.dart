@@ -6,10 +6,10 @@ abstract class Keys {
   // Hive Boxes
   static const String brainBox = 'brainBox';
   static const String taskBox = 'taskBox';
+  static const String historyBox = 'historyBox';
   static const String filterBox = 'filterBox';
   static const String settingBox = 'settingBox';
   static const String chatBox = 'chatBox';
-  static const String historyBox = 'historyBox';
 
   // Pages
   static const String today = 'Today';

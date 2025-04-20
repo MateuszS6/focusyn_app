@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/ai_service.dart';
@@ -151,7 +152,33 @@ class _AiPageState extends State<AiPage> {
               .map((msg) => {'text': msg.text, 'isUser': msg.isUser})
               .toList();
 
-      final reply = await AIService.askSynthe(text, chatHistory);
+      final chatContext = {
+        'userName': FirebaseAuth.instance.currentUser?.displayName,
+        'brainPoints': Hive.box(Keys.brainBox).get(Keys.brainPoints),
+        'tasks':
+            [
+                  ...?Hive.box(
+                    Keys.taskBox,
+                  ).get(Keys.actions)?.whereType<Map>(),
+                  ...?Hive.box(Keys.taskBox).get(Keys.flows)?.whereType<Map>(),
+                  ...?Hive.box(
+                    Keys.taskBox,
+                  ).get(Keys.moments)?.whereType<Map>(),
+                  ...?Hive.box(
+                    Keys.taskBox,
+                  ).get(Keys.thoughts)?.whereType<Map>(),
+                ]
+                .map((task) => task[Keys.text]?.toString() ?? '')
+                .where((text) => text.isNotEmpty)
+                .take(3)
+                .toList(),
+      };
+
+      final reply = await AIService.askSynthe(
+        text,
+        chatHistory,
+        chatContext: chatContext,
+      );
       await Future.delayed(const Duration(milliseconds: 600));
       _addMessage(text: reply, isUser: false);
     } catch (e) {
@@ -217,7 +244,7 @@ class _AiPageState extends State<AiPage> {
                             '• Answer questions about productivity\n'
                             '• Provide suggestions for better focus\n'
                             '• Explain app features and functionality\n'
-                            '• Offer general assistance and support',
+                            '• Offer personalized recommendations\n',
                           ),
                           const SizedBox(height: 16),
                           Text(
@@ -228,7 +255,6 @@ class _AiPageState extends State<AiPage> {
                           const Text(
                             '• Task creation and management\n'
                             '• Calendar integration\n'
-                            '• Personalized recommendations\n'
                             '• Advanced AI capabilities',
                           ),
                         ],
