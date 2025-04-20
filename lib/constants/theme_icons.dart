@@ -14,18 +14,17 @@ class ThemeIcons {
 
   // Focuses
   static const IconData actions = Icons.check_circle_rounded;
+  static const IconData actionsAlt = Icons.check_rounded;
   static const IconData flows = Icons.replay_circle_filled_rounded;
+  static const IconData flowsAlt = Icons.replay_rounded;
   static const IconData moments = Icons.event_rounded;
   static const IconData thoughts = Icons.lightbulb_rounded;
 
-  static const IconData tasks = Icons.task_alt;
+  static const IconData tasks = Icons.task_alt_rounded;
 
   // Utilities
   static const IconData back = Icons.arrow_back_ios_rounded;
-  static const IconData check = Icons.check_rounded;
-
-  static const IconData play = Icons.play_arrow_rounded;
-  static const IconData replay = Icons.replay_rounded;
+  static const IconData done = Icons.done_rounded;
 
   static const IconData sort = Icons.sort_rounded;
 
@@ -33,12 +32,14 @@ class ThemeIcons {
   static const IconData delete = Icons.delete_forever_rounded;
 
   static const IconData open = Icons.chevron_right_rounded;
-  static const IconData close = Icons.close_rounded;
+  static const IconData next = Icons.arrow_forward_rounded;
+  static const IconData cancel = Icons.close_rounded;
 
   static const IconData send = Icons.send_rounded;
   static const IconData clear = Icons.clear_all_rounded;
 
   // General Symbols
+  static const IconData play = Icons.play_arrow_rounded;
   static const IconData info = Icons.info_rounded;
   static const IconData help = Icons.help_rounded;
   static const IconData robot = Icons.smart_toy_rounded;

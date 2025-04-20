@@ -550,7 +550,7 @@ class _TodayPageState extends State<TodayPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildTaskType(
-                    icon: ThemeIcons.check,
+                    icon: ThemeIcons.actionsAlt,
                     count: actionsCount,
                     label: "Actions",
                     onTap:
@@ -562,7 +562,7 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                   ),
                   _buildTaskType(
-                    icon: ThemeIcons.replay,
+                    icon: ThemeIcons.flowsAlt,
                     count: todayFlows.length,
                     label: "Flows",
                     onTap:
@@ -996,7 +996,7 @@ class _TodayPageState extends State<TodayPage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Icon(ThemeIcons.close, size: 24),
+                child: const Icon(ThemeIcons.cancel, size: 24),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -1024,7 +1024,7 @@ class _TodayPageState extends State<TodayPage> {
                     );
                   }
                 },
-                child: const Icon(ThemeIcons.check, size: 24),
+                child: const Icon(ThemeIcons.done, size: 24),
               ),
             ],
           ),

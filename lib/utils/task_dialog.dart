@@ -81,7 +81,7 @@ class _TaskDialogState extends State<TaskDialog> {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Icon(ThemeIcons.close, size: 24),
+                    child: const Icon(ThemeIcons.cancel, size: 24),
                   ),
                   const SizedBox(width: 12),
                   ElevatedButton(
@@ -97,7 +97,7 @@ class _TaskDialogState extends State<TaskDialog> {
                         borderRadius: BorderRadius.circular(24),
                       ),
                     ),
-                    child: const Icon(ThemeIcons.check, size: 24),
+                    child: const Icon(ThemeIcons.done, size: 24),
                   ),
                 ],
               ),

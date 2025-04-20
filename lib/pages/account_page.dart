@@ -29,16 +29,19 @@ class _AccountPageState extends State<AccountPage> {
             title: const Text("Update Display Name"),
             content: TextField(
               controller: controller,
-              decoration: const InputDecoration(labelText: "Display Name"),
+              decoration: const InputDecoration(
+                labelText: "Display Name",
+                border: OutlineInputBorder(),
+              ),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel"),
+                child: const Icon(ThemeIcons.cancel),
               ),
               ElevatedButton(
                 onPressed: () => Navigator.pop(context, controller.text.trim()),
-                child: const Text("Save"),
+                child: const Icon(ThemeIcons.done),
               ),
             ],
           ),
@@ -97,12 +100,13 @@ class _AccountPageState extends State<AccountPage> {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Enter current password",
+                border: OutlineInputBorder(),
               ),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel"),
+                child: const Icon(ThemeIcons.cancel),
               ),
               ElevatedButton(
                 onPressed:
@@ -110,7 +114,7 @@ class _AccountPageState extends State<AccountPage> {
                       context,
                       currentPasswordController.text.trim(),
                     ),
-                child: const Text("Continue"),
+                child: const Icon(ThemeIcons.next),
               ),
             ],
           ),
@@ -141,13 +145,15 @@ class _AccountPageState extends State<AccountPage> {
                 controller: newPasswordController,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  labelText: "Enter new password (min 6 characters)",
+                  labelText: "Enter new password",
+                  hintText: "At least 6 characters",
+                  border: OutlineInputBorder(),
                 ),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Cancel"),
+                  child: const Icon(ThemeIcons.cancel),
                 ),
                 ElevatedButton(
                   onPressed:
@@ -155,7 +161,7 @@ class _AccountPageState extends State<AccountPage> {
                         context,
                         newPasswordController.text.trim(),
                       ),
-                  child: const Text("Update"),
+                  child: const Icon(ThemeIcons.done),
                 ),
               ],
             ),
@@ -207,12 +213,13 @@ class _AccountPageState extends State<AccountPage> {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: "Enter current password",
+                border: OutlineInputBorder(),
               ),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel"),
+                child: const Icon(ThemeIcons.cancel),
               ),
               ElevatedButton(
                 onPressed:
@@ -220,7 +227,7 @@ class _AccountPageState extends State<AccountPage> {
                       context,
                       currentPasswordController.text.trim(),
                     ),
-                child: const Text("Continue"),
+                child: const Icon(ThemeIcons.next),
               ),
             ],
           ),
@@ -252,12 +259,13 @@ class _AccountPageState extends State<AccountPage> {
                 keyboardType: TextInputType.emailAddress,
                 decoration: const InputDecoration(
                   labelText: "Enter new email address",
+                  border: OutlineInputBorder(),
                 ),
               ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
-                  child: const Text("Cancel"),
+                  child: const Icon(ThemeIcons.cancel),
                 ),
                 ElevatedButton(
                   onPressed:
@@ -265,7 +273,7 @@ class _AccountPageState extends State<AccountPage> {
                         context,
                         newEmailController.text.trim(),
                       ),
-                  child: const Text("Update"),
+                  child: const Icon(ThemeIcons.done),
                 ),
               ],
             ),

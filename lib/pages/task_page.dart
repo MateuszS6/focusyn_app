@@ -366,7 +366,7 @@ class _TaskPageState extends State<TaskPage> {
         onPressed: (_) => _removeTask(task),
         backgroundColor: Colors.transparent,
         foregroundColor: const Color(0xFFE53935),
-        icon: ThemeIcons.close,
+        icon: ThemeIcons.delete,
         padding: EdgeInsets.zero,
       ),
     ];
