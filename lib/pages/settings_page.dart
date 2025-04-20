@@ -42,19 +42,6 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
-  String _getLabelBehaviorText(String value) {
-    switch (value) {
-      case 'alwaysShow':
-        return 'Always show labels';
-      case 'onlyShowSelected':
-        return 'Show label when selected';
-      case 'alwaysHide':
-        return 'Always hide labels';
-      default:
-        return 'Always show labels';
-    }
-  }
-
   Future<void> _saveSettings() async {
     await _settingBox.put(Keys.navigationBarTextBehaviour, _navigationBarText);
     await _settingBox.put(Keys.notificationsEnabled, _notificationsEnabled);
