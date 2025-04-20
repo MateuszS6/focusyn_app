@@ -15,6 +15,7 @@ import 'package:focusyn_app/task_tiles/flow_tile.dart';
 import 'package:focusyn_app/task_tiles/moment_tile.dart';
 import 'package:focusyn_app/task_tiles/thought_tile.dart';
 import 'package:focusyn_app/utils/filter_row.dart';
+import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
 class TaskPage extends StatefulWidget {
   final String category;
@@ -349,11 +350,13 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   Widget _buildTaskList() {
-    return ListView.separated(
-      itemCount: _filteredTasks.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      itemBuilder: (_, index) => _buildTaskTile(_filteredTasks[index]),
+    return MyScrollShadow(
+      child: ListView.separated(
+        itemCount: _filteredTasks.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        padding: const EdgeInsets.symmetric(vertical: 4),
+        itemBuilder: (_, index) => _buildTaskTile(_filteredTasks[index]),
+      ),
     );
   }
 

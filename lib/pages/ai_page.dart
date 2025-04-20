@@ -4,6 +4,7 @@ import 'package:focusyn_app/services/ai_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
+import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
 class AiPage extends StatefulWidget {
   const AiPage({super.key});
@@ -250,19 +251,21 @@ class _AiPageState extends State<AiPage> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(color: Colors.grey[50]),
-                child: ListView.builder(
-                  controller: _scrollController,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 16,
-                    horizontal: 16,
+                child: MyScrollShadow(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 16,
+                      horizontal: 16,
+                    ),
+                    itemCount: _messages.length + (_isTyping ? 1 : 0),
+                    itemBuilder: (context, index) {
+                      if (index == _messages.length && _isTyping) {
+                        return _buildTypingIndicator();
+                      }
+                      return _buildMessage(_messages[index]);
+                    },
                   ),
-                  itemCount: _messages.length + (_isTyping ? 1 : 0),
-                  itemBuilder: (context, index) {
-                    if (index == _messages.length && _isTyping) {
-                      return _buildTypingIndicator();
-                    }
-                    return _buildMessage(_messages[index]);
-                  },
                 ),
               ),
             ),
@@ -386,16 +389,7 @@ class _AiPageState extends State<AiPage> {
   Widget _buildInputArea() {
     return Container(
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(13),
-            blurRadius: 10,
-            offset: const Offset(0, -5),
-          ),
-        ],
-      ),
+      color: Colors.white,
       child: Row(
         children: [
           Expanded(

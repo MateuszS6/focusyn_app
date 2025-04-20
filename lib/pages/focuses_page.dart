@@ -118,7 +118,7 @@ class _FocusesPageState extends State<FocusesPage> {
               const SizedBox(height: 12),
               if (totalTasks > 0) ...[
                 Text(
-                  'You have $totalTasks active items across your focuses',
+                  'You have $totalTasks items across your focuses',
                   style: Theme.of(
                     context,
                   ).textTheme.bodyLarge?.copyWith(color: Colors.black54),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_scroll_shadow/flutter_scroll_shadow.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/models/task_model.dart';
+import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
 class TaskDialog extends StatefulWidget {
   static const double _dialogWidth = 400.0;
@@ -54,8 +54,8 @@ class _TaskDialogState extends State<TaskDialog> {
             ),
             // Scrollable content
             Expanded(
-              child: ScrollShadow(
-                color: Colors.grey.shade300,
+              child: MyScrollShadow(
+                size: 8,
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(24, 8, 24, 0),
                   child: Column(

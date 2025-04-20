@@ -4,6 +4,7 @@ import 'package:focusyn_app/pages/task_page.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
+import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
 class PlannerPage extends StatefulWidget {
   const PlannerPage({super.key});
@@ -145,120 +146,122 @@ class _PlannerPageState extends State<PlannerPage> {
       );
     }
 
-    return ListView.separated(
-      padding: const EdgeInsets.symmetric(horizontal: 4),
-      itemCount: allScheduledTasks.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
-      itemBuilder: (_, i) {
-        final task = allScheduledTasks[i];
-        final isMoment = TaskService.tasks[Keys.moments]!.any((m) {
-          final moment = Task.fromMap(m);
-          return moment.text == task.text &&
-              moment.date == task.date &&
-              moment.time == task.time;
-        });
-        final color = isMoment ? Colors.red : Colors.green;
+    return MyScrollShadow(
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        itemCount: allScheduledTasks.length,
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        itemBuilder: (_, i) {
+          final task = allScheduledTasks[i];
+          final isMoment = TaskService.tasks[Keys.moments]!.any((m) {
+            final moment = Task.fromMap(m);
+            return moment.text == task.text &&
+                moment.date == task.date &&
+                moment.time == task.time;
+          });
+          final color = isMoment ? Colors.red : Colors.green;
 
-        return Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [color.shade50, Colors.white],
-            ),
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(13),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [color.shade50, Colors.white],
               ),
-            ],
-          ),
-          child: Material(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
-            child: InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => TaskPage(
-                          category: isMoment ? Keys.moments : Keys.flows,
-                        ),
-                  ),
-                );
-              }, // Handle task tap
               borderRadius: BorderRadius.circular(16),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: color.withAlpha(179),
-                      child: Icon(
-                        isMoment ? ThemeIcons.moments : ThemeIcons.flows,
-                        color: Colors.white,
-                      ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(13),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(16),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (context) => TaskPage(
+                            category: isMoment ? Keys.moments : Keys.flows,
+                          ),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  );
+                }, // Handle task tap
+                borderRadius: BorderRadius.circular(16),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 20,
+                        backgroundColor: color.withAlpha(179),
+                        child: Icon(
+                          isMoment ? ThemeIcons.moments : ThemeIcons.flows,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              task.text,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            if (isMoment && task.location != null) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                task.location!,
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            task.text,
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
+                            task.time ?? '',
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w500,
+                              color: color.shade700,
                             ),
                           ),
-                          if (isMoment && task.location != null) ...[
+                          if (task.duration != null) ...[
                             const SizedBox(height: 4),
                             Text(
-                              task.location!,
+                              "${task.duration} min",
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 13,
                                 color: Colors.grey[600],
                               ),
                             ),
                           ],
                         ],
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          task.time ?? '',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w500,
-                            color: color.shade700,
-                          ),
-                        ),
-                        if (task.duration != null) ...[
-                          const SizedBox(height: 4),
-                          Text(
-                            "${task.duration} min",
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 

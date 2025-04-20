@@ -13,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
 import 'package:focusyn_app/pages/onboarding_page.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 import 'package:hive/hive.dart';
 
 class TodayPage extends StatefulWidget {
@@ -96,90 +97,92 @@ class _TodayPageState extends State<TodayPage> {
               );
             }
           },
-          child: ListView(
-            padding: const EdgeInsets.all(24),
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "${monthNames[today.month - 1]} ${today.day}",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "Today",
-                        style: Theme.of(context).textTheme.displayLarge,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: Row(
+          child: MyScrollShadow(
+            child: ListView(
+              padding: const EdgeInsets.all(24),
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        IconButton(
-                          icon: const Icon(ThemeIcons.onboarding),
-                          tooltip: 'Replay Onboarding',
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const OnboardingPage(),
-                              ),
-                            );
-                          },
-                          padding: const EdgeInsets.all(8),
-                          constraints: const BoxConstraints(),
-                          iconSize: 24,
+                        Text(
+                          "${monthNames[today.month - 1]} ${today.day}",
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                        const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: () async {
-                            await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => const AccountPage(),
-                              ),
-                            );
-                            // Trigger rebuild when returning from account page
-                            if (mounted) setState(() {});
-                          },
-                          child: CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.orange.shade100,
-                            child: Text(
-                              currentUser?.displayName
-                                      ?.substring(0, 1)
-                                      .toUpperCase() ??
-                                  'M',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orange.shade700,
-                              ),
-                            ),
-                          ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "Today",
+                          style: Theme.of(context).textTheme.displayLarge,
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              _greetingCard(points),
-              const SizedBox(height: 24),
-              _quoteCard(),
-              const SizedBox(height: 24),
-              _summaryCard(actions.length),
-              const SizedBox(height: 24),
-              _flowStreakCard(),
-              const SizedBox(height: 24),
-              _weeklyProgressChart(),
-            ],
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(ThemeIcons.onboarding),
+                            tooltip: 'Replay Onboarding',
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const OnboardingPage(),
+                                ),
+                              );
+                            },
+                            padding: const EdgeInsets.all(8),
+                            constraints: const BoxConstraints(),
+                            iconSize: 24,
+                          ),
+                          const SizedBox(width: 8),
+                          GestureDetector(
+                            onTap: () async {
+                              await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const AccountPage(),
+                                ),
+                              );
+                              // Trigger rebuild when returning from account page
+                              if (mounted) setState(() {});
+                            },
+                            child: CircleAvatar(
+                              radius: 20,
+                              backgroundColor: Colors.orange.shade100,
+                              child: Text(
+                                currentUser?.displayName
+                                        ?.substring(0, 1)
+                                        .toUpperCase() ??
+                                    'M',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange.shade700,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                _greetingCard(points),
+                const SizedBox(height: 24),
+                _quoteCard(),
+                const SizedBox(height: 24),
+                _summaryCard(actions.length),
+                const SizedBox(height: 24),
+                _flowStreakCard(),
+                const SizedBox(height: 24),
+                _weeklyProgressChart(),
+              ],
+            ),
           ),
         ),
       ),
