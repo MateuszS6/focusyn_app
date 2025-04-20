@@ -476,14 +476,16 @@ class _TaskPageState extends State<TaskPage> {
             title: const Text("Add List"),
             content: TextField(
               decoration: const InputDecoration(
-                hintText: "Enter new list name",
+                labelText: "Enter new list name",
+                hintText: "E.g. Work, Home, etc.",
+                border: OutlineInputBorder(),
               ),
               onChanged: (val) => newTag = val.trim(),
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text("Cancel"),
+                child: const Icon(ThemeIcons.cancel),
               ),
               ElevatedButton(
                 onPressed: () async {
@@ -499,7 +501,7 @@ class _TaskPageState extends State<TaskPage> {
                   if (!mounted) return;
                   Navigator.pop(context);
                 },
-                child: const Text("Add"),
+                child: const Icon(ThemeIcons.done),
               ),
             ],
           ),
