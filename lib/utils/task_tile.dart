@@ -5,6 +5,7 @@ class TaskTile extends StatefulWidget {
   final Widget? leading;
   final String text;
   final String? subtitle;
+  final VoidCallback? onEdit;
   final VoidCallback? onDelete;
   final Color color;
   final EdgeInsets padding;
@@ -17,6 +18,7 @@ class TaskTile extends StatefulWidget {
     this.leading,
     required this.text,
     this.subtitle,
+    this.onEdit,
     this.onDelete,
     this.color = const Color(0xFFF5F5F5),
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -27,6 +29,21 @@ class TaskTile extends StatefulWidget {
 
   @override
   State<TaskTile> createState() => _TaskTileState();
+
+  static String getPriorityText(int priority) {
+    switch (priority) {
+      case 1:
+        return 'Urgent, Important';
+      case 2:
+        return 'Not Urgent, Important';
+      case 3:
+        return 'Urgent, Not Important';
+      case 4:
+        return 'Not Urgent, Not Important';
+      default:
+        return 'Unknown Priority';
+    }
+  }
 
   static String formatDate(String? date) {
     if (date == null) return '';
@@ -63,23 +80,27 @@ class _TaskTileState extends State<TaskTile> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: widget.color,
-      borderRadius: BorderRadius.circular(16),
-      child: ListTile(
-        contentPadding: widget.padding,
-        leading: widget.leading,
-        title: Text(
-          widget.text,
-          style: widget.titleStyle ?? const TextStyle(fontSize: 18),
+    return GestureDetector(
+      onLongPress: () => widget.onEdit?.call(),
+      child: Material(
+        color: widget.color,
+        borderRadius: BorderRadius.circular(16),
+        child: ListTile(
+          contentPadding: widget.padding,
+          leading: widget.leading,
+          title: Text(
+            widget.text,
+            style: widget.titleStyle ?? const TextStyle(fontSize: 18),
+          ),
+          subtitle:
+              widget.subtitle != null
+                  ? Text(
+                    widget.subtitle!,
+                    style:
+                        widget.subtitleStyle ?? const TextStyle(fontSize: 14),
+                  )
+                  : null,
         ),
-        subtitle:
-            widget.subtitle != null
-                ? Text(
-                  widget.subtitle!,
-                  style: widget.subtitleStyle ?? const TextStyle(fontSize: 14),
-                )
-                : null,
       ),
     );
   }

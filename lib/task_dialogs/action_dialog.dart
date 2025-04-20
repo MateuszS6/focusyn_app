@@ -4,9 +4,11 @@ import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
+import 'package:focusyn_app/utils/task_tile.dart';
 
 class ActionDialog extends StatelessWidget {
   static const String _dialogTitle = "Add Action";
+  static const String _editDialogTitle = "Edit Action";
   static const String _titleLabel = "Title *";
   static const String _priorityLabel = "Priority";
   static const String _brainPointsLabel = "Brain Points";
@@ -14,15 +16,21 @@ class ActionDialog extends StatelessWidget {
 
   final void Function(Task) onAdd;
   final String? defaultList;
+  final Task? initialTask;
 
-  const ActionDialog({super.key, required this.onAdd, this.defaultList});
+  const ActionDialog({
+    super.key,
+    required this.onAdd,
+    this.defaultList,
+    this.initialTask,
+  });
 
   @override
   Widget build(BuildContext context) {
-    String title = '';
-    int priority = 1;
-    int brainPoints = 5;
-    String list = defaultList ?? Keys.all;
+    String title = initialTask?.text ?? '';
+    int priority = initialTask?.priority ?? 1;
+    int brainPoints = initialTask?.brainPoints ?? 5;
+    String list = initialTask?.list ?? defaultList ?? Keys.all;
     final lists = FilterService.filters[Keys.actions] ?? [Keys.all];
 
     final inputBorder = OutlineInputBorder(
@@ -40,39 +48,52 @@ class ActionDialog extends StatelessWidget {
     );
 
     return TaskDialog(
-      title: _dialogTitle,
+      title: initialTask != null ? _editDialogTitle : _dialogTitle,
       onAdd: onAdd,
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
           () => Task(
+            id:
+                initialTask?.id ??
+                DateTime.now().millisecondsSinceEpoch.toString(),
             text: title,
             priority: priority,
             brainPoints: brainPoints,
             list: list,
+            createdAt: initialTask?.createdAt ?? DateTime.now(),
           ),
       fields: [
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _titleLabel,
-            hintText: 'Describe the task',
+            hintText: "Describe your task",
             prefixIcon: const Icon(ThemeIcons.text),
           ),
-          onChanged: (val) => title = val,
+          onChanged: (val) => title = val.trim(),
+          controller: TextEditingController(text: title),
         ),
         DropdownButtonFormField<int>(
-          value: priority,
           decoration: inputDecoration.copyWith(
             labelText: _priorityLabel,
-            hintText: 'Default: Urgent, Important',
             prefixIcon: const Icon(ThemeIcons.priority),
           ),
-          items: const [
-            DropdownMenuItem(value: 1, child: Text("Urgent, Important")),
-            DropdownMenuItem(value: 2, child: Text("Not Urgent, Important")),
-            DropdownMenuItem(value: 3, child: Text("Urgent, Not Important")),
+          value: priority,
+          items: [
+            DropdownMenuItem(
+              value: 1,
+              child: Text(TaskTile.getPriorityText(1)),
+            ),
+            DropdownMenuItem(
+              value: 2,
+              child: Text(TaskTile.getPriorityText(2)),
+            ),
+            DropdownMenuItem(
+              value: 3,
+              child: Text(TaskTile.getPriorityText(3)),
+            ),
             DropdownMenuItem(
               value: 4,
-              child: Text("Not Urgent, Not Important"),
+              child: Text(TaskTile.getPriorityText(4)),
             ),
           ],
           onChanged: (val) => priority = val ?? 1,
@@ -85,17 +106,18 @@ class ActionDialog extends StatelessWidget {
           ),
           keyboardType: TextInputType.number,
           onChanged: (val) => brainPoints = int.tryParse(val) ?? 5,
+          controller: TextEditingController(text: brainPoints.toString()),
         ),
         DropdownButtonFormField<String>(
-          value: list,
           decoration: inputDecoration.copyWith(
             labelText: _listLabel,
             prefixIcon: const Icon(ThemeIcons.tag),
           ),
+          value: list,
           items:
-              lists
-                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
-                  .toList(),
+              lists.map((list) {
+                return DropdownMenuItem(value: list, child: Text(list));
+              }).toList(),
           onChanged: (val) => list = val ?? Keys.all,
         ),
       ],

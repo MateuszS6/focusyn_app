@@ -11,7 +11,7 @@ class ActionTile extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onComplete;
   final VoidCallback onDelete;
-  final String? selectedFilter;
+  final String selectedFilter;
 
   const ActionTile({
     super.key,
@@ -22,25 +22,10 @@ class ActionTile extends StatelessWidget {
     required this.selectedFilter,
   });
 
-  String _getPriorityText(int priority) {
-    switch (priority) {
-      case 1:
-        return 'Urgent & Important';
-      case 2:
-        return 'Not Urgent but Important';
-      case 3:
-        return 'Urgent but Not Important';
-      case 4:
-        return 'Not Urgent & Not Important';
-      default:
-        return 'Unknown Priority';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final subtitle = [
-      _getPriorityText(task.priority),
+      TaskTile.getPriorityText(task.priority),
       '${task.brainPoints} BP',
       if (selectedFilter == Keys.all) task.list,
     ].join(' • ');
@@ -55,6 +40,7 @@ class ActionTile extends StatelessWidget {
       ),
       text: task.text,
       subtitle: subtitle,
+      onEdit: onEdit,
       onDelete: onDelete,
       color: ThemeColours.actionsAlt,
       selectedFilter: selectedFilter,

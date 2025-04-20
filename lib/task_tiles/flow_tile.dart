@@ -11,7 +11,8 @@ class FlowTile extends StatelessWidget {
   final Task task;
   final Function(Task updatedTask) onComplete;
   final VoidCallback onDelete;
-  final String? selectedFilter;
+  final String selectedFilter;
+  final VoidCallback onEdit;
 
   const FlowTile({
     super.key,
@@ -19,6 +20,7 @@ class FlowTile extends StatelessWidget {
     required this.onComplete,
     required this.onDelete,
     required this.selectedFilter,
+    required this.onEdit,
   });
 
   bool _isOverdue() {
@@ -61,6 +63,7 @@ class FlowTile extends StatelessWidget {
       ),
       onDelete: onDelete,
       selectedFilter: selectedFilter,
+      onEdit: onEdit,
       leading: IconButton(
         icon: const Icon(ThemeIcons.done),
         onPressed: () async {

@@ -4,9 +4,11 @@ import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
+import 'package:focusyn_app/utils/task_tile.dart';
 
 class MomentDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Moment";
+  static const String _editDialogTitle = "Edit Moment";
   static const String _titleLabel = "Title *";
   static const String _dateLabel = "Date";
   static const String _timeLabel = "Time";
@@ -16,27 +18,66 @@ class MomentDialog extends StatefulWidget {
 
   final void Function(Task) onAdd;
   final String? defaultList;
+  final Task? initialTask;
 
-  const MomentDialog({super.key, required this.onAdd, this.defaultList});
+  const MomentDialog({
+    super.key,
+    required this.onAdd,
+    this.defaultList,
+    this.initialTask,
+  });
 
   @override
   State<MomentDialog> createState() => _MomentDialogState();
 }
 
 class _MomentDialogState extends State<MomentDialog> {
-  String title = '';
-  String location = '';
-  DateTime selectedDate = DateTime.now();
-  TimeOfDay selectedTime = TimeOfDay.now();
-  Duration duration = const Duration(minutes: 30);
-  String list = Keys.all;
+  late String title;
+  late DateTime selectedDate;
+  late TimeOfDay selectedTime;
+  late int duration;
+  late String location;
+  late String list;
   late final List<String> lists;
+
+  // Controllers
+  late TextEditingController titleController;
+  late TextEditingController durationController;
+  late TextEditingController locationController;
 
   @override
   void initState() {
     super.initState();
+    title = widget.initialTask?.text ?? '';
+    selectedDate =
+        widget.initialTask?.date != null
+            ? DateTime.parse(widget.initialTask!.date!)
+            : DateTime.now();
+    selectedTime =
+        widget.initialTask?.time != null
+            ? TimeOfDay(
+              hour: int.parse(widget.initialTask!.time!.split(':')[0]),
+              minute: int.parse(widget.initialTask!.time!.split(':')[1]),
+            )
+            : const TimeOfDay(hour: 9, minute: 0);
+    duration = widget.initialTask?.duration ?? 60;
+    location = widget.initialTask?.location ?? '';
     lists = FilterService.filters[Keys.moments] ?? [Keys.all];
-    list = widget.defaultList ?? Keys.all;
+    list = widget.initialTask?.list ?? widget.defaultList ?? Keys.all;
+
+    // Initialize controllers
+    titleController = TextEditingController(text: title);
+    durationController = TextEditingController(text: duration.toString());
+    locationController = TextEditingController(text: location);
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers
+    titleController.dispose();
+    durationController.dispose();
+    locationController.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,25 +97,33 @@ class _MomentDialogState extends State<MomentDialog> {
     );
 
     return TaskDialog(
-      title: MomentDialog._dialogTitle,
+      title:
+          widget.initialTask != null
+              ? MomentDialog._editDialogTitle
+              : MomentDialog._dialogTitle,
       onAdd: widget.onAdd,
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
           () => Task(
+            id:
+                widget.initialTask?.id ??
+                DateTime.now().millisecondsSinceEpoch.toString(),
             text: title,
-            list: list,
             date: selectedDate.toIso8601String().split('T')[0],
             time: selectedTime.format(context),
-            location: location.isNotEmpty ? location : null,
-            duration: duration.inMinutes,
+            duration: duration,
+            location: location,
+            list: list,
+            createdAt: widget.initialTask?.createdAt ?? DateTime.now(),
           ),
       fields: [
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: MomentDialog._titleLabel,
-            hintText: 'Describe the event',
+            hintText: "Describe this event",
             prefixIcon: const Icon(ThemeIcons.text),
           ),
+          controller: titleController,
           onChanged: (val) => setState(() => title = val),
         ),
         GestureDetector(
@@ -118,32 +167,34 @@ class _MomentDialogState extends State<MomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: MomentDialog._durationLabel,
-            hintText: 'Default: 30 minutes',
+            hintText: "Default: 60",
             prefixIcon: const Icon(ThemeIcons.duration),
           ),
           keyboardType: TextInputType.number,
+          controller: durationController,
           onChanged:
-              (val) => setState(
-                () => duration = Duration(minutes: int.tryParse(val) ?? 30),
-              ),
+              (val) => setState(() => duration = int.tryParse(val) ?? 60),
         ),
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: MomentDialog._locationLabel,
-            hintText: 'Default: None',
+            hintText: "Enter location (optional)",
             prefixIcon: const Icon(ThemeIcons.location),
           ),
+          controller: locationController,
           onChanged: (val) => setState(() => location = val),
         ),
         DropdownButtonFormField<String>(
-          value: list,
           decoration: inputDecoration.copyWith(
             labelText: MomentDialog._listLabel,
             prefixIcon: const Icon(ThemeIcons.tag),
           ),
+          value: list,
           items:
               lists
-                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .map(
+                    (list) => DropdownMenuItem(value: list, child: Text(list)),
+                  )
                   .toList(),
           onChanged: (val) => setState(() => list = val ?? Keys.all),
         ),

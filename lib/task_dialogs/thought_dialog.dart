@@ -4,35 +4,31 @@ import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
+import 'package:focusyn_app/utils/task_tile.dart';
 
-class ThoughtDialog extends StatefulWidget {
+class ThoughtDialog extends StatelessWidget {
   static const String _dialogTitle = "Add Thought";
-  static const String _textLabel = "Text *";
+  static const String _editDialogTitle = "Edit Thought";
+  static const String _titleLabel = "Title *";
   static const String _listLabel = "List";
 
   final void Function(Task) onAdd;
   final String? defaultList;
+  final Task? initialTask;
 
-  const ThoughtDialog({super.key, required this.onAdd, this.defaultList});
-
-  @override
-  State<ThoughtDialog> createState() => _ThoughtDialogState();
-}
-
-class _ThoughtDialogState extends State<ThoughtDialog> {
-  String text = '';
-  String list = Keys.all;
-  late final List<String> lists;
-
-  @override
-  void initState() {
-    super.initState();
-    lists = FilterService.filters[Keys.thoughts] ?? [Keys.all];
-    list = widget.defaultList ?? Keys.all;
-  }
+  const ThoughtDialog({
+    super.key,
+    required this.onAdd,
+    this.defaultList,
+    this.initialTask,
+  });
 
   @override
   Widget build(BuildContext context) {
+    String title = initialTask?.text ?? '';
+    String list = initialTask?.list ?? defaultList ?? Keys.all;
+    final lists = FilterService.filters[Keys.thoughts] ?? [Keys.all];
+
     final inputBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: Colors.grey.shade300),
@@ -48,32 +44,41 @@ class _ThoughtDialogState extends State<ThoughtDialog> {
     );
 
     return TaskDialog(
-      title: ThoughtDialog._dialogTitle,
-      onAdd: widget.onAdd,
-      validateInput: () => text.trim().isNotEmpty,
-      buildTask: () => Task(text: text, list: list),
+      title: initialTask != null ? _editDialogTitle : _dialogTitle,
+      onAdd: onAdd,
+      validateInput: () => title.trim().isNotEmpty,
+      buildTask:
+          () => Task(
+            id:
+                initialTask?.id ??
+                DateTime.now().millisecondsSinceEpoch.toString(),
+            text: title,
+            list: list,
+            createdAt: initialTask?.createdAt ?? DateTime.now(),
+          ),
       fields: [
         TextField(
           decoration: inputDecoration.copyWith(
-            labelText: ThoughtDialog._textLabel,
-            hintText: 'Describe the thought or reflection for later',
+            labelText: _titleLabel,
+            hintText: "Enter thought title",
             prefixIcon: const Icon(ThemeIcons.text),
-            alignLabelWithHint: true,
           ),
-          maxLines: 5,
-          onChanged: (val) => setState(() => text = val),
+          onChanged: (val) => title = val.trim(),
+          controller: TextEditingController(text: title),
         ),
         DropdownButtonFormField<String>(
-          value: list,
           decoration: inputDecoration.copyWith(
-            labelText: ThoughtDialog._listLabel,
+            labelText: _listLabel,
             prefixIcon: const Icon(ThemeIcons.tag),
           ),
+          value: list,
           items:
               lists
-                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .map(
+                    (list) => DropdownMenuItem(value: list, child: Text(list)),
+                  )
                   .toList(),
-          onChanged: (val) => setState(() => list = val ?? Keys.all),
+          onChanged: (val) => list = val ?? Keys.all,
         ),
       ],
     );

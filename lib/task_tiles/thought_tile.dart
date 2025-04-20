@@ -7,13 +7,15 @@ import 'package:focusyn_app/models/task_model.dart';
 class ThoughtTile extends StatelessWidget {
   final Task task;
   final VoidCallback onDelete;
-  final String? selectedFilter;
+  final String selectedFilter;
+  final VoidCallback onEdit;
 
   const ThoughtTile({
     super.key,
     required this.task,
     required this.onDelete,
     required this.selectedFilter,
+    required this.onEdit,
   });
 
   @override
@@ -25,6 +27,7 @@ class ThoughtTile extends StatelessWidget {
       subtitle: selectedFilter == Keys.all ? task.list : null,
       onDelete: onDelete,
       selectedFilter: selectedFilter,
+      onEdit: onEdit,
     );
   }
 }

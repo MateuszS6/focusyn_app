@@ -4,9 +4,11 @@ import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
+import 'package:focusyn_app/utils/task_tile.dart';
 
 class FlowDialog extends StatefulWidget {
   static const String _dialogTitle = "Add Flow";
+  static const String _editDialogTitle = "Edit Flow";
   static const String _titleLabel = "Title *";
   static const String _dateLabel = "Start Date";
   static const String _timeLabel = "Reminder Time";
@@ -17,28 +19,68 @@ class FlowDialog extends StatefulWidget {
 
   final void Function(Task) onAdd;
   final String? defaultList;
+  final Task? initialTask;
 
-  const FlowDialog({super.key, required this.onAdd, this.defaultList});
+  const FlowDialog({
+    super.key,
+    required this.onAdd,
+    this.defaultList,
+    this.initialTask,
+  });
 
   @override
   State<FlowDialog> createState() => _FlowDialogState();
 }
 
 class _FlowDialogState extends State<FlowDialog> {
-  String title = '';
-  DateTime selectedDate = DateTime.now();
-  TimeOfDay selectedTime = TimeOfDay.now();
-  Duration duration = const Duration(minutes: 15);
-  String repeat = 'Daily';
-  int brainPoints = 5;
-  String list = Keys.all;
+  late String title;
+  late DateTime selectedDate;
+  late TimeOfDay selectedTime;
+  late int duration;
+  late String repeat;
+  late int brainPoints;
+  late String list;
   late final List<String> lists;
+
+  // Controllers
+  late TextEditingController titleController;
+  late TextEditingController durationController;
+  late TextEditingController brainPointsController;
 
   @override
   void initState() {
     super.initState();
+    title = widget.initialTask?.text ?? '';
+    selectedDate =
+        widget.initialTask?.date != null
+            ? DateTime.parse(widget.initialTask!.date!)
+            : DateTime.now();
+    selectedTime =
+        widget.initialTask?.time != null
+            ? TimeOfDay(
+              hour: int.parse(widget.initialTask!.time!.split(':')[0]),
+              minute: int.parse(widget.initialTask!.time!.split(':')[1]),
+            )
+            : const TimeOfDay(hour: 9, minute: 0);
+    duration = widget.initialTask?.duration ?? 60;
+    repeat = widget.initialTask?.repeat ?? 'Daily';
+    brainPoints = widget.initialTask?.brainPoints ?? 5;
     lists = FilterService.filters[Keys.flows] ?? [Keys.all];
-    list = widget.defaultList ?? Keys.all;
+    list = widget.initialTask?.list ?? widget.defaultList ?? Keys.all;
+
+    // Initialize controllers
+    titleController = TextEditingController(text: title);
+    durationController = TextEditingController(text: duration.toString());
+    brainPointsController = TextEditingController(text: brainPoints.toString());
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers
+    titleController.dispose();
+    durationController.dispose();
+    brainPointsController.dispose();
+    super.dispose();
   }
 
   @override
@@ -58,18 +100,25 @@ class _FlowDialogState extends State<FlowDialog> {
     );
 
     return TaskDialog(
-      title: FlowDialog._dialogTitle,
+      title:
+          widget.initialTask != null
+              ? FlowDialog._editDialogTitle
+              : FlowDialog._dialogTitle,
       onAdd: widget.onAdd,
       validateInput: () => title.trim().isNotEmpty,
       buildTask:
           () => Task(
+            id:
+                widget.initialTask?.id ??
+                DateTime.now().millisecondsSinceEpoch.toString(),
             text: title,
-            list: list,
-            brainPoints: brainPoints,
-            duration: duration.inMinutes,
             date: selectedDate.toIso8601String().split('T')[0],
             time: selectedTime.format(context),
+            duration: duration,
             repeat: repeat,
+            brainPoints: brainPoints,
+            list: list,
+            createdAt: widget.initialTask?.createdAt ?? DateTime.now(),
           ),
       fields: [
         TextField(
@@ -78,6 +127,7 @@ class _FlowDialogState extends State<FlowDialog> {
             hintText: 'Describe the routine',
             prefixIcon: const Icon(ThemeIcons.text),
           ),
+          controller: titleController,
           onChanged: (val) => setState(() => title = val),
         ),
         GestureDetector(
@@ -121,27 +171,27 @@ class _FlowDialogState extends State<FlowDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: FlowDialog._durationLabel,
-            hintText: 'Default: 15 minutes',
+            hintText: "Default: 60",
             prefixIcon: const Icon(ThemeIcons.duration),
           ),
           keyboardType: TextInputType.number,
+          controller: durationController,
           onChanged:
-              (val) => setState(
-                () => duration = Duration(minutes: int.tryParse(val) ?? 15),
-              ),
+              (val) => setState(() => duration = int.tryParse(val) ?? 60),
         ),
         DropdownButtonFormField<String>(
-          value: repeat,
           decoration: inputDecoration.copyWith(
             labelText: FlowDialog._repeatLabel,
-            hintText: 'Default: Daily',
             prefixIcon: const Icon(ThemeIcons.repeat),
           ),
-          items: const [
-            DropdownMenuItem(value: 'Daily', child: Text('Daily')),
-            DropdownMenuItem(value: 'Weekly', child: Text('Weekly')),
-            DropdownMenuItem(value: 'Monthly', child: Text('Monthly')),
-          ],
+          value: repeat,
+          items:
+              ['Daily', 'Weekly', 'Monthly']
+                  .map(
+                    (repeat) =>
+                        DropdownMenuItem(value: repeat, child: Text(repeat)),
+                  )
+                  .toList(),
           onChanged: (val) => setState(() => repeat = val ?? 'Daily'),
         ),
         TextField(
@@ -151,18 +201,21 @@ class _FlowDialogState extends State<FlowDialog> {
             prefixIcon: const Icon(ThemeIcons.brainPoints),
           ),
           keyboardType: TextInputType.number,
+          controller: brainPointsController,
           onChanged:
               (val) => setState(() => brainPoints = int.tryParse(val) ?? 5),
         ),
         DropdownButtonFormField<String>(
-          value: list,
           decoration: inputDecoration.copyWith(
             labelText: FlowDialog._listLabel,
             prefixIcon: const Icon(ThemeIcons.tag),
           ),
+          value: list,
           items:
               lists
-                  .map((t) => DropdownMenuItem(value: t, child: Text(t)))
+                  .map(
+                    (list) => DropdownMenuItem(value: list, child: Text(list)),
+                  )
                   .toList(),
           onChanged: (val) => setState(() => list = val ?? Keys.all),
         ),

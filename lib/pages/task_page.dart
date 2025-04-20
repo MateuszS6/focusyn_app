@@ -376,7 +376,7 @@ class _TaskPageState extends State<TaskPage> {
         tile = ActionTile(
           key: key,
           task: Task.fromMap(task),
-          onEdit: () => _updateTask(task),
+          onEdit: () => _showEditDialog(task),
           onComplete: () => _removeTask(task),
           onDelete: () => _removeTask(task),
           selectedFilter: _selectedFilter,
@@ -393,6 +393,7 @@ class _TaskPageState extends State<TaskPage> {
           },
           onDelete: () => _removeTask(task),
           selectedFilter: _selectedFilter,
+          onEdit: () => _showEditDialog(task),
         );
         break;
 
@@ -402,6 +403,7 @@ class _TaskPageState extends State<TaskPage> {
           task: Task.fromMap(task),
           onDelete: () => _removeTask(task),
           selectedFilter: _selectedFilter,
+          onEdit: () => _showEditDialog(task),
         );
         break;
 
@@ -411,6 +413,7 @@ class _TaskPageState extends State<TaskPage> {
           task: Task.fromMap(task),
           onDelete: () => _removeTask(task),
           selectedFilter: _selectedFilter,
+          onEdit: () => _showEditDialog(task),
         );
         break;
 
@@ -505,6 +508,47 @@ class _TaskPageState extends State<TaskPage> {
               ),
             ],
           ),
+    );
+  }
+
+  void _showEditDialog(Map<String, dynamic> task) {
+    showDialog(
+      context: context,
+      builder: (_) {
+        onEdit(Task updatedTask) async {
+          setState(() => _tasks[_tasks.indexOf(task)] = updatedTask.toMap());
+          await TaskService.updateTasks(widget.category, _tasks);
+        }
+
+        switch (widget.category) {
+          case Keys.actions:
+            return ActionDialog(
+              onAdd: onEdit,
+              defaultList: task[Keys.list],
+              initialTask: Task.fromMap(task),
+            );
+          case Keys.flows:
+            return FlowDialog(
+              onAdd: onEdit,
+              defaultList: task[Keys.list],
+              initialTask: Task.fromMap(task),
+            );
+          case Keys.moments:
+            return MomentDialog(
+              onAdd: onEdit,
+              defaultList: task[Keys.list],
+              initialTask: Task.fromMap(task),
+            );
+          case Keys.thoughts:
+            return ThoughtDialog(
+              onAdd: onEdit,
+              defaultList: task[Keys.list],
+              initialTask: Task.fromMap(task),
+            );
+          default:
+            return const SizedBox.shrink();
+        }
+      },
     );
   }
 
