@@ -43,33 +43,39 @@ class _TaskPageState extends State<TaskPage> {
     filtered.sort((a, b) {
       switch (_sortBy) {
         case 'Priority':
-          final priorityCompare = (a['priority'] ?? 1).compareTo(
-            b['priority'] ?? 1,
+          final priorityCompare = (a[Keys.priority] ?? 1).compareTo(
+            b[Keys.priority] ?? 1,
           );
           if (priorityCompare != 0) return priorityCompare;
           break;
         case 'Brain Points':
-          final bpCompare = (a['brainPoints'] ?? 0).compareTo(
-            b['brainPoints'] ?? 0,
+          final bpCompare = (a[Keys.brainPoints] ?? 0).compareTo(
+            b[Keys.brainPoints] ?? 0,
           );
           if (bpCompare != 0) return bpCompare;
           break;
         case 'Alphabetical':
-          final titleCompare = (a['title'] ?? '').compareTo(b['title'] ?? '');
+          final aText = a[Keys.text] ?? '';
+          final bText = b[Keys.text] ?? '';
+          final titleCompare = aText.toLowerCase().compareTo(
+            bText.toLowerCase(),
+          );
           if (titleCompare != 0) return titleCompare;
           break;
         case 'Date':
           if (widget.category == Keys.flows ||
               widget.category == Keys.moments) {
-            final dateCompare = (a['date'] ?? '').compareTo(b['date'] ?? '');
+            final dateCompare = (a[Keys.date] ?? '').compareTo(
+              b[Keys.date] ?? '',
+            );
             if (dateCompare != 0) return dateCompare;
           }
           break;
       }
-      // Default to creation date
-      final aDate = DateTime.parse(a[Keys.createdAt] as String);
-      final bDate = DateTime.parse(b[Keys.createdAt] as String);
-      return aDate.compareTo(bDate);
+      // Default to creation date order
+      return DateTime.parse(
+        a[Keys.createdAt] as String,
+      ).compareTo(DateTime.parse(b[Keys.createdAt] as String));
     });
 
     return filtered;
@@ -195,6 +201,15 @@ class _TaskPageState extends State<TaskPage> {
             },
           ),
           RadioListTile(
+            title: const Text('Alphabetical'),
+            value: 'Alphabetical',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile(
             title: const Text('Creation Date'),
             value: 'Date',
             groupValue: _sortBy,
@@ -227,6 +242,15 @@ class _TaskPageState extends State<TaskPage> {
             },
           ),
           RadioListTile(
+            title: const Text('Alphabetical'),
+            value: 'Alphabetical',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile(
             title: const Text('Creation Date'),
             value: 'Creation Date',
             groupValue: _sortBy,
@@ -243,6 +267,15 @@ class _TaskPageState extends State<TaskPage> {
           RadioListTile(
             title: const Text('Date'),
             value: 'Date',
+            groupValue: _sortBy,
+            onChanged: (value) {
+              setState(() => _sortBy = value.toString());
+              Navigator.pop(context);
+            },
+          ),
+          RadioListTile(
+            title: const Text('Alphabetical'),
+            value: 'Alphabetical',
             groupValue: _sortBy,
             onChanged: (value) {
               setState(() => _sortBy = value.toString());
@@ -391,7 +424,12 @@ class _TaskPageState extends State<TaskPage> {
           key: key,
           task: Task.fromMap(task),
           onComplete: (updatedTask) {
-            setState(() => _tasks[_tasks.indexOf(task)] = updatedTask.toMap());
+            setState(() {
+              final index = _tasks.indexWhere((t) => t['id'] == task['id']);
+              if (index != -1) {
+                _tasks[index] = updatedTask.toMap();
+              }
+            });
             _updateTask(task);
           },
           onDelete: () => _removeTask(task),
@@ -519,7 +557,12 @@ class _TaskPageState extends State<TaskPage> {
       context: context,
       builder: (_) {
         onEdit(Task updatedTask) async {
-          setState(() => _tasks[_tasks.indexOf(task)] = updatedTask.toMap());
+          setState(() {
+            final index = _tasks.indexWhere((t) => t['id'] == task['id']);
+            if (index != -1) {
+              _tasks[index] = updatedTask.toMap();
+            }
+          });
           await TaskService.updateTasks(widget.category, _tasks);
         }
 
