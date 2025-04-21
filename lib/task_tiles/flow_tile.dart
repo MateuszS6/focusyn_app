@@ -23,24 +23,11 @@ class FlowTile extends StatelessWidget {
     required this.onEdit,
   });
 
-  bool _isOverdue() {
-    if (task.date == null || task.date!.isEmpty) return false;
-
-    final taskDate = DateTime.parse(task.date!);
-    final now = DateTime.now();
-
-    // Compare dates without time
-    final taskDateOnly = DateTime(taskDate.year, taskDate.month, taskDate.day);
-    final nowDateOnly = DateTime(now.year, now.month, now.day);
-
-    return taskDateOnly.isBefore(nowDateOnly);
-  }
-
   @override
   Widget build(BuildContext context) {
-    final isOverdue = _isOverdue();
+    final isOverdue = task.isOverdue();
     final subtitleParts = [
-      Task.formatDate(task.date),
+      task.formatDate(),
       task.time,
       '${task.duration}m',
       task.repeat,

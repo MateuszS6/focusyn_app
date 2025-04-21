@@ -87,10 +87,10 @@ class Task {
     }
   }
 
-  static String formatDate(String? date) {
+  String formatDate() {
     if (date == null) return '';
 
-    final inputDate = DateTime.tryParse(date);
+    final inputDate = DateTime.tryParse(date!);
     if (inputDate == null) return '';
 
     final now = DateTime.now();
@@ -104,7 +104,37 @@ class Task {
       return DateFormat.MMMd().format(inputDate); // e.g., "Apr 20"
     } else {
       // Else, just return the input date
-      return date;
+      return date!;
     }
+  }
+
+  bool isOverdue() {
+    if (date == null || date!.isEmpty) return false;
+
+    final taskDate = DateTime.parse(date!);
+    final now = DateTime.now();
+
+    // If time is specified, create a DateTime object with both date and time
+    if (time != null && time!.isNotEmpty) {
+      final timeParts = time!.split(':');
+      if (timeParts.length == 2) {
+        final hours = int.tryParse(timeParts[0]) ?? 0;
+        final minutes = int.tryParse(timeParts[1]) ?? 0;
+        final taskDateTime = DateTime(
+          taskDate.year,
+          taskDate.month,
+          taskDate.day,
+          hours,
+          minutes,
+        );
+        return taskDateTime.isBefore(now);
+      }
+    }
+
+    // If no time is specified, compare dates only
+    final taskDateOnly = DateTime(taskDate.year, taskDate.month, taskDate.day);
+    final nowDateOnly = DateTime(now.year, now.month, now.day);
+
+    return taskDateOnly.isBefore(nowDateOnly);
   }
 }

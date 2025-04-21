@@ -462,15 +462,32 @@ class _TaskPageState extends State<TaskPage> {
         return const SizedBox.shrink();
     }
 
-    return Slidable(
+    return TweenAnimationBuilder<double>(
       key: key,
-      endActionPane: ActionPane(
-        motion: const BehindMotion(),
-        extentRatio: 0.15,
-        dismissible: DismissiblePane(onDismissed: () => _removeTask(task)),
-        children: actions,
+      duration: const Duration(milliseconds: 1500),
+      tween: Tween<double>(begin: 1.0, end: 0.0),
+      builder: (context, value, child) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: Colors.blue.withAlpha((value * 255).toInt()),
+              width: 2,
+            ),
+          ),
+          child: child,
+        );
+      },
+      child: Slidable(
+        key: key,
+        endActionPane: ActionPane(
+          motion: const BehindMotion(),
+          extentRatio: 0.15,
+          dismissible: DismissiblePane(onDismissed: () => _removeTask(task)),
+          children: actions,
+        ),
+        child: tile,
       ),
-      child: tile,
     );
   }
 
