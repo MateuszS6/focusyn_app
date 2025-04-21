@@ -15,16 +15,15 @@ class NotificationService {
   static Future<void> initialize() async {
     if (_isInitialized) return; // Already initialized
 
-    print('Initializing notification service...');
+    // Initializing notification service...
 
     // Initialize timezone
     tz.initializeTimeZones();
     String currentTimeZone = 'Europe/London';
     try {
       currentTimeZone = await FlutterTimezone.getLocalTimezone();
-      print('Using timezone: $currentTimeZone');
     } catch (e) {
-      print('Error getting local timezone, defaulting to London: $e');
+      throw Exception('Error getting local timezone, defaulting to London: $e');
     }
     tz.setLocalLocation(tz.getLocation(currentTimeZone));
 
@@ -49,10 +48,10 @@ class NotificationService {
     final bool? result = await _notificationsPlugin.initialize(
       initializationSettings,
       onDidReceiveNotificationResponse: (NotificationResponse response) {
-        print('Notification clicked: ${response.payload}');
+        // Notification clicked: ${response.payload}
       },
     );
-    print('Notification initialization result: $result');
+    // Notification initialization result
 
     // Request permissions
     final bool? permissionResult =
@@ -61,7 +60,7 @@ class NotificationService {
               AndroidFlutterLocalNotificationsPlugin
             >()
             ?.requestNotificationsPermission();
-    print('Android permission result: $permissionResult');
+    // Android permission result
 
     // Create the Android notification channel
     await _notificationsPlugin
@@ -78,7 +77,7 @@ class NotificationService {
         );
 
     _isInitialized = true;
-    print('Notification service initialized successfully');
+    // Notification service initialized successfully
   }
 
   // Get notification details
@@ -106,7 +105,7 @@ class NotificationService {
   static Future<void> show({int id = 0, String? title, String? body}) async {
     if (!_isInitialized) await initialize();
 
-    print('Showing notification: $title - $body');
+    // Showing notification
     return _notificationsPlugin.show(
       id,
       title,
@@ -125,9 +124,8 @@ class NotificationService {
   }) async {
     if (!_isInitialized) await initialize();
 
-    print('Scheduling notification for $hour:$minute');
+    // Scheduling notification
     final now = tz.TZDateTime.now(tz.local);
-    print('Current time: $now');
 
     // Create the scheduled time for today
     var scheduledDate = tz.TZDateTime(
@@ -142,10 +140,10 @@ class NotificationService {
     // If the time has already passed today, schedule for tomorrow
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
-      print('Time already passed today, scheduling for tomorrow');
+      // Time already passed today, scheduling for tomorrow
     }
 
-    print('Scheduling notification for: $scheduledDate');
+    // Scheduling notification
     try {
       // First cancel any existing notifications
       await _notificationsPlugin.cancel(id);
@@ -161,19 +159,17 @@ class NotificationService {
         matchDateTimeComponents: DateTimeComponents.time,
         // payload: 'daily_quote',
       );
-      print('Notification scheduled successfully');
+      // Notification scheduled successfully
 
       // Verify the scheduled notification
       final pendingNotifications =
           await _notificationsPlugin.pendingNotificationRequests();
-      print('Pending notifications: ${pendingNotifications.length}');
+      // Pending notifications
       for (var notification in pendingNotifications) {
-        print(
-          'Pending notification: id=${notification.id}, title=${notification.title}',
-        );
+        // Pending notification
       }
     } catch (e) {
-      print('Error scheduling notification: $e');
+      // Error scheduling notification
       rethrow;
     }
   }
@@ -181,7 +177,7 @@ class NotificationService {
   // Cancel all notifications
   static Future<void> cancelAllNotifications() async {
     if (!_isInitialized) await initialize();
-    print('Cancelling all notifications');
+    // Cancelling all notifications
     await _notificationsPlugin.cancelAll();
   }
 }

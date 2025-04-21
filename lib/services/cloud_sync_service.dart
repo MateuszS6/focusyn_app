@@ -10,23 +10,21 @@ class CloudSyncService {
   static Future<void> _ensureUserDocument() async {
     final user = _auth.currentUser;
     if (user == null) {
-      print('DEBUG: No user found in _ensureUserDocument');
-      return;
+      throw Exception('No user found in _ensureUserDocument');
     }
 
-    print('DEBUG: Ensuring documents for user: ${user.uid}');
+    // Ensure documents for user
     final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final profileRef = _firestore.collection('profiles').doc(user.uid);
     final brainPointsRef = userDataRef.collection('brainPoints').doc('current');
 
     try {
       final userDataDoc = await userDataRef.get();
+      // DEBUG: User data document exists
       final profileDoc = await profileRef.get();
-      print('DEBUG: User data document exists: ${userDataDoc.exists}');
-      print('DEBUG: Profile document exists: ${profileDoc.exists}');
+      // DEBUG: Profile document exists
 
       if (!userDataDoc.exists) {
-        print('DEBUG: Creating new user data document');
         // Create initial user data document
         await userDataRef.set({'createdAt': FieldValue.serverTimestamp()});
 
@@ -37,11 +35,10 @@ class CloudSyncService {
           'updatedAt': FieldValue.serverTimestamp(),
         });
 
-        print('DEBUG: Initial user data setup complete');
+        // DEBUG: Initial user data setup complete
       }
 
       if (!profileDoc.exists) {
-        print('DEBUG: Creating new profile document');
         // Create initial profile document
         await profileRef.set({
           'displayName': user.displayName ?? '',
@@ -49,10 +46,11 @@ class CloudSyncService {
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
         });
-        print('DEBUG: Initial profile setup complete');
+
+        // DEBUG: Initial profile setup complete
       }
     } catch (e) {
-      print('DEBUG: Error in _ensureUserDocument: $e');
+      // Error in _ensureUserDocument
       rethrow;
     }
   }
@@ -60,11 +58,11 @@ class CloudSyncService {
   static Future<void> uploadTasks(Box<dynamic> taskBox) async {
     final user = _auth.currentUser;
     if (user == null) {
-      print('DEBUG: No user found in uploadTasks');
-      return;
+      // No user found in uploadTasks
+      throw Exception('No user found in uploadTasks');
     }
 
-    print('DEBUG: Starting task upload for user: ${user.uid}');
+    // Starting task upload for user
     final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final batch = _firestore.batch();
 
@@ -77,15 +75,15 @@ class CloudSyncService {
         Keys.thoughts,
       ]) {
         final tasks = taskBox.get(category) as List<dynamic>? ?? [];
-        print('DEBUG: Uploading tasks for $category: ${tasks.length} items');
+        // Uploading tasks for $category: ${tasks.length} items
         final tasksRef = userDataRef.collection('tasks').doc(category);
         batch.set(tasksRef, {'items': tasks});
       }
 
       await batch.commit();
-      print('DEBUG: Task upload complete');
+      // DEBUG: Task upload complete
     } catch (e) {
-      print('DEBUG: Error in uploadTasks: $e');
+      // Error in uploadTasks
       rethrow;
     }
   }
@@ -93,11 +91,11 @@ class CloudSyncService {
   static Future<void> uploadFilters(Box<dynamic> filterBox) async {
     final user = _auth.currentUser;
     if (user == null) {
-      print('DEBUG: No user found in uploadFilters');
-      return;
+      // No user found in uploadFilters
+      throw Exception('No user found in uploadFilters');
     }
 
-    print('DEBUG: Starting filter upload for user: ${user.uid}');
+    // Starting filter upload for user
     final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final batch = _firestore.batch();
 
@@ -110,17 +108,15 @@ class CloudSyncService {
         Keys.thoughts,
       ]) {
         final filters = filterBox.get(category) as List<dynamic>? ?? [];
-        print(
-          'DEBUG: Uploading filters for $category: ${filters.length} items',
-        );
+        // Uploading filters for $category: ${filters.length} items
         final filtersRef = userDataRef.collection('filters').doc(category);
         batch.set(filtersRef, {'items': filters});
       }
 
       await batch.commit();
-      print('DEBUG: Filter upload complete');
+      // DEBUG: Filter upload complete
     } catch (e) {
-      print('DEBUG: Error in uploadFilters: $e');
+      // Error in uploadFilters
       rethrow;
     }
   }
@@ -128,11 +124,11 @@ class CloudSyncService {
   static Future<void> uploadBrainPoints(Box<dynamic> brainBox) async {
     final user = _auth.currentUser;
     if (user == null) {
-      print('DEBUG: No user found in uploadBrainPoints');
-      return;
+      // No user found in uploadBrainPoints
+      throw Exception('No user found in uploadBrainPoints');
     }
 
-    print('DEBUG: Starting brain points upload for user: ${user.uid}');
+    // Starting brain points upload for user
     final brainPointsRef = _firestore
         .collection('user_data')
         .doc(user.uid)
@@ -144,17 +140,15 @@ class CloudSyncService {
       final lastReset =
           brainBox.get('lastReset') ?? DateTime.now().toIso8601String();
 
-      print(
-        'DEBUG: Uploading brain points: $brainPoints, lastReset: $lastReset',
-      );
+      // Uploading brain points
       await brainPointsRef.set({
         'points': brainPoints,
         'lastReset': lastReset,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      print('DEBUG: Brain points upload complete');
+      // DEBUG: Brain points upload complete
     } catch (e) {
-      print('DEBUG: Error in uploadBrainPoints: $e');
+      // Error in uploadBrainPoints
       rethrow;
     }
   }
@@ -162,11 +156,11 @@ class CloudSyncService {
   static Future<void> uploadFlowHistory(Box<dynamic> historyBox) async {
     final user = _auth.currentUser;
     if (user == null) {
-      print('DEBUG: No user found in uploadFlowHistory');
-      return;
+      // No user found in uploadFlowHistory
+      throw Exception('No user found in uploadFlowHistory');
     }
 
-    print('DEBUG: Starting flow history upload for user: ${user.uid}');
+    // Starting flow history upload for user
     final historyRef = _firestore
         .collection('user_data')
         .doc(user.uid)
@@ -175,14 +169,14 @@ class CloudSyncService {
 
     try {
       final history = historyBox.get('flow_history') as List<dynamic>? ?? [];
-      print('DEBUG: Uploading flow history: ${history.length} items');
+      // Uploading flow history
       await historyRef.set({
         'items': history,
         'updatedAt': FieldValue.serverTimestamp(),
       });
-      print('DEBUG: Flow history upload complete');
+      // DEBUG: Flow history upload complete
     } catch (e) {
-      print('DEBUG: Error in uploadFlowHistory: $e');
+      // Error in uploadFlowHistory
       rethrow;
     }
   }
@@ -194,12 +188,11 @@ class CloudSyncService {
   ) async {
     final user = _auth.currentUser;
     if (user == null) {
-      print('DEBUG: No user found in downloadTasks');
-      return;
+      // No user found in downloadTasks
+      throw Exception('No user found in downloadTasks');
     }
 
-    print('DEBUG: Starting download for user: ${user.uid}');
-
+    // Starting download for user
     try {
       // Ensure user document exists before downloading
       await _ensureUserDocument();
@@ -207,7 +200,6 @@ class CloudSyncService {
       final userDataRef = _firestore.collection('user_data').doc(user.uid);
 
       // Download brain points from its collection
-      print('DEBUG: Downloading brain points');
       final brainPointsDoc =
           await userDataRef.collection('brainPoints').doc('current').get();
 
@@ -228,7 +220,7 @@ class CloudSyncService {
             // Reset points if it's a new day
             await brainBox.put(Keys.brainPoints, 100);
             await brainBox.put('lastReset', now.toIso8601String());
-            print('DEBUG: Reset brain points to 100 (new day)');
+            // DEBUG: Reset brain points to 100 (new day)
 
             // Update cloud with reset values
             await userDataRef.collection('brainPoints').doc('current').set({
@@ -240,7 +232,7 @@ class CloudSyncService {
             // Use cloud points if it's the same day
             await brainBox.put(Keys.brainPoints, cloudPoints);
             await brainBox.put('lastReset', cloudLastReset);
-            print('DEBUG: Downloaded brain points: $cloudPoints');
+            // DEBUG: Downloaded brain points: $cloudPoints
           }
         }
       }
@@ -252,7 +244,7 @@ class CloudSyncService {
         Keys.moments,
         Keys.thoughts,
       ]) {
-        print('DEBUG: Downloading tasks for $category');
+        // Downloading tasks for $category
         final tasksDoc =
             await userDataRef.collection('tasks').doc(category).get();
         if (tasksDoc.exists) {
@@ -264,11 +256,9 @@ class CloudSyncService {
             // Only update if cloud data is not empty or if local data is empty
             if (data['items'].isNotEmpty || localTasks.isEmpty) {
               await taskBox.put(category, data['items']);
-              print(
-                'DEBUG: Downloaded ${data['items'].length} tasks for $category',
-              );
+              // DEBUG: Downloaded ${data['items'].length} tasks for $category
             } else {
-              print(
+              throw Exception(
                 'DEBUG: Preserving local tasks for $category (${localTasks.length} items)',
               );
             }
@@ -283,7 +273,7 @@ class CloudSyncService {
         Keys.moments,
         Keys.thoughts,
       ]) {
-        print('DEBUG: Downloading filters for $category');
+        // Downloading filters for $category
         final filtersDoc =
             await userDataRef.collection('filters').doc(category).get();
         if (filtersDoc.exists) {
@@ -296,11 +286,9 @@ class CloudSyncService {
             // Only update if cloud data is not empty or if local data is empty
             if (data['items'].isNotEmpty || localFilters.isEmpty) {
               await filterBox.put(category, data['items']);
-              print(
-                'DEBUG: Downloaded ${data['items'].length} filters for $category',
-              );
+              // DEBUG: Downloaded ${data['items'].length} filters for $category
             } else {
-              print(
+              throw Exception(
                 'DEBUG: Preserving local filters for $category (${localFilters.length} items)',
               );
             }
@@ -308,9 +296,9 @@ class CloudSyncService {
         }
       }
 
-      print('DEBUG: Download complete');
+      // DEBUG: Download complete
     } catch (e) {
-      print('DEBUG: Error in downloadTasks: $e');
+      // Error in downloadTasks
       rethrow;
     }
   }
@@ -318,11 +306,11 @@ class CloudSyncService {
   static Future<void> downloadFlowHistory(Box<dynamic> historyBox) async {
     final user = _auth.currentUser;
     if (user == null) {
-      print('DEBUG: No user found in downloadFlowHistory');
-      return;
+      // No user found in downloadFlowHistory
+      throw Exception('No user found in downloadFlowHistory');
     }
 
-    print('DEBUG: Starting flow history download for user: ${user.uid}');
+    // Starting flow history download for user
     final historyRef = _firestore
         .collection('user_data')
         .doc(user.uid)
@@ -341,19 +329,17 @@ class CloudSyncService {
           // Only update if cloud data is not empty or if local data is empty
           if (data['items'].isNotEmpty || localHistory.isEmpty) {
             await historyBox.put('flow_history', data['items']);
-            print(
-              'DEBUG: Downloaded ${data['items'].length} flow history items',
-            );
+            // DEBUG: Downloaded ${data['items'].length} flow history items
           } else {
-            print(
+            throw Exception(
               'DEBUG: Preserving local flow history (${localHistory.length} items)',
             );
           }
         }
       }
-      print('DEBUG: Flow history download complete');
+      // DEBUG: Flow history download complete
     } catch (e) {
-      print('DEBUG: Error in downloadFlowHistory: $e');
+      // Error in downloadFlowHistory
       rethrow;
     }
   }
@@ -364,13 +350,13 @@ class CloudSyncService {
     Box<dynamic> brainBox,
     Box<dynamic> historyBox,
   ) async {
-    print('DEBUG: Starting sync on login');
+    // Starting sync on login
     try {
       // Check if this is a new user (just signed up)
       final user = _auth.currentUser;
       if (user == null) {
-        print('DEBUG: No user found in syncOnLogin');
-        return;
+        // No user found in syncOnLogin
+        throw Exception('No user found in syncOnLogin');
       }
 
       // Check if user document exists
@@ -379,7 +365,6 @@ class CloudSyncService {
       final isNewUser = !userDataDoc.exists;
 
       if (isNewUser) {
-        print('DEBUG: New user detected, uploading local data to cloud');
         // For new users, first ensure the user document exists
         await _ensureUserDocument();
         // Then upload local data to cloud
@@ -388,7 +373,6 @@ class CloudSyncService {
         await uploadBrainPoints(brainBox);
         await uploadFlowHistory(historyBox);
       } else {
-        print('DEBUG: Existing user, syncing with cloud');
         // For existing users, download from cloud
         await downloadTasks(taskBox, filterBox, brainBox);
         await downloadFlowHistory(historyBox);
@@ -398,9 +382,9 @@ class CloudSyncService {
         await uploadBrainPoints(brainBox);
         await uploadFlowHistory(historyBox);
       }
-      print('DEBUG: Sync on login complete');
+      // DEBUG: Sync on login complete
     } catch (e) {
-      print('DEBUG: Error in syncOnLogin: $e');
+      // Error in syncOnLogin
       rethrow;
     }
   }
@@ -411,7 +395,7 @@ class CloudSyncService {
     Box<dynamic> brainBox,
     Box<dynamic> historyBox,
   ) async {
-    print('DEBUG: Clearing local data');
+    // Clearing local data
     try {
       // Clear all task categories
       for (final category in [
@@ -440,9 +424,9 @@ class CloudSyncService {
       // Clear flow history
       await historyBox.put('flow_history', <String>[]);
 
-      print('DEBUG: Local data cleared successfully');
+      // DEBUG: Local data cleared successfully
     } catch (e) {
-      print('DEBUG: Error clearing local data: $e');
+      // Error clearing local data
       rethrow;
     }
   }
@@ -451,11 +435,11 @@ class CloudSyncService {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        print('DEBUG: No user found in deleteUserData');
-        return;
+        // No user found in deleteUserData
+        throw Exception('No user found in deleteUserData');
       }
 
-      print('DEBUG: Starting user data deletion for user: ${user.uid}');
+      // Starting user data deletion for user
       final userRef = _firestore.collection('user_data').doc(user.uid);
       final profileRef = _firestore.collection('profiles').doc(user.uid);
 
@@ -467,7 +451,7 @@ class CloudSyncService {
 
       // Delete the user document and profile
       await Future.wait([userRef.delete(), profileRef.delete()]);
-      print('DEBUG: User data and profile deleted successfully from Firestore');
+      // DEBUG: User data and profile deleted successfully from Firestore
 
       // Clear local data
       await clearLocalData(
@@ -476,9 +460,9 @@ class CloudSyncService {
         Hive.box(Keys.brainBox),
         Hive.box(Keys.historyBox),
       );
-      print('DEBUG: Local data cleared successfully');
+      // DEBUG: Local data cleared successfully
     } catch (e) {
-      print('DEBUG: Error in deleteUserData: $e');
+      // Error in deleteUserData
       rethrow;
     }
   }
@@ -489,11 +473,11 @@ class CloudSyncService {
   }) async {
     final user = _auth.currentUser;
     if (user == null) {
-      print('DEBUG: No user found in updateUserProfile');
-      return;
+      // No user found in updateUserProfile
+      throw Exception('No user found in updateUserProfile');
     }
 
-    print('DEBUG: Updating user profile for user: ${user.uid}');
+    // Updating user profile for user
     final profileRef = _firestore.collection('profiles').doc(user.uid);
 
     try {
@@ -502,9 +486,9 @@ class CloudSyncService {
         'email': newEmail ?? user.email,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
-      print('DEBUG: User profile updated successfully');
+      // DEBUG: User profile updated successfully
     } catch (e) {
-      print('DEBUG: Error in updateUserProfile: $e');
+      // Error in updateUserProfile
       rethrow;
     }
   }
@@ -512,11 +496,11 @@ class CloudSyncService {
   static Future<void> clearAppData() async {
     final user = _auth.currentUser;
     if (user == null) {
-      print('DEBUG: No user found in clearAppData');
-      return;
+      // No user found in clearAppData
+      throw Exception('No user found in clearAppData');
     }
 
-    print('DEBUG: Starting app data clearing for user: ${user.uid}');
+    // Starting app data clearing for user
     final userDataRef = _firestore.collection('user_data').doc(user.uid);
 
     try {
@@ -551,9 +535,9 @@ class CloudSyncService {
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      print('DEBUG: App data cleared successfully');
+      // DEBUG: App data cleared successfully
     } catch (e) {
-      print('DEBUG: Error in clearAppData: $e');
+      // Error in clearAppData
       rethrow;
     }
   }
