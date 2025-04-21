@@ -153,7 +153,7 @@ class _PlannerPageState extends State<PlannerPage> {
           final task = allScheduledTasks[i];
           final isMoment = TaskService.tasks[Keys.moments]!.any(
             (moment) =>
-                moment.text == task.text &&
+                moment.title == task.title &&
                 moment.date == task.date &&
                 moment.time == task.time,
           );
@@ -209,7 +209,7 @@ class _PlannerPageState extends State<PlannerPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              task.text,
+                              task.title,
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,

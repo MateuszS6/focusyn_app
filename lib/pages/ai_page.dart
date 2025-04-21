@@ -40,7 +40,7 @@ class _AiPageState extends State<AiPage> {
         // Add welcome message if no saved messages
         _addMessage(
           text:
-              "Hello! I'm Synthe, your AI assistant. How can I help you today?",
+              "Hello! I'm ${Keys.aiName}, your AI assistant. How can I help you today?",
           isUser: false,
           save: true,
         );
@@ -88,7 +88,7 @@ class _AiPageState extends State<AiPage> {
                   // Add welcome message back
                   _addMessage(
                     text:
-                        "Hello! I'm Synthe, your AI assistant. How can I help you today?",
+                        "Hello! I'm ${Keys.aiName}, your AI assistant. How can I help you today?",
                     isUser: false,
                     save: true,
                   );
@@ -159,21 +159,21 @@ class _AiPageState extends State<AiPage> {
         'tasks':
             [
               ...(taskBox.get(Keys.actions) ?? []).map(
-                (task) => task['text']?.toString() ?? '',
+                (task) => task[Keys.text]?.toString() ?? '',
               ),
               ...(taskBox.get(Keys.flows) ?? []).map(
-                (task) => task['text']?.toString() ?? '',
+                (task) => task[Keys.text]?.toString() ?? '',
               ),
               ...(taskBox.get(Keys.moments) ?? []).map(
-                (task) => task['text']?.toString() ?? '',
+                (task) => task[Keys.text]?.toString() ?? '',
               ),
               ...(taskBox.get(Keys.thoughts) ?? []).map(
-                (task) => task['text']?.toString() ?? '',
+                (task) => task[Keys.text]?.toString() ?? '',
               ),
             ].where((text) => text.isNotEmpty).take(3).toList(),
       };
 
-      final reply = await AIService.askSynthe(
+      final reply = await AIService.askAI(
         text,
         chatHistory,
         chatContext: chatContext,
@@ -182,7 +182,7 @@ class _AiPageState extends State<AiPage> {
       _addMessage(text: reply, isUser: false);
     } catch (e) {
       _addMessage(
-        text: "Synthe had trouble replying. Please try again later.",
+        text: "${Keys.aiName} had trouble replying. Please try again later.",
         isUser: false,
       );
     } finally {
@@ -195,7 +195,7 @@ class _AiPageState extends State<AiPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: MyAppBar(
-        title: 'Synthe',
+        title: Keys.aiName,
         actions: [
           IconButton(
             icon: const Icon(ThemeIcons.clear),
@@ -204,7 +204,7 @@ class _AiPageState extends State<AiPage> {
           ),
           IconButton(
             icon: const Icon(ThemeIcons.info),
-            tooltip: 'About Synthe',
+            tooltip: 'About ${Keys.aiName}',
             onPressed: () {
               showDialog(
                 context: context,
@@ -226,7 +226,7 @@ class _AiPageState extends State<AiPage> {
                             ),
                           ),
                           const SizedBox(width: 12),
-                          const Text('About Synthe'),
+                          Text('About ${Keys.aiName}'),
                         ],
                       ),
                       content: Column(
@@ -234,7 +234,7 @@ class _AiPageState extends State<AiPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'What can Synthe do?',
+                            'What can ${Keys.aiName} do?',
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: 8),

@@ -16,17 +16,17 @@ class TaskService {
             rawList
                 .map(
                   (item) => Task(
-                    id: item['id'],
-                    text: item['text'],
-                    priority: item['priority'] ?? 1,
-                    brainPoints: item['brainPoints'] ?? 0,
-                    list: item['list'] ?? 'All',
-                    date: item['date'],
-                    time: item['time'],
-                    duration: item['duration'],
-                    location: item['location'],
-                    repeat: item['repeat'],
-                    createdAt: DateTime.parse(item['createdAt']),
+                    id: item[Keys.id],
+                    title: item[Keys.text],
+                    priority: item[Keys.priority] ?? 1,
+                    brainPoints: item[Keys.brainPoints] ?? 0,
+                    list: item[Keys.list] ?? 'All',
+                    date: item[Keys.date],
+                    time: item[Keys.time],
+                    duration: item[Keys.duration],
+                    repeat: item[Keys.repeat],
+                    location: item[Keys.location],
+                    createdAt: DateTime.parse(item[Keys.createdAt]),
                   ),
                 )
                 .toList();
@@ -42,17 +42,17 @@ class TaskService {
           list
               .map(
                 (task) => {
-                  'id': task.id,
-                  'text': task.text,
-                  'priority': task.priority,
-                  'brainPoints': task.brainPoints,
-                  'list': task.list,
-                  'date': task.date,
-                  'time': task.time,
-                  'duration': task.duration,
-                  'location': task.location,
-                  'repeat': task.repeat,
-                  'createdAt': task.createdAt.toIso8601String(),
+                  Keys.id: task.id,
+                  Keys.text: task.title,
+                  Keys.priority: task.priority,
+                  Keys.brainPoints: task.brainPoints,
+                  Keys.list: task.list,
+                  Keys.date: task.date,
+                  Keys.time: task.time,
+                  Keys.duration: task.duration,
+                  Keys.repeat: task.repeat,
+                  Keys.location: task.location,
+                  Keys.createdAt: task.createdAt.toIso8601String(),
                 },
               )
               .toList();

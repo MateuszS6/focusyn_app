@@ -26,7 +26,7 @@ class ActionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String title = initialTask?.text ?? '';
+    String title = initialTask?.title ?? '';
     int priority = initialTask?.priority ?? 1;
     int brainPoints = initialTask?.brainPoints ?? 5;
     String list = initialTask?.list ?? defaultList ?? Keys.all;
@@ -55,7 +55,7 @@ class ActionDialog extends StatelessWidget {
             id:
                 initialTask?.id ??
                 DateTime.now().millisecondsSinceEpoch.toString(),
-            text: title,
+            title: title,
             priority: priority,
             brainPoints: brainPoints,
             list: list,

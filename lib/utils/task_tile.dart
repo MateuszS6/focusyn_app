@@ -10,7 +10,7 @@ class TaskTile extends StatefulWidget {
   final EdgeInsets padding;
   final TextStyle? subtitleStyle;
   final TextStyle? titleStyle;
-  final String? selectedFilter;
+  final String? selectedList;
 
   const TaskTile({
     super.key,
@@ -23,7 +23,7 @@ class TaskTile extends StatefulWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
     this.subtitleStyle,
     this.titleStyle,
-    this.selectedFilter,
+    this.selectedList,
   });
 
   @override

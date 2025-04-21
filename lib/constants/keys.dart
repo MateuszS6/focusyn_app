@@ -11,7 +11,7 @@ abstract class Keys {
   static const String settingBox = 'settingBox';
   static const String chatBox = 'chatBox';
 
-  // Pages
+  // Page Titles
   static const String today = 'Today';
   static const String account = 'Account';
   static const String settings = 'Settings';
@@ -19,13 +19,13 @@ abstract class Keys {
   static const String focuses = 'Focuses';
   static const String planner = 'Planner';
 
-  // Focuses
+  // Focus Types
   static const String actions = 'Actions';
   static const String flows = 'Flows';
   static const String moments = 'Moments';
   static const String thoughts = 'Thoughts';
 
-  // Tasks
+  // Task Details
   static const String id = 'id';
   static const String text = 'text';
   static const String priority = 'priority';
@@ -33,12 +33,11 @@ abstract class Keys {
   static const String date = 'date';
   static const String time = 'time';
   static const String duration = 'duration';
-  static const String location = 'location';
   static const String repeat = 'repeat';
-  static const String history = 'history';
+  static const String location = 'location';
   static const String createdAt = 'createdAt';
 
-  // Filters
+  // Lists (Filters)
   static const String list = 'list';
   static const String all = 'All';
 

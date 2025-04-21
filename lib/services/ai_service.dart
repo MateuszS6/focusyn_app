@@ -36,7 +36,7 @@ class AIService {
     return messages;
   }
 
-  static Future<String> askSynthe(
+  static Future<String> askAI(
     String message,
     List<Map<String, dynamic>> chatHistory, {
     Map<String, dynamic>? chatContext = const {},

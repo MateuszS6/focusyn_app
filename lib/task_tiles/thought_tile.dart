@@ -6,16 +6,16 @@ import 'package:focusyn_app/models/task_model.dart';
 
 class ThoughtTile extends StatelessWidget {
   final Task task;
-  final VoidCallback onDelete;
-  final String selectedFilter;
   final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  final String selectedList;
 
   const ThoughtTile({
     super.key,
     required this.task,
-    required this.onDelete,
-    required this.selectedFilter,
     required this.onEdit,
+    required this.onDelete,
+    required this.selectedList,
   });
 
   @override
@@ -23,10 +23,10 @@ class ThoughtTile extends StatelessWidget {
     return TaskTile(
       key: key,
       color: ThemeColours.thoughtsAlt,
-      text: task.text,
-      subtitle: selectedFilter == Keys.all ? task.list : null,
+      text: task.title,
+      subtitle: selectedList == Keys.all ? task.list : null,
       onDelete: onDelete,
-      selectedFilter: selectedFilter,
+      selectedList: selectedList,
       onEdit: onEdit,
     );
   }

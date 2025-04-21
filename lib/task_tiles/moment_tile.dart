@@ -6,16 +6,16 @@ import 'package:focusyn_app/models/task_model.dart';
 
 class MomentTile extends StatelessWidget {
   final Task task;
-  final VoidCallback onDelete;
-  final String selectedFilter;
   final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  final String selectedList;
 
   const MomentTile({
     super.key,
     required this.task,
-    required this.onDelete,
-    required this.selectedFilter,
     required this.onEdit,
+    required this.onDelete,
+    required this.selectedList,
   });
 
   @override
@@ -26,13 +26,13 @@ class MomentTile extends StatelessWidget {
       task.time,
       '${task.duration}m',
       task.location,
-      if (selectedFilter == Keys.all) task.list,
+      if (selectedList == Keys.all) task.list,
     ].where((item) => item != null && item.isNotEmpty);
 
     return TaskTile(
       key: key,
       color: ThemeColours.momentsAlt,
-      text: task.text,
+      text: task.title,
       subtitle: subtitleParts.join(" • "),
       subtitleStyle: TextStyle(
         color: isOverdue ? Colors.red : null,
@@ -43,7 +43,7 @@ class MomentTile extends StatelessWidget {
         fontWeight: isOverdue ? FontWeight.bold : null,
       ),
       onDelete: onDelete,
-      selectedFilter: selectedFilter,
+      selectedList: selectedList,
       onEdit: onEdit,
     );
   }

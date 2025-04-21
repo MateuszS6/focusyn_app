@@ -472,14 +472,14 @@ class _TodayPageState extends State<TodayPage> {
     // Calculate total brain points from uncompleted actions and overdue flows
     final totalActionBrainPoints = actions.fold<int>(
       0,
-      (sum, action) => sum + action.brainPoints.toInt(),
+      (sum, action) => sum + action.brainPoints!.toInt(),
     );
     final totalFlowBrainPoints = flows.fold<int>(0, (sum, flow) {
       final flowDate = DateTime.tryParse(flow.date ?? '');
       if (flowDate == null) return sum;
       // Only count flows that are due today or before today
       if (flowDate.isBefore(today) || _isSameDate(flowDate, today)) {
-        return sum + flow.brainPoints.toInt();
+        return sum + flow.brainPoints!.toInt();
       }
       return sum;
     });
@@ -605,13 +605,13 @@ class _TodayPageState extends State<TodayPage> {
                       if (nextFlow != null)
                         _buildNextTask(
                           icon: ThemeIcons.flows,
-                          title: nextFlow.text,
+                          title: nextFlow.title,
                           time: nextFlow.time ?? '',
                         ),
                       if (nextMoment != null)
                         _buildNextTask(
                           icon: ThemeIcons.moments,
-                          title: nextMoment.text,
+                          title: nextMoment.title,
                           time: nextMoment.time ?? '',
                         ),
                     ],

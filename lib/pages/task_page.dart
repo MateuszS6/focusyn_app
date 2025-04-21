@@ -42,16 +42,16 @@ class _TaskPageState extends State<TaskPage> {
     filtered.sort((a, b) {
       switch (_sortBy) {
         case 'Priority':
-          final priorityCompare = (a.priority).compareTo(b.priority);
+          final priorityCompare = (a.priority!).compareTo(b.priority!);
           if (priorityCompare != 0) return priorityCompare;
           break;
         case 'Brain Points':
-          final bpCompare = (a.brainPoints).compareTo(b.brainPoints);
+          final bpCompare = (a.brainPoints!).compareTo(b.brainPoints!);
           if (bpCompare != 0) return bpCompare;
           break;
         case 'Alphabetical':
-          final aText = a.text;
-          final bText = b.text;
+          final aText = a.title;
+          final bText = b.title;
           final titleCompare = aText.toLowerCase().compareTo(
             bText.toLowerCase(),
           );
@@ -60,7 +60,7 @@ class _TaskPageState extends State<TaskPage> {
         case 'Date':
           if (widget.category == Keys.flows ||
               widget.category == Keys.moments) {
-            final dateCompare = (a.date ?? '').compareTo(b.date ?? '');
+            final dateCompare = (a.date!).compareTo(b.date!);
             if (dateCompare != 0) return dateCompare;
           }
           break;
@@ -432,7 +432,7 @@ class _TaskPageState extends State<TaskPage> {
           onEdit: () => _showEditDialog(task),
           onComplete: () => _removeTask(task),
           onDelete: () => _removeTask(task),
-          selectedFilter: _selectedFilter,
+          selectedList: _selectedFilter,
         );
         break;
 
@@ -451,7 +451,7 @@ class _TaskPageState extends State<TaskPage> {
             _updateTask(task);
           },
           onDelete: () => _removeTask(task),
-          selectedFilter: _selectedFilter,
+          selectedList: _selectedFilter,
           onEdit: () => _showEditDialog(task),
         );
         break;
@@ -461,7 +461,7 @@ class _TaskPageState extends State<TaskPage> {
           key: key,
           task: task,
           onDelete: () => _removeTask(task),
-          selectedFilter: _selectedFilter,
+          selectedList: _selectedFilter,
           onEdit: () => _showEditDialog(task),
         );
         break;
@@ -471,7 +471,7 @@ class _TaskPageState extends State<TaskPage> {
           key: key,
           task: task,
           onDelete: () => _removeTask(task),
-          selectedFilter: _selectedFilter,
+          selectedList: _selectedFilter,
           onEdit: () => _showEditDialog(task),
         );
         break;

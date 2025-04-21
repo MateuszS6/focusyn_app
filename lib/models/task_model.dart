@@ -9,13 +9,13 @@ class Task {
   final String id;
 
   @HiveField(1)
-  final String text;
+  final String title;
 
   @HiveField(2)
-  final int priority;
+  final int? priority;
 
   @HiveField(3)
-  final int brainPoints;
+  final int? brainPoints;
 
   @HiveField(4)
   final String list;
@@ -40,15 +40,15 @@ class Task {
 
   Task({
     String? id,
-    required this.text,
-    this.priority = 1,
-    this.brainPoints = 0,
+    required this.title,
+    this.priority,
+    this.brainPoints,
     this.list = 'All',
-    this.date = '',
-    this.time = '',
-    this.duration = 15,
-    this.location = '',
-    this.repeat = 'Repeat?',
+    this.date,
+    this.time,
+    this.duration,
+    this.location,
+    this.repeat,
     DateTime? createdAt,
   }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString(),
        createdAt = createdAt ?? DateTime.now();
@@ -56,7 +56,7 @@ class Task {
   // Helper method to create a copy of a task with some fields updated
   Task copyWith({
     String? id,
-    String? text,
+    String? title,
     int? priority,
     int? brainPoints,
     String? list,
@@ -69,7 +69,7 @@ class Task {
   }) {
     return Task(
       id: id ?? this.id,
-      text: text ?? this.text,
+      title: title ?? this.title,
       priority: priority ?? this.priority,
       brainPoints: brainPoints ?? this.brainPoints,
       list: list ?? this.list,

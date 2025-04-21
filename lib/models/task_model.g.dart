@@ -18,9 +18,9 @@ class TaskAdapter extends TypeAdapter<Task> {
     };
     return Task(
       id: fields[0] as String?,
-      text: fields[1] as String,
-      priority: fields[2] as int,
-      brainPoints: fields[3] as int,
+      title: fields[1] as String,
+      priority: fields[2] as int?,
+      brainPoints: fields[3] as int?,
       list: fields[4] as String,
       date: fields[5] as String?,
       time: fields[6] as String?,
@@ -38,7 +38,7 @@ class TaskAdapter extends TypeAdapter<Task> {
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.text)
+      ..write(obj.title)
       ..writeByte(2)
       ..write(obj.priority)
       ..writeByte(3)

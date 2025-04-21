@@ -9,18 +9,18 @@ import 'package:focusyn_app/models/task_model.dart';
 
 class FlowTile extends StatelessWidget {
   final Task task;
-  final Function(Task updatedTask) onComplete;
-  final VoidCallback onDelete;
-  final String selectedFilter;
   final VoidCallback onEdit;
+  final VoidCallback onDelete;
+  final Function(Task updatedTask) onComplete;
+  final String selectedList;
 
   const FlowTile({
     super.key,
     required this.task,
-    required this.onComplete,
-    required this.onDelete,
-    required this.selectedFilter,
     required this.onEdit,
+    required this.onDelete,
+    required this.onComplete,
+    required this.selectedList,
   });
 
   @override
@@ -32,13 +32,13 @@ class FlowTile extends StatelessWidget {
       '${task.duration}m',
       task.repeat,
       '${task.brainPoints} BP',
-      if (selectedFilter == Keys.all) task.list,
+      if (selectedList == Keys.all) task.list,
     ];
 
     return TaskTile(
       key: key,
       color: ThemeColours.flowsAlt,
-      text: task.text,
+      text: task.title,
       subtitle: subtitleParts.join(" • "),
       subtitleStyle: TextStyle(
         color: isOverdue ? Colors.red : null,
@@ -49,12 +49,12 @@ class FlowTile extends StatelessWidget {
         fontWeight: isOverdue ? FontWeight.bold : null,
       ),
       onDelete: onDelete,
-      selectedFilter: selectedFilter,
+      selectedList: selectedList,
       onEdit: onEdit,
       leading: IconButton(
         icon: const Icon(ThemeIcons.done),
         onPressed: () async {
-          BrainPointsService.subtractPoints(task.brainPoints);
+          BrainPointsService.subtractPoints(task.brainPoints!);
 
           // Record completion in the history service
           await FlowHistoryService.addCompletion(DateTime.now());
@@ -64,7 +64,7 @@ class FlowTile extends StatelessWidget {
 
           final updatedTask = Task(
             id: task.id,
-            text: task.text,
+            title: task.title,
             priority: task.priority,
             brainPoints: task.brainPoints,
             list: task.list,

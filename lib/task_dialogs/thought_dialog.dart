@@ -24,7 +24,7 @@ class ThoughtDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String title = initialTask?.text ?? '';
+    String title = initialTask?.title ?? '';
     String list = initialTask?.list ?? defaultList ?? Keys.all;
     final lists = FilterService.filters[Keys.thoughts] ?? [Keys.all];
 
@@ -51,7 +51,7 @@ class ThoughtDialog extends StatelessWidget {
             id:
                 initialTask?.id ??
                 DateTime.now().millisecondsSinceEpoch.toString(),
-            text: title,
+            title: title,
             list: list,
             createdAt: initialTask?.createdAt ?? DateTime.now(),
           ),

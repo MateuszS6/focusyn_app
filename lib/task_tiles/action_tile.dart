@@ -11,7 +11,7 @@ class ActionTile extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onComplete;
   final VoidCallback onDelete;
-  final String selectedFilter;
+  final String selectedList;
 
   const ActionTile({
     super.key,
@@ -19,31 +19,31 @@ class ActionTile extends StatelessWidget {
     required this.onEdit,
     required this.onComplete,
     required this.onDelete,
-    required this.selectedFilter,
+    required this.selectedList,
   });
 
   @override
   Widget build(BuildContext context) {
     final subtitle = [
-      Task.getPriorityText(task.priority),
+      Task.getPriorityText(task.priority!),
       '${task.brainPoints} BP',
-      if (selectedFilter == Keys.all) task.list,
+      if (selectedList == Keys.all) task.list,
     ].join(' • ');
 
     return TaskTile(
       leading: IconButton(
         icon: const Icon(ThemeIcons.done),
         onPressed: () {
-          BrainPointsService.subtractPoints(task.brainPoints);
+          BrainPointsService.subtractPoints(task.brainPoints!);
           onComplete();
         },
       ),
-      text: task.text,
+      text: task.title,
       subtitle: subtitle,
       onEdit: onEdit,
       onDelete: onDelete,
       color: ThemeColours.actionsAlt,
-      selectedFilter: selectedFilter,
+      selectedList: selectedList,
     );
   }
 }

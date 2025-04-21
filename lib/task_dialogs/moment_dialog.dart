@@ -47,7 +47,7 @@ class _MomentDialogState extends State<MomentDialog> {
   @override
   void initState() {
     super.initState();
-    title = widget.initialTask?.text ?? '';
+    title = widget.initialTask?.title ?? '';
     selectedDate =
         widget.initialTask?.date != null
             ? DateTime.parse(widget.initialTask!.date!)
@@ -133,7 +133,7 @@ class _MomentDialogState extends State<MomentDialog> {
             id:
                 widget.initialTask?.id ??
                 DateTime.now().millisecondsSinceEpoch.toString(),
-            text: title,
+            title: title,
             date: selectedDate.toIso8601String().split('T')[0],
             time: selectedTime.format(context),
             duration: duration,
