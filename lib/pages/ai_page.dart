@@ -159,16 +159,16 @@ class _AiPageState extends State<AiPage> {
         'tasks':
             [
               ...(taskBox.get(Keys.actions) ?? []).map(
-                (task) => task[Keys.text]?.toString() ?? '',
+                (task) => task[Keys.title]?.toString() ?? '',
               ),
               ...(taskBox.get(Keys.flows) ?? []).map(
-                (task) => task[Keys.text]?.toString() ?? '',
+                (task) => task[Keys.title]?.toString() ?? '',
               ),
               ...(taskBox.get(Keys.moments) ?? []).map(
-                (task) => task[Keys.text]?.toString() ?? '',
+                (task) => task[Keys.title]?.toString() ?? '',
               ),
               ...(taskBox.get(Keys.thoughts) ?? []).map(
-                (task) => task[Keys.text]?.toString() ?? '',
+                (task) => task[Keys.title]?.toString() ?? '',
               ),
             ].where((text) => text.isNotEmpty).take(3).toList(),
       };

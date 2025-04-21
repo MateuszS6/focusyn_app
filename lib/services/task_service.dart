@@ -17,7 +17,7 @@ class TaskService {
                 .map(
                   (item) => Task(
                     id: item[Keys.id],
-                    title: item[Keys.text],
+                    title: item[Keys.title],
                     priority: item[Keys.priority] ?? 1,
                     brainPoints: item[Keys.brainPoints] ?? 0,
                     list: item[Keys.list] ?? 'All',
@@ -43,7 +43,7 @@ class TaskService {
               .map(
                 (task) => {
                   Keys.id: task.id,
-                  Keys.text: task.title,
+                  Keys.title: task.title,
                   Keys.priority: task.priority,
                   Keys.brainPoints: task.brainPoints,
                   Keys.list: task.list,
