@@ -8,7 +8,18 @@ import 'package:focusyn_app/firebase_options.dart';
 import 'package:focusyn_app/services/notification_service.dart';
 import 'package:focusyn_app/models/task_model.dart';
 
+/// Handles the initialization of core application components.
+/// This class manages the setup of essential services and data structures
+/// required for the app to function properly.
 class AppInit {
+  /// Initializes all core components of the application.
+  /// This method must be called before the app can be used.
+  /// It performs the following operations in sequence:
+  /// 1. Ensures Flutter bindings are initialized
+  /// 2. Sets up Hive for local storage
+  /// 3. Initializes Firebase services
+  /// 4. Configures notifications
+  /// 5. Initializes app data
   static Future<void> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
     await _initializeHive();
@@ -17,6 +28,11 @@ class AppInit {
     await AppDataInit.run();
   }
 
+  /// Initializes Hive for local storage and sets up required boxes.
+  /// This method:
+  /// 1. Initializes Hive with Flutter
+  /// 2. Registers the Task adapter
+  /// 3. Opens all required Hive boxes for the app
   static Future<void> _initializeHive() async {
     await Hive.initFlutter();
 
@@ -34,12 +50,20 @@ class AppInit {
     await Hive.openBox(Keys.brainBox);
   }
 
+  /// Initializes Firebase services using platform-specific options.
+  /// This method sets up Firebase Core with the appropriate configuration
+  /// for the current platform (iOS/Android).
   static Future<void> _initializeFirebase() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
   }
 
+  /// Initializes the notification system and schedules daily quote notifications.
+  /// This method:
+  /// 1. Initializes the notification service
+  /// 2. Checks if notifications are enabled in settings
+  /// 3. If enabled, schedules a daily quote notification at the configured time
   static Future<void> _initializeNotifications() async {
     await NotificationService.initialize();
     final box = await Hive.openBox(Keys.settingBox);
