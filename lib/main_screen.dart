@@ -22,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   static const List<Widget> _pages = [
     TodayPage(),
     FocusesPage(),
-    AiPage(),
+    AIPage(),
     PlannerPage(),
   ];
 
