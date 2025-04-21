@@ -1,10 +1,22 @@
 import 'dart:math';
 
+/// Represents a motivational quote with its text, author, and category.
+/// Used to display inspirational messages throughout the app.
 class Quote {
+  /// The actual quote text
   final String text;
+
+  /// The person who said/wrote the quote
   final String author;
+
+  /// The category or theme of the quote (e.g., Focus, Motivation, etc.)
   final String category;
 
+  /// Creates a new Quote instance.
+  ///
+  /// [text] - The actual quote text
+  /// [author] - The person who said/wrote the quote
+  /// [category] - The category or theme of the quote
   const Quote({
     required this.text,
     required this.author,
@@ -12,7 +24,11 @@ class Quote {
   });
 }
 
+/// Manages a collection of motivational quotes and provides methods to access them.
+/// This class maintains a predefined list of quotes and offers functionality
+/// to retrieve random quotes for display in the app.
 class Quotes {
+  /// Internal list of predefined quotes used throughout the app
   static final List<Quote> _quotes = [
     Quote(
       text:
@@ -70,6 +86,10 @@ class Quotes {
     ),
   ];
 
+  /// Returns a random quote from the predefined collection.
+  ///
+  /// This method uses Dart's Random class to select a quote at random
+  /// from the internal [_quotes] list.
   static Quote getRandomQuote() {
     final random = Random();
     return _quotes[random.nextInt(_quotes.length)];
