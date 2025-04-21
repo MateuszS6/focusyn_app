@@ -19,7 +19,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MyAppBar(
-        title: 'Privacy & Security',
+        title: Keys.privacy,
         leading: IconButton(
           icon: const Icon(ThemeIcons.back),
           onPressed: () => Navigator.pop(context),
@@ -28,53 +28,93 @@ class _PrivacyPageState extends State<PrivacyPage> {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
-          _buildSection(
-            context,
-            title: 'Data Privacy',
-            children: [
-              _buildDataCollectionTile(context),
-              const SizedBox(height: 8),
-              _buildDataProtectionTile(context),
-            ],
+          // Data Privacy Section
+          Text(
+            'Privacy & Security',
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(13),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                _buildDataCollectionTile(context),
+                const Divider(height: 1, color: Color(0xFFE0E0E0)),
+                _buildDataProtectionTile(context),
+              ],
+            ),
           ),
           const SizedBox(height: 24),
-          _buildSection(
-            context,
-            title: 'Contact',
-            children: [_buildContactTile(context)],
+
+          // Contact Section
+          Text(
+            'Contact',
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(13),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: _buildContactTile(context),
           ),
           const SizedBox(height: 24),
-          _buildSection(
-            context,
-            title: 'Danger Zone',
-            children: [
-              _buildResetDataTile(context),
-              const SizedBox(height: 8),
-              _buildDeleteAccountTile(context),
-            ],
+
+          // Danger Zone Section
+          Text(
+            'Danger Zone',
+            style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+              fontWeight: FontWeight.bold,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(13),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                _buildResetDataTile(context),
+                const Divider(height: 1, color: Color(0xFFE0E0E0)),
+                _buildDeleteAccountTile(context),
+              ],
+            ),
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSection(
-    BuildContext context, {
-    required String title,
-    required List<Widget> children,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: Theme.of(
-            context,
-          ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-        ),
-        const SizedBox(height: 8),
-        ...children,
-      ],
     );
   }
 
@@ -84,7 +124,6 @@ class _PrivacyPageState extends State<PrivacyPage> {
       title: const Text('Data Collection'),
       subtitle: const Text('What data we collect and why'),
       trailing: const Icon(ThemeIcons.open, size: 20),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
         showDialog(
           context: context,
@@ -122,7 +161,6 @@ class _PrivacyPageState extends State<PrivacyPage> {
       title: const Text('Data Protection'),
       subtitle: const Text('How we protect your information'),
       trailing: const Icon(ThemeIcons.open, size: 20),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
         showDialog(
           context: context,
@@ -157,7 +195,6 @@ class _PrivacyPageState extends State<PrivacyPage> {
       leading: const Icon(ThemeIcons.delete, color: Colors.red),
       title: const Text('Delete Account', style: TextStyle(color: Colors.red)),
       subtitle: const Text('Permanently delete your account and all data'),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
         _deleteAccount();
       },
@@ -169,7 +206,6 @@ class _PrivacyPageState extends State<PrivacyPage> {
       leading: const Icon(ThemeIcons.delete, color: Colors.red),
       title: const Text('Reset App Data', style: TextStyle(color: Colors.red)),
       subtitle: const Text('Clear all tasks, filters, and brain points'),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       onTap: () {
         showDialog(
           context: context,

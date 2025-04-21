@@ -68,7 +68,7 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: MyAppBar(
-        title: 'Settings',
+        title: Keys.settings,
         leading: IconButton(
           icon: const Icon(ThemeIcons.back),
           onPressed: () => Navigator.pop(context),
@@ -81,7 +81,7 @@ class _SettingsPageState extends State<SettingsPage> {
             // General Settings Section
             Text(
               'General',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.grey.shade600,
               ),
@@ -159,7 +159,7 @@ class _SettingsPageState extends State<SettingsPage> {
             // Notifications Section
             Text(
               'Notifications',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Colors.grey.shade600,
               ),

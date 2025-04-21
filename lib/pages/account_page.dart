@@ -402,7 +402,7 @@ class _AccountPageState extends State<AccountPage> {
         actions: [
           IconButton(
             icon: const Icon(settingsIcon),
-            tooltip: 'Settings',
+            tooltip: Keys.settings,
             onPressed:
                 () => Navigator.push(
                   context,
@@ -508,7 +508,7 @@ class _AccountPageState extends State<AccountPage> {
                   _buildSettingItem(
                     context,
                     icon: securityIcon,
-                    label: 'Privacy & Security',
+                    label: Keys.privacy,
                     onTap: () {
                       Navigator.push(
                         context,
