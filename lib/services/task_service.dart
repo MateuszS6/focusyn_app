@@ -16,17 +16,22 @@ class TaskService {
             rawList
                 .map(
                   (item) => Task(
-                    id: item[Keys.id],
-                    title: item[Keys.title],
-                    priority: item[Keys.priority] ?? 1,
-                    brainPoints: item[Keys.brainPoints] ?? 0,
-                    list: item[Keys.list] ?? 'All',
-                    date: item[Keys.date],
-                    time: item[Keys.time],
-                    duration: item[Keys.duration],
-                    repeat: item[Keys.repeat],
-                    location: item[Keys.location],
-                    createdAt: DateTime.parse(item[Keys.createdAt]),
+                    id:
+                        item[Keys.id]?.toString() ??
+                        DateTime.now().millisecondsSinceEpoch.toString(),
+                    title: item[Keys.title]?.toString() ?? 'Untitled Task',
+                    priority: (item[Keys.priority] as num?)?.toInt(),
+                    brainPoints: (item[Keys.brainPoints] as num?)?.toInt(),
+                    list: item[Keys.list]?.toString() ?? 'All',
+                    date: item[Keys.date]?.toString(),
+                    time: item[Keys.time]?.toString(),
+                    duration: (item[Keys.duration] as num?)?.toInt(),
+                    repeat: item[Keys.repeat]?.toString(),
+                    location: item[Keys.location]?.toString(),
+                    createdAt:
+                        item[Keys.createdAt] != null
+                            ? DateTime.parse(item[Keys.createdAt].toString())
+                            : DateTime.now(),
                   ),
                 )
                 .toList();
