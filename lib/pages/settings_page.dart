@@ -78,6 +78,15 @@ class _SettingsPageState extends State<SettingsPage> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
+            // General Settings Section
+            Text(
+              'General',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(height: 16),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -142,7 +151,34 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                     ),
                   ),
-                  const Divider(height: 1, color: Color(0xFFE0E0E0)),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+
+            // Notifications Section
+            Text(
+              'Notifications',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withAlpha(13),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
                   SwitchListTile(
                     title: const Text(
                       'Daily Quote Notifications',
