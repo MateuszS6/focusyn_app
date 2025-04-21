@@ -27,7 +27,7 @@ abstract class Keys {
 
   // Task Details
   static const String id = 'id';
-  static const String title = 'text';
+  static const String title = 'title';
   static const String priority = 'priority';
   static const String brainPoints = 'brainPoints';
   static const String date = 'date';
