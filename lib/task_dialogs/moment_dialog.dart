@@ -61,8 +61,15 @@ class _MomentDialogState extends State<MomentDialog> {
             : const TimeOfDay(hour: 9, minute: 0);
     duration = widget.initialTask?.duration ?? 60;
     location = widget.initialTask?.location ?? '';
-    lists = FilterService.filters[Keys.moments] ?? [Keys.all];
-    list = widget.initialTask?.list ?? widget.defaultList ?? Keys.all;
+    lists = [Keys.all]; // Start with 'All'
+    final filterLists = FilterService.filters[Keys.moments];
+    if (filterLists != null && filterLists.isNotEmpty) {
+      lists.addAll(filterLists.where((l) => l != Keys.all));
+    }
+    // Ensure the selected list exists in the items
+    final initialList =
+        widget.initialTask?.list ?? widget.defaultList ?? Keys.all;
+    list = lists.contains(initialList) ? initialList : Keys.all;
 
     // Initialize controllers
     titleController = TextEditingController(
@@ -87,6 +94,19 @@ class _MomentDialogState extends State<MomentDialog> {
 
   @override
   Widget build(BuildContext context) {
+    // Ensure lists are initialized with at least 'All'
+    if (lists.isEmpty) {
+      setState(() {
+        lists = [Keys.all];
+      });
+    }
+    // Ensure selected list is valid
+    if (!lists.contains(list)) {
+      setState(() {
+        list = Keys.all;
+      });
+    }
+
     final inputBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(color: Colors.grey.shade300),
