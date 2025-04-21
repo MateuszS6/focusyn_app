@@ -30,6 +30,7 @@ class _TaskPageState extends State<TaskPage> {
   late List<String> _filters;
   String _selectedFilter = Keys.all;
   String _sortBy = 'Date';
+  String? _lastEditedTaskId;
 
   List<Map<String, dynamic>> get _filteredTasks {
     var filtered =
@@ -395,6 +396,7 @@ class _TaskPageState extends State<TaskPage> {
 
   Widget _buildTaskTile(Map<String, dynamic> task) {
     final key = ValueKey(task);
+    final isLastEdited = task['id'] == _lastEditedTaskId;
 
     Widget tile;
     List<SlidableAction> actions = [
@@ -428,6 +430,7 @@ class _TaskPageState extends State<TaskPage> {
               final index = _tasks.indexWhere((t) => t['id'] == task['id']);
               if (index != -1) {
                 _tasks[index] = updatedTask.toMap();
+                _lastEditedTaskId = task['id'];
               }
             });
             _updateTask(task);
@@ -462,30 +465,22 @@ class _TaskPageState extends State<TaskPage> {
         return const SizedBox.shrink();
     }
 
-    return TweenAnimationBuilder<double>(
+    return Slidable(
       key: key,
-      duration: const Duration(milliseconds: 1500),
-      tween: Tween<double>(begin: 1.0, end: 0.0),
-      builder: (context, value, child) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: Colors.blue.withAlpha((value * 255).toInt()),
-              width: 2,
-            ),
-          ),
-          child: child,
-        );
-      },
-      child: Slidable(
-        key: key,
-        endActionPane: ActionPane(
-          motion: const BehindMotion(),
-          extentRatio: 0.15,
-          dismissible: DismissiblePane(onDismissed: () => _removeTask(task)),
-          children: actions,
-        ),
+      endActionPane: ActionPane(
+        motion: const BehindMotion(),
+        extentRatio: 0.15,
+        dismissible: DismissiblePane(onDismissed: () => _removeTask(task)),
+        children: actions,
+      ),
+      child: Container(
+        decoration:
+            isLastEdited
+                ? BoxDecoration(
+                  border: Border.all(color: ThemeColours.taskMain, width: 1.5),
+                  borderRadius: BorderRadius.circular(16),
+                )
+                : null,
         child: tile,
       ),
     );
@@ -493,12 +488,19 @@ class _TaskPageState extends State<TaskPage> {
 
   // Task Operations
   Future<void> _updateTask(Map<String, dynamic> task) async {
-    setState(() {});
+    setState(() {
+      _lastEditedTaskId = task['id'];
+    });
     await TaskService.updateTasks(widget.category, _tasks);
   }
 
   Future<void> _removeTask(Map<String, dynamic> task) async {
-    setState(() => _tasks.remove(task));
+    setState(() {
+      _tasks.remove(task);
+      if (_lastEditedTaskId == task['id']) {
+        _lastEditedTaskId = null;
+      }
+    });
     await TaskService.updateTasks(widget.category, _tasks);
   }
 
@@ -508,7 +510,10 @@ class _TaskPageState extends State<TaskPage> {
       context: context,
       builder: (_) {
         onAdd(Task task) async {
-          setState(() => _tasks.add(task.toMap()));
+          setState(() {
+            _tasks.add(task.toMap());
+            _lastEditedTaskId = task.id;
+          });
           await TaskService.updateTasks(widget.category, _tasks);
         }
 
@@ -578,6 +583,7 @@ class _TaskPageState extends State<TaskPage> {
             final index = _tasks.indexWhere((t) => t['id'] == task['id']);
             if (index != -1) {
               _tasks[index] = updatedTask.toMap();
+              _lastEditedTaskId = task['id'];
             }
           });
           await TaskService.updateTasks(widget.category, _tasks);
