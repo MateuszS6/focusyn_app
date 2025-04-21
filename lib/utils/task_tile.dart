@@ -43,11 +43,12 @@ class _TaskTileState extends State<TaskTile> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onLongPress: () => widget.onEdit?.call(),
-      child: Material(
-        color: widget.color,
+    return Material(
+      color: widget.color,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
         borderRadius: BorderRadius.circular(16),
+        onLongPress: () => widget.onEdit?.call(),
         child: ListTile(
           contentPadding: widget.padding,
           leading: widget.leading,
