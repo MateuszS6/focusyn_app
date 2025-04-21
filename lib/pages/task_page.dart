@@ -337,49 +337,72 @@ class _TaskPageState extends State<TaskPage> {
       Keys.thoughts => ThemeColours.thoughtsMain,
       _ => ThemeColours.taskMain,
     };
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: color.withAlpha(26),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(_getEmptyStateIcon(), size: 64, color: color),
-          ),
-          const SizedBox(height: 24),
-          Text(
-            _getEmptyStateTitle(),
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _getEmptyStateMessage(),
-            style: const TextStyle(fontSize: 16, color: Colors.black54),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton.icon(
-            onPressed: _showAddDialog,
-            icon: const Icon(ThemeIcons.add, color: Colors.white),
-            label: Text(
-              "Add ${widget.category.substring(0, widget.category.length - 1)}",
-              style: const TextStyle(color: Colors.white),
-            ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: color,
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: color.withAlpha(26),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(_getEmptyStateIcon(), size: 64, color: color),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      _getEmptyStateTitle(),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      _getEmptyStateMessage(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 32),
+                    ElevatedButton.icon(
+                      onPressed: _showAddDialog,
+                      icon: const Icon(ThemeIcons.add, color: Colors.white),
+                      label: Text(
+                        "Add ${widget.category.substring(0, widget.category.length - 1)}",
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: color,
+                        elevation: 0,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
