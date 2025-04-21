@@ -2,7 +2,17 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/models/task_model.dart';
 
+/// Handles the initialization of application data structures and default values.
+/// This class ensures that all required Hive boxes are properly initialized
+/// with default values and empty collections where needed.
 class AppDataInit {
+  /// Initializes all application data structures with default values.
+  /// This method:
+  /// 1. Initializes task lists for each focus category
+  /// 2. Sets up filter categories
+  /// 3. Initializes brain points and reset tracking
+  /// 4. Configures notification settings
+  /// 5. Sets up flow history tracking
   static Future<void> run() async {
     final taskBox = Hive.box<List>(Keys.taskBox);
     final filterBox = Hive.box(Keys.filterBox);
@@ -10,7 +20,7 @@ class AppDataInit {
     final notificationBox = Hive.box(Keys.settingBox);
     final historyBox = Hive.box(Keys.historyBox);
 
-    // Ensure boxes are initialized with empty lists if they don't exist
+    // Initialize task lists for each focus category
     if (!taskBox.containsKey(Keys.actions)) {
       taskBox.put(Keys.actions, <Task>[]);
     }
@@ -24,7 +34,7 @@ class AppDataInit {
       taskBox.put(Keys.thoughts, <Task>[]);
     }
 
-    // Ensure filter categories exist
+    // Initialize filter categories with default 'All' option
     if (!filterBox.containsKey(Keys.actions)) {
       filterBox.put(Keys.actions, [Keys.all]);
     }
@@ -38,7 +48,7 @@ class AppDataInit {
       filterBox.put(Keys.thoughts, [Keys.all]);
     }
 
-    // Ensure brain points are initialized
+    // Initialize brain points system
     if (!brainBox.containsKey(Keys.brainPoints)) {
       brainBox.put(Keys.brainPoints, 100);
     }
@@ -46,7 +56,7 @@ class AppDataInit {
       brainBox.put('lastReset', DateTime.now().toIso8601String());
     }
 
-    // Initialize notification settings
+    // Initialize notification settings with default values
     if (!notificationBox.containsKey(Keys.notificationsEnabled)) {
       notificationBox.put(Keys.notificationsEnabled, false);
     }
@@ -57,7 +67,7 @@ class AppDataInit {
       notificationBox.put(Keys.notificationMinute, 0);
     }
 
-    // Initialize flow history
+    // Initialize flow history tracking
     if (!historyBox.containsKey('flow_history')) {
       historyBox.put('flow_history', <String>[]);
     }
