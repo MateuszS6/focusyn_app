@@ -1,9 +1,10 @@
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
+import 'package:focusyn_app/models/task_model.dart';
 
 class AppDataInit {
   static Future<void> run() async {
-    final taskBox = Hive.box(Keys.taskBox);
+    final taskBox = Hive.box<List>(Keys.taskBox);
     final filterBox = Hive.box(Keys.filterBox);
     final brainBox = Hive.box(Keys.brainBox);
     final notificationBox = Hive.box(Keys.settingBox);
@@ -11,16 +12,16 @@ class AppDataInit {
 
     // Ensure boxes are initialized with empty lists if they don't exist
     if (!taskBox.containsKey(Keys.actions)) {
-      taskBox.put(Keys.actions, []);
+      taskBox.put(Keys.actions, <Task>[]);
     }
     if (!taskBox.containsKey(Keys.flows)) {
-      taskBox.put(Keys.flows, []);
+      taskBox.put(Keys.flows, <Task>[]);
     }
     if (!taskBox.containsKey(Keys.moments)) {
-      taskBox.put(Keys.moments, []);
+      taskBox.put(Keys.moments, <Task>[]);
     }
     if (!taskBox.containsKey(Keys.thoughts)) {
-      taskBox.put(Keys.thoughts, []);
+      taskBox.put(Keys.thoughts, <Task>[]);
     }
 
     // Ensure filter categories exist

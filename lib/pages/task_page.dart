@@ -26,38 +26,32 @@ class TaskPage extends StatefulWidget {
 }
 
 class _TaskPageState extends State<TaskPage> {
-  late List<Map<String, dynamic>> _tasks;
+  late List<Task> _tasks;
   late List<String> _filters;
   String _selectedFilter = Keys.all;
   String _sortBy = 'Date';
   String? _lastEditedTaskId;
 
-  List<Map<String, dynamic>> get _filteredTasks {
+  List<Task> get _filteredTasks {
     var filtered =
         _selectedFilter == Keys.all
             ? _tasks
-            : _tasks
-                .where((task) => task[Keys.list] == _selectedFilter)
-                .toList();
+            : _tasks.where((task) => task.list == _selectedFilter).toList();
 
     // Sort tasks
     filtered.sort((a, b) {
       switch (_sortBy) {
         case 'Priority':
-          final priorityCompare = (a[Keys.priority] ?? 1).compareTo(
-            b[Keys.priority] ?? 1,
-          );
+          final priorityCompare = (a.priority).compareTo(b.priority);
           if (priorityCompare != 0) return priorityCompare;
           break;
         case 'Brain Points':
-          final bpCompare = (a[Keys.brainPoints] ?? 0).compareTo(
-            b[Keys.brainPoints] ?? 0,
-          );
+          final bpCompare = (a.brainPoints).compareTo(b.brainPoints);
           if (bpCompare != 0) return bpCompare;
           break;
         case 'Alphabetical':
-          final aText = a[Keys.text] ?? '';
-          final bText = b[Keys.text] ?? '';
+          final aText = a.text;
+          final bText = b.text;
           final titleCompare = aText.toLowerCase().compareTo(
             bText.toLowerCase(),
           );
@@ -66,17 +60,15 @@ class _TaskPageState extends State<TaskPage> {
         case 'Date':
           if (widget.category == Keys.flows ||
               widget.category == Keys.moments) {
-            final dateCompare = (a[Keys.date] ?? '').compareTo(
-              b[Keys.date] ?? '',
-            );
+            final dateCompare = (a.date ?? '').compareTo(b.date ?? '');
             if (dateCompare != 0) return dateCompare;
           }
           break;
       }
       // Default to creation date order
       return DateTime.parse(
-        a[Keys.createdAt] as String,
-      ).compareTo(DateTime.parse(b[Keys.createdAt] as String));
+        a.createdAt.toString(),
+      ).compareTo(DateTime.parse(b.createdAt.toString()));
     });
 
     return filtered;
@@ -141,7 +133,7 @@ class _TaskPageState extends State<TaskPage> {
                 onDelete: (tag) async {
                   setState(() {
                     _filters.remove(tag);
-                    _tasks.removeWhere((task) => task[Keys.list] == tag);
+                    _tasks.removeWhere((task) => task.list == tag);
                     if (_selectedFilter == tag) _selectedFilter = Keys.all;
                   });
                   // Update both tasks and filters in the cloud
@@ -417,9 +409,9 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
-  Widget _buildTaskTile(Map<String, dynamic> task) {
+  Widget _buildTaskTile(Task task) {
     final key = ValueKey(task);
-    final isLastEdited = task['id'] == _lastEditedTaskId;
+    final isLastEdited = task.id == _lastEditedTaskId;
 
     Widget tile;
     List<SlidableAction> actions = [
@@ -436,7 +428,7 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.actions:
         tile = ActionTile(
           key: key,
-          task: Task.fromMap(task),
+          task: task,
           onEdit: () => _showEditDialog(task),
           onComplete: () => _removeTask(task),
           onDelete: () => _removeTask(task),
@@ -447,13 +439,13 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.flows:
         tile = FlowTile(
           key: key,
-          task: Task.fromMap(task),
+          task: task,
           onComplete: (updatedTask) {
             setState(() {
-              final index = _tasks.indexWhere((t) => t['id'] == task['id']);
+              final index = _tasks.indexWhere((t) => t.id == task.id);
               if (index != -1) {
-                _tasks[index] = updatedTask.toMap();
-                _lastEditedTaskId = task['id'];
+                _tasks[index] = updatedTask;
+                _lastEditedTaskId = task.id;
               }
             });
             _updateTask(task);
@@ -467,7 +459,7 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.moments:
         tile = MomentTile(
           key: key,
-          task: Task.fromMap(task),
+          task: task,
           onDelete: () => _removeTask(task),
           selectedFilter: _selectedFilter,
           onEdit: () => _showEditDialog(task),
@@ -477,7 +469,7 @@ class _TaskPageState extends State<TaskPage> {
       case Keys.thoughts:
         tile = ThoughtTile(
           key: key,
-          task: Task.fromMap(task),
+          task: task,
           onDelete: () => _removeTask(task),
           selectedFilter: _selectedFilter,
           onEdit: () => _showEditDialog(task),
@@ -510,17 +502,17 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   // Task Operations
-  Future<void> _updateTask(Map<String, dynamic> task) async {
+  Future<void> _updateTask(Task task) async {
     setState(() {
-      _lastEditedTaskId = task['id'];
+      _lastEditedTaskId = task.id;
     });
     await TaskService.updateTasks(widget.category, _tasks);
   }
 
-  Future<void> _removeTask(Map<String, dynamic> task) async {
+  Future<void> _removeTask(Task task) async {
     setState(() {
       _tasks.remove(task);
-      if (_lastEditedTaskId == task['id']) {
+      if (_lastEditedTaskId == task.id) {
         _lastEditedTaskId = null;
       }
     });
@@ -534,7 +526,7 @@ class _TaskPageState extends State<TaskPage> {
       builder: (_) {
         onAdd(Task task) async {
           setState(() {
-            _tasks.add(task.toMap());
+            _tasks.add(task);
             _lastEditedTaskId = task.id;
           });
           await TaskService.updateTasks(widget.category, _tasks);
@@ -597,16 +589,16 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
-  void _showEditDialog(Map<String, dynamic> task) {
+  void _showEditDialog(Task task) {
     showDialog(
       context: context,
       builder: (_) {
         onEdit(Task updatedTask) async {
           setState(() {
-            final index = _tasks.indexWhere((t) => t['id'] == task['id']);
+            final index = _tasks.indexWhere((t) => t.id == task.id);
             if (index != -1) {
-              _tasks[index] = updatedTask.toMap();
-              _lastEditedTaskId = task['id'];
+              _tasks[index] = updatedTask;
+              _lastEditedTaskId = task.id;
             }
           });
           await TaskService.updateTasks(widget.category, _tasks);
@@ -616,26 +608,26 @@ class _TaskPageState extends State<TaskPage> {
           case Keys.actions:
             return ActionDialog(
               onAdd: onEdit,
-              defaultList: task[Keys.list],
-              initialTask: Task.fromMap(task),
+              defaultList: task.list,
+              initialTask: task,
             );
           case Keys.flows:
             return FlowDialog(
               onAdd: onEdit,
-              defaultList: task[Keys.list],
-              initialTask: Task.fromMap(task),
+              defaultList: task.list,
+              initialTask: task,
             );
           case Keys.moments:
             return MomentDialog(
               onAdd: onEdit,
-              defaultList: task[Keys.list],
-              initialTask: Task.fromMap(task),
+              defaultList: task.list,
+              initialTask: task,
             );
           case Keys.thoughts:
             return ThoughtDialog(
               onAdd: onEdit,
-              defaultList: task[Keys.list],
-              initialTask: Task.fromMap(task),
+              defaultList: task.list,
+              initialTask: task,
             );
           default:
             return const SizedBox.shrink();

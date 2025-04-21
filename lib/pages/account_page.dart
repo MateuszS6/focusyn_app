@@ -338,7 +338,7 @@ class _AccountPageState extends State<AccountPage> {
     try {
       // Clear local data
       await CloudSyncService.clearLocalData(
-        Hive.box(Keys.taskBox),
+        Hive.box<List>(Keys.taskBox),
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
         Hive.box(Keys.historyBox),

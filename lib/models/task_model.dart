@@ -1,18 +1,41 @@
-import 'package:focusyn_app/constants/keys.dart';
 import 'package:intl/intl.dart';
+import 'package:hive/hive.dart';
 
+part 'task_model.g.dart';
+
+@HiveType(typeId: 0)
 class Task {
+  @HiveField(0)
   final String id;
+
+  @HiveField(1)
   final String text;
+
+  @HiveField(2)
   final int priority;
+
+  @HiveField(3)
   final int brainPoints;
+
+  @HiveField(4)
   final String list;
+
+  @HiveField(5)
   final String? date;
+
+  @HiveField(6)
   final String? time;
+
+  @HiveField(7)
   final int? duration;
-  final String? location;
+
+  @HiveField(8)
   final String? repeat;
-  final List<String> history;
+
+  @HiveField(9)
+  final String? location;
+
+  @HiveField(10)
   final DateTime createdAt;
 
   Task({
@@ -26,49 +49,36 @@ class Task {
     this.duration = 15,
     this.location = '',
     this.repeat = 'Repeat?',
-    List<String>? history,
     DateTime? createdAt,
   }) : id = id ?? DateTime.now().millisecondsSinceEpoch.toString(),
-       history = history ?? [],
        createdAt = createdAt ?? DateTime.now();
 
-  Map<String, dynamic> toMap() {
-    return {
-      Keys.id: id,
-      Keys.text: text,
-      Keys.priority: priority,
-      Keys.brainPoints: brainPoints,
-      Keys.list: list,
-      if (date != null) Keys.date: date,
-      if (time != null) Keys.time: time,
-      if (duration != null) Keys.duration: duration,
-      if (location != null) Keys.location: location,
-      if (repeat != null) Keys.repeat: repeat,
-      Keys.history: history,
-      Keys.createdAt: createdAt.toIso8601String(),
-    };
-  }
-
-  factory Task.fromMap(Map<String, dynamic> map) {
+  // Helper method to create a copy of a task with some fields updated
+  Task copyWith({
+    String? id,
+    String? text,
+    int? priority,
+    int? brainPoints,
+    String? list,
+    String? date,
+    String? time,
+    int? duration,
+    String? location,
+    String? repeat,
+    DateTime? createdAt,
+  }) {
     return Task(
-      id: map[Keys.id]?.toString() ?? '',
-      text: map[Keys.text]?.toString() ?? '',
-      priority: int.tryParse(map[Keys.priority]?.toString() ?? '') ?? 1,
-      brainPoints: int.tryParse(map[Keys.brainPoints]?.toString() ?? '') ?? 0,
-      list: map[Keys.list]?.toString() ?? 'All',
-      date: map[Keys.date]?.toString(),
-      time: map[Keys.time]?.toString(),
-      duration: int.tryParse(map[Keys.duration]?.toString() ?? '') ?? 15,
-      location: map[Keys.location]?.toString(),
-      repeat: map[Keys.repeat]?.toString() ?? 'Repeat?',
-      history:
-          (map[Keys.history] as List<dynamic>?)
-              ?.map((e) => e.toString())
-              .toList() ??
-          [],
-      createdAt: DateTime.parse(
-        map[Keys.createdAt]?.toString() ?? DateTime.now().toIso8601String(),
-      ),
+      id: id ?? this.id,
+      text: text ?? this.text,
+      priority: priority ?? this.priority,
+      brainPoints: brainPoints ?? this.brainPoints,
+      list: list ?? this.list,
+      date: date ?? this.date,
+      time: time ?? this.time,
+      duration: duration ?? this.duration,
+      location: location ?? this.location,
+      repeat: repeat ?? this.repeat,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 

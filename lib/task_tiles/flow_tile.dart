@@ -73,7 +73,6 @@ class FlowTile extends StatelessWidget {
             duration: task.duration,
             location: task.location,
             repeat: task.repeat,
-            history: task.history, // Keep the task's own history for reference
             createdAt: task.createdAt,
           );
 

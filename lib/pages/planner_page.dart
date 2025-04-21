@@ -20,14 +20,12 @@ class _PlannerPageState extends State<PlannerPage> {
     final formattedDate = _formatDate(selectedDate);
     final flows =
         TaskService.tasks[Keys.flows]!
-            .where((t) => Task.fromMap(t).date == formattedDate)
-            .map((t) => Task.fromMap(t))
+            .where((task) => task.date == formattedDate)
             .toList();
 
     final moments =
         TaskService.tasks[Keys.moments]!
-            .where((t) => Task.fromMap(t).date == formattedDate)
-            .map((t) => Task.fromMap(t))
+            .where((task) => task.date == formattedDate)
             .toList();
 
     return [...flows, ...moments]..sort(
@@ -153,12 +151,12 @@ class _PlannerPageState extends State<PlannerPage> {
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (_, i) {
           final task = allScheduledTasks[i];
-          final isMoment = TaskService.tasks[Keys.moments]!.any((m) {
-            final moment = Task.fromMap(m);
-            return moment.text == task.text &&
+          final isMoment = TaskService.tasks[Keys.moments]!.any(
+            (moment) =>
+                moment.text == task.text &&
                 moment.date == task.date &&
-                moment.time == task.time;
-          });
+                moment.time == task.time,
+          );
           final color = isMoment ? Colors.red : Colors.green;
 
           return Container(
@@ -191,7 +189,7 @@ class _PlannerPageState extends State<PlannerPage> {
                           ),
                     ),
                   );
-                }, // Handle task tap
+                },
                 borderRadius: BorderRadius.circular(16),
                 child: Padding(
                   padding: const EdgeInsets.all(16),

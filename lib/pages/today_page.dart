@@ -7,7 +7,6 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/quotes.dart';
 import 'package:focusyn_app/pages/account_page.dart';
 import 'package:focusyn_app/pages/task_page.dart';
-import 'package:focusyn_app/models/task_model.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
@@ -466,28 +465,21 @@ class _TodayPageState extends State<TodayPage> {
     final moments = TaskService.tasks[Keys.moments] ?? [];
 
     final todayFlows =
-        flows
-            .where((flow) => Task.fromMap(flow).date == formattedDate)
-            .map((flow) => Task.fromMap(flow))
-            .toList();
+        flows.where((task) => task.date == formattedDate).toList();
     final todayMoments =
-        moments
-            .where((moment) => Task.fromMap(moment).date == formattedDate)
-            .map((moment) => Task.fromMap(moment))
-            .toList();
+        moments.where((task) => task.date == formattedDate).toList();
 
     // Calculate total brain points from uncompleted actions and overdue flows
     final totalActionBrainPoints = actions.fold<int>(
       0,
-      (sum, action) => sum + Task.fromMap(action).brainPoints.toInt(),
+      (sum, action) => sum + action.brainPoints.toInt(),
     );
     final totalFlowBrainPoints = flows.fold<int>(0, (sum, flow) {
-      final task = Task.fromMap(flow);
-      final flowDate = DateTime.tryParse(task.date ?? '');
+      final flowDate = DateTime.tryParse(flow.date ?? '');
       if (flowDate == null) return sum;
       // Only count flows that are due today or before today
       if (flowDate.isBefore(today) || _isSameDate(flowDate, today)) {
-        return sum + task.brainPoints.toInt();
+        return sum + flow.brainPoints.toInt();
       }
       return sum;
     });

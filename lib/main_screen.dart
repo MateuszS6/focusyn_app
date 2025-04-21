@@ -29,7 +29,10 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    _syncData();
+    // Schedule the sync for after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _syncData();
+    });
   }
 
   @override
@@ -38,11 +41,11 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Future<void> _syncData() async {
-    if (_isSyncing) return;
+    if (_isSyncing || !mounted) return;
     setState(() => _isSyncing = true);
 
     try {
-      final taskBox = Hive.box(Keys.taskBox);
+      final taskBox = Hive.box<List>(Keys.taskBox);
       final filterBox = Hive.box(Keys.filterBox);
       final brainBox = Hive.box(Keys.brainBox);
       final historyBox = Hive.box(Keys.historyBox);

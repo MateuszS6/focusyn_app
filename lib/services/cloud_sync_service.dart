@@ -55,35 +55,29 @@ class CloudSyncService {
     }
   }
 
-  static Future<void> uploadTasks(Box<dynamic> taskBox) async {
+  static Future<void> uploadTasks(Box<List> taskBox) async {
     final user = _auth.currentUser;
     if (user == null) {
-      // No user found in uploadTasks
       throw Exception('No user found in uploadTasks');
     }
 
-    // Starting task upload for user
     final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final batch = _firestore.batch();
 
     try {
-      // Upload tasks for each category
       for (final category in [
         Keys.actions,
         Keys.flows,
         Keys.moments,
         Keys.thoughts,
       ]) {
-        final tasks = taskBox.get(category) as List<dynamic>? ?? [];
-        // Uploading tasks for $category: ${tasks.length} items
+        final tasks = taskBox.get(category) ?? [];
         final tasksRef = userDataRef.collection('tasks').doc(category);
         batch.set(tasksRef, {'items': tasks});
       }
 
       await batch.commit();
-      // DEBUG: Task upload complete
     } catch (e) {
-      // Error in uploadTasks
       rethrow;
     }
   }
@@ -182,19 +176,16 @@ class CloudSyncService {
   }
 
   static Future<void> downloadTasks(
-    Box<dynamic> taskBox,
+    Box<List> taskBox,
     Box<dynamic> filterBox,
     Box<dynamic> brainBox,
   ) async {
     final user = _auth.currentUser;
     if (user == null) {
-      // No user found in downloadTasks
       throw Exception('No user found in downloadTasks');
     }
 
-    // Starting download for user
     try {
-      // Ensure user document exists before downloading
       await _ensureUserDocument();
 
       final userDataRef = _firestore.collection('user_data').doc(user.uid);
@@ -210,29 +201,23 @@ class CloudSyncService {
           final cloudLastReset =
               data['lastReset'] as String? ?? DateTime.now().toIso8601String();
 
-          // Check if we need to reset points based on date
           final lastResetDate = DateTime.parse(cloudLastReset);
           final now = DateTime.now();
 
           if (now.year > lastResetDate.year ||
               now.month > lastResetDate.month ||
               now.day > lastResetDate.day) {
-            // Reset points if it's a new day
             await brainBox.put(Keys.brainPoints, 100);
             await brainBox.put('lastReset', now.toIso8601String());
-            // DEBUG: Reset brain points to 100 (new day)
 
-            // Update cloud with reset values
             await userDataRef.collection('brainPoints').doc('current').set({
               'points': 100,
               'lastReset': now.toIso8601String(),
               'updatedAt': FieldValue.serverTimestamp(),
             });
           } else {
-            // Use cloud points if it's the same day
             await brainBox.put(Keys.brainPoints, cloudPoints);
             await brainBox.put('lastReset', cloudLastReset);
-            // DEBUG: Downloaded brain points: $cloudPoints
           }
         }
       }
@@ -244,23 +229,15 @@ class CloudSyncService {
         Keys.moments,
         Keys.thoughts,
       ]) {
-        // Downloading tasks for $category
         final tasksDoc =
             await userDataRef.collection('tasks').doc(category).get();
         if (tasksDoc.exists) {
           final data = tasksDoc.data();
           if (data != null && data['items'] != null) {
-            // Check if local data exists
-            final localTasks = taskBox.get(category) as List<dynamic>? ?? [];
+            final localTasks = taskBox.get(category) ?? [];
 
-            // Only update if cloud data is not empty or if local data is empty
             if (data['items'].isNotEmpty || localTasks.isEmpty) {
               await taskBox.put(category, data['items']);
-              // DEBUG: Downloaded ${data['items'].length} tasks for $category
-            } else {
-              throw Exception(
-                'DEBUG: Preserving local tasks for $category (${localTasks.length} items)',
-              );
             }
           }
         }
@@ -273,32 +250,21 @@ class CloudSyncService {
         Keys.moments,
         Keys.thoughts,
       ]) {
-        // Downloading filters for $category
         final filtersDoc =
             await userDataRef.collection('filters').doc(category).get();
         if (filtersDoc.exists) {
           final data = filtersDoc.data();
           if (data != null && data['items'] != null) {
-            // Check if local data exists
             final localFilters =
                 filterBox.get(category) as List<dynamic>? ?? [];
 
-            // Only update if cloud data is not empty or if local data is empty
             if (data['items'].isNotEmpty || localFilters.isEmpty) {
               await filterBox.put(category, data['items']);
-              // DEBUG: Downloaded ${data['items'].length} filters for $category
-            } else {
-              throw Exception(
-                'DEBUG: Preserving local filters for $category (${localFilters.length} items)',
-              );
             }
           }
         }
       }
-
-      // DEBUG: Download complete
     } catch (e) {
-      // Error in downloadTasks
       rethrow;
     }
   }
@@ -345,57 +311,46 @@ class CloudSyncService {
   }
 
   static Future<void> syncOnLogin(
-    Box<dynamic> taskBox,
+    Box<List> taskBox,
     Box<dynamic> filterBox,
     Box<dynamic> brainBox,
     Box<dynamic> historyBox,
   ) async {
-    // Starting sync on login
     try {
-      // Check if this is a new user (just signed up)
       final user = _auth.currentUser;
       if (user == null) {
-        // No user found in syncOnLogin
         throw Exception('No user found in syncOnLogin');
       }
 
-      // Check if user document exists
       final userDataRef = _firestore.collection('user_data').doc(user.uid);
       final userDataDoc = await userDataRef.get();
       final isNewUser = !userDataDoc.exists;
 
       if (isNewUser) {
-        // For new users, first ensure the user document exists
         await _ensureUserDocument();
-        // Then upload local data to cloud
         await uploadTasks(taskBox);
         await uploadFilters(filterBox);
         await uploadBrainPoints(brainBox);
         await uploadFlowHistory(historyBox);
       } else {
-        // For existing users, download from cloud
         await downloadTasks(taskBox, filterBox, brainBox);
         await downloadFlowHistory(historyBox);
-        // Then upload any changes
         await uploadTasks(taskBox);
         await uploadFilters(filterBox);
         await uploadBrainPoints(brainBox);
         await uploadFlowHistory(historyBox);
       }
-      // DEBUG: Sync on login complete
     } catch (e) {
-      // Error in syncOnLogin
       rethrow;
     }
   }
 
   static Future<void> clearLocalData(
-    Box<dynamic> taskBox,
+    Box<List> taskBox,
     Box<dynamic> filterBox,
     Box<dynamic> brainBox,
     Box<dynamic> historyBox,
   ) async {
-    // Clearing local data
     try {
       // Clear all task categories
       for (final category in [
@@ -423,10 +378,7 @@ class CloudSyncService {
 
       // Clear flow history
       await historyBox.put('flow_history', <String>[]);
-
-      // DEBUG: Local data cleared successfully
     } catch (e) {
-      // Error clearing local data
       rethrow;
     }
   }
@@ -435,11 +387,9 @@ class CloudSyncService {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        // No user found in deleteUserData
         throw Exception('No user found in deleteUserData');
       }
 
-      // Starting user data deletion for user
       final userRef = _firestore.collection('user_data').doc(user.uid);
       final profileRef = _firestore.collection('profiles').doc(user.uid);
 
@@ -455,7 +405,7 @@ class CloudSyncService {
 
       // Clear local data
       await clearLocalData(
-        Hive.box(Keys.taskBox),
+        Hive.box<List>(Keys.taskBox),
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
         Hive.box(Keys.historyBox),

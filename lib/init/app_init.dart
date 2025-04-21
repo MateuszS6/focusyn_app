@@ -6,6 +6,7 @@ import 'package:focusyn_app/init/app_data_init.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/firebase_options.dart';
 import 'package:focusyn_app/services/notification_service.dart';
+import 'package:focusyn_app/models/task_model.dart';
 
 class AppInit {
   static Future<void> initialize() async {
@@ -18,12 +19,19 @@ class AppInit {
 
   static Future<void> _initializeHive() async {
     await Hive.initFlutter();
-    await Hive.openBox(Keys.brainBox);
-    await Hive.openBox(Keys.taskBox);
+
+    // Register adapters
+    if (!Hive.isAdapterRegistered(0)) {
+      Hive.registerAdapter(TaskAdapter());
+    }
+
+    // Open boxes
+    await Hive.openBox<List>(Keys.taskBox);
     await Hive.openBox(Keys.filterBox);
     await Hive.openBox(Keys.settingBox);
     await Hive.openBox(Keys.chatBox);
     await Hive.openBox(Keys.historyBox);
+    await Hive.openBox(Keys.brainBox);
   }
 
   static Future<void> _initializeFirebase() async {

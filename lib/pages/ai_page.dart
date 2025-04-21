@@ -152,26 +152,25 @@ class _AiPageState extends State<AiPage> {
               .map((msg) => {'text': msg.text, 'isUser': msg.isUser})
               .toList();
 
+      final taskBox = Hive.box<List>(Keys.taskBox);
       final chatContext = {
         'userName': FirebaseAuth.instance.currentUser?.displayName,
         'brainPoints': Hive.box(Keys.brainBox).get(Keys.brainPoints),
         'tasks':
             [
-                  ...?Hive.box(
-                    Keys.taskBox,
-                  ).get(Keys.actions)?.whereType<Map>(),
-                  ...?Hive.box(Keys.taskBox).get(Keys.flows)?.whereType<Map>(),
-                  ...?Hive.box(
-                    Keys.taskBox,
-                  ).get(Keys.moments)?.whereType<Map>(),
-                  ...?Hive.box(
-                    Keys.taskBox,
-                  ).get(Keys.thoughts)?.whereType<Map>(),
-                ]
-                .map((task) => task[Keys.text]?.toString() ?? '')
-                .where((text) => text.isNotEmpty)
-                .take(3)
-                .toList(),
+              ...(taskBox.get(Keys.actions) ?? []).map(
+                (task) => task['text']?.toString() ?? '',
+              ),
+              ...(taskBox.get(Keys.flows) ?? []).map(
+                (task) => task['text']?.toString() ?? '',
+              ),
+              ...(taskBox.get(Keys.moments) ?? []).map(
+                (task) => task['text']?.toString() ?? '',
+              ),
+              ...(taskBox.get(Keys.thoughts) ?? []).map(
+                (task) => task['text']?.toString() ?? '',
+              ),
+            ].where((text) => text.isNotEmpty).take(3).toList(),
       };
 
       final reply = await AIService.askSynthe(

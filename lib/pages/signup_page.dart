@@ -54,7 +54,7 @@ class _SignUpPageState extends State<SignUpPage> {
       await CloudSyncService.updateUserProfile(name);
 
       // Initialize example data for new account
-      final taskBox = Hive.box(Keys.taskBox);
+      final taskBox = Hive.box<List>(Keys.taskBox);
       final filterBox = Hive.box(Keys.filterBox);
       final brainBox = Hive.box(Keys.brainBox);
 
@@ -62,41 +62,44 @@ class _SignUpPageState extends State<SignUpPage> {
       taskBox.putAll({
         Keys.actions: [
           {
-            Keys.text: "Complete Focusyn App",
-            Keys.priority: 1,
-            Keys.brainPoints: 10,
-            Keys.list: "Work",
-            Keys.createdAt: DateTime.now().toIso8601String(),
+            'id': DateTime.now().millisecondsSinceEpoch.toString(),
+            'text': "Complete Focusyn App",
+            'priority': 1,
+            'brainPoints': 10,
+            'list': "Work",
+            'createdAt': DateTime.now().toIso8601String(),
           },
         ],
         Keys.flows: [
           {
-            Keys.text: "Morning Routine",
-            Keys.date: "2025-03-30",
-            Keys.time: "07:30",
-            Keys.duration: 15,
-            Keys.repeat: "Daily",
-            Keys.brainPoints: 10,
-            Keys.history: [],
-            Keys.list: "Morning",
-            Keys.createdAt: DateTime.now().toIso8601String(),
+            'id': DateTime.now().millisecondsSinceEpoch.toString(),
+            'text': "Morning Routine",
+            'date': "2025-03-30",
+            'time': "07:30",
+            'duration': 15,
+            'repeat': "Daily",
+            'brainPoints': 10,
+            'list': "Morning",
+            'createdAt': DateTime.now().toIso8601String(),
           },
         ],
         Keys.moments: [
           {
-            Keys.text: "Doctor's Appointment",
-            Keys.date: "2025-04-03",
-            Keys.time: "10:30",
-            Keys.duration: 30,
-            Keys.location: "Clinic",
-            Keys.list: "Health",
-            Keys.createdAt: DateTime.now().toIso8601String(),
+            'id': DateTime.now().millisecondsSinceEpoch.toString(),
+            'text': "Doctor's Appointment",
+            'date': "2025-04-03",
+            'time': "10:30",
+            'duration': 30,
+            'location': "Clinic",
+            'list': "Health",
+            'createdAt': DateTime.now().toIso8601String(),
           },
         ],
         Keys.thoughts: [
           {
-            Keys.text: "I should start reading more books",
-            Keys.createdAt: DateTime.now().toIso8601String(),
+            'id': DateTime.now().millisecondsSinceEpoch.toString(),
+            'text': "I should start reading more books",
+            'createdAt': DateTime.now().toIso8601String(),
           },
         ],
       });

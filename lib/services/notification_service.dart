@@ -26,42 +26,6 @@ class NotificationService {
       throw Exception('Error getting local timezone, defaulting to London: $e');
     }
     tz.setLocalLocation(tz.getLocation(currentTimeZone));
-
-    // Initialize the Android settings
-    const initializationSettingsAndroid = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
-
-    // Initialize the iOS settings
-    const initializationSettingsIOS = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-
-    const initializationSettings = InitializationSettings(
-      android: initializationSettingsAndroid,
-      iOS: initializationSettingsIOS,
-    );
-
-    // Initialize the notification service
-    final bool? result = await _notificationsPlugin.initialize(
-      initializationSettings,
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // Notification clicked: ${response.payload}
-      },
-    );
-    // Notification initialization result
-
-    // Request permissions
-    final bool? permissionResult =
-        await _notificationsPlugin
-            .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin
-            >()
-            ?.requestNotificationsPermission();
-    // Android permission result
-
     // Create the Android notification channel
     await _notificationsPlugin
         .resolvePlatformSpecificImplementation<
@@ -160,14 +124,6 @@ class NotificationService {
         // payload: 'daily_quote',
       );
       // Notification scheduled successfully
-
-      // Verify the scheduled notification
-      final pendingNotifications =
-          await _notificationsPlugin.pendingNotificationRequests();
-      // Pending notifications
-      for (var notification in pendingNotifications) {
-        // Pending notification
-      }
     } catch (e) {
       // Error scheduling notification
       rethrow;
