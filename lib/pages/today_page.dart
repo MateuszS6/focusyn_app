@@ -25,11 +25,50 @@ class TodayPage extends StatefulWidget {
 class _TodayPageState extends State<TodayPage> {
   DateTime? _lastUpdateDate;
   List<DateTime>? _cachedCompletions;
+  late int _points;
+  List<dynamic> _actions = [];
 
   @override
   void initState() {
     super.initState();
+    // Initialize points from Hive cache
+    _points = Hive.box(Keys.brainBox).get(Keys.brainPoints, defaultValue: 100);
     _refreshFlowHistory();
+    // Schedule the initial data load for after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadData();
+    });
+  }
+
+  Future<void> _loadData() async {
+    if (!mounted) return;
+
+    try {
+      // First sync with Firestore
+      await CloudSyncService.syncOnLogin(
+        Hive.box<List>(Keys.taskBox),
+        Hive.box(Keys.filterBox),
+        Hive.box(Keys.brainBox),
+        Hive.box(Keys.historyBox),
+      );
+
+      // Then update local state
+      if (!mounted) return;
+      setState(() {
+        _points = BrainPointsService.getPoints();
+        _actions = TaskService.tasks[Keys.actions] ?? [];
+      });
+
+      _refreshFlowHistory();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to sync: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   void _refreshFlowHistory() {
@@ -51,8 +90,6 @@ class _TodayPageState extends State<TodayPage> {
   @override
   Widget build(BuildContext context) {
     _refreshData(); // Check if we need to refresh data
-    final points = BrainPointsService.getPoints();
-    final actions = TaskService.tasks[Keys.actions] ?? [];
     final today = DateTime.now();
     final monthNames = [
       'Jan',
@@ -75,28 +112,7 @@ class _TodayPageState extends State<TodayPage> {
       body: MyScrollShadow(
         child: SafeArea(
           child: RefreshIndicator(
-            onRefresh: () async {
-              final scaffoldMessenger = ScaffoldMessenger.of(context);
-              try {
-                // First sync with Firestore
-                await CloudSyncService.syncOnLogin(
-                  Hive.box(Keys.taskBox),
-                  Hive.box(Keys.filterBox),
-                  Hive.box(Keys.brainBox),
-                  Hive.box(Keys.historyBox),
-                );
-                // Then refresh local data
-                _refreshFlowHistory();
-              } catch (e) {
-                if (!mounted) return;
-                scaffoldMessenger.showSnackBar(
-                  SnackBar(
-                    content: Text('Failed to sync: $e'),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            },
+            onRefresh: _loadData,
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [
@@ -146,8 +162,8 @@ class _TodayPageState extends State<TodayPage> {
                                   builder: (_) => const AccountPage(),
                                 ),
                               );
-                              // Trigger rebuild when returning from account page
-                              if (mounted) setState(() {});
+                              // Reload data when returning from account page
+                              _loadData();
                             },
                             child: CircleAvatar(
                               radius: 20,
@@ -171,11 +187,11 @@ class _TodayPageState extends State<TodayPage> {
                   ],
                 ),
                 const SizedBox(height: 24),
-                _greetingCard(points),
+                _greetingCard(_points),
                 const SizedBox(height: 24),
                 _quoteCard(),
                 const SizedBox(height: 24),
-                _summaryCard(actions.length),
+                _summaryCard(_actions.length),
                 const SizedBox(height: 24),
                 _flowStreakCard(),
                 const SizedBox(height: 24),
