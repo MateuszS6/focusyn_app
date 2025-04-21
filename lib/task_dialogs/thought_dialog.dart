@@ -6,10 +6,10 @@ import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
 class ThoughtDialog extends StatelessWidget {
-  static const String _dialogTitle = "Add Thought";
-  static const String _editDialogTitle = "Edit Thought";
-  static const String _titleLabel = "Title *";
-  static const String _listLabel = "List";
+  static const String _dialogTitle = 'Add Thought';
+  static const String _editDialogTitle = 'Edit Thought';
+  static const String _titleLabel = 'Title *';
+  static const String _listLabel = 'List';
 
   final void Function(Task) onAdd;
   final String? defaultList;
@@ -59,7 +59,7 @@ class ThoughtDialog extends StatelessWidget {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _titleLabel,
-            hintText: "Enter thought title",
+            hintText: 'Describe this thought',
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => title = val.trim(),

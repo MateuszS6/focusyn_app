@@ -6,14 +6,14 @@ import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
 class MomentDialog extends StatefulWidget {
-  static const String _dialogTitle = "Add Moment";
-  static const String _editDialogTitle = "Edit Moment";
-  static const String _titleLabel = "Title *";
-  static const String _dateLabel = "Date";
-  static const String _timeLabel = "Time";
-  static const String _durationLabel = "Duration (minutes)";
-  static const String _locationLabel = "Location";
-  static const String _listLabel = "List";
+  static const String _dialogTitle = 'Add Moment';
+  static const String _editDialogTitle = 'Edit Moment';
+  static const String _titleLabel = 'Title *';
+  static const String _dateLabel = 'Date';
+  static const String _timeLabel = 'Time';
+  static const String _durationLabel = 'Duration (minutes)';
+  static const String _locationLabel = 'Location';
+  static const String _listLabel = 'List';
 
   final void Function(Task) onAdd;
   final String? defaultList;
@@ -145,7 +145,7 @@ class _MomentDialogState extends State<MomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: MomentDialog._titleLabel,
-            hintText: "Describe this event",
+            hintText: 'Describe this event',
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           controller: titleController,
@@ -168,7 +168,7 @@ class _MomentDialogState extends State<MomentDialog> {
               labelText: MomentDialog._dateLabel,
               prefixIcon: const Icon(ThemeIcons.date),
             ),
-            child: Text("${selectedDate.toLocal()}".split(' ')[0]),
+            child: Text(selectedDate.toLocal().toString().split(' ')[0]),
           ),
         ),
         GestureDetector(
@@ -192,7 +192,7 @@ class _MomentDialogState extends State<MomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: MomentDialog._durationLabel,
-            hintText: "Default: 60",
+            hintText: 'Default: 60',
             prefixIcon: const Icon(ThemeIcons.duration),
           ),
           keyboardType: TextInputType.number,
@@ -203,7 +203,7 @@ class _MomentDialogState extends State<MomentDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: MomentDialog._locationLabel,
-            hintText: "Enter location (optional)",
+            hintText: 'Default: None',
             prefixIcon: const Icon(ThemeIcons.location),
           ),
           controller: locationController,

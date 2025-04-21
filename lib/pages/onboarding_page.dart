@@ -39,7 +39,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       color: Colors.purple,
     ),
     OnboardingItem(
-      title: 'Meet Synthe AI',
+      title: 'Meet ${Keys.aiName} AI',
       description:
           'Your AI assistant that helps you stay on track, answers questions, and provides personalized guidance.',
       icon: ThemeIcons.robot,

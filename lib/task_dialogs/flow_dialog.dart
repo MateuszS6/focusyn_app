@@ -6,15 +6,15 @@ import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
 class FlowDialog extends StatefulWidget {
-  static const String _dialogTitle = "Add Flow";
-  static const String _editDialogTitle = "Edit Flow";
-  static const String _titleLabel = "Title *";
-  static const String _dateLabel = "Start Date";
-  static const String _timeLabel = "Reminder Time";
-  static const String _durationLabel = "Duration (minutes)";
-  static const String _repeatLabel = "Repeat";
-  static const String _brainPointsLabel = "Brain Points";
-  static const String _listLabel = "List";
+  static const String _dialogTitle = 'Add Flow';
+  static const String _editDialogTitle = 'Edit Flow';
+  static const String _titleLabel = 'Title *';
+  static const String _dateLabel = 'Start Date';
+  static const String _timeLabel = 'Reminder Time';
+  static const String _durationLabel = 'Duration (minutes)';
+  static const String _repeatLabel = 'Repeat';
+  static const String _brainPointsLabel = 'Brain Points';
+  static const String _listLabel = 'List';
 
   final void Function(Task) onAdd;
   final String? defaultList;
@@ -129,7 +129,7 @@ class _FlowDialogState extends State<FlowDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: FlowDialog._titleLabel,
-            hintText: 'Describe the routine',
+            hintText: 'Describe this routine',
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           controller: titleController,
@@ -152,7 +152,7 @@ class _FlowDialogState extends State<FlowDialog> {
               labelText: FlowDialog._dateLabel,
               prefixIcon: const Icon(ThemeIcons.date),
             ),
-            child: Text("${selectedDate.toLocal()}".split(' ')[0]),
+            child: Text(selectedDate.toLocal().toString().split(' ')[0]),
           ),
         ),
         GestureDetector(
@@ -176,7 +176,7 @@ class _FlowDialogState extends State<FlowDialog> {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: FlowDialog._durationLabel,
-            hintText: "Default: 60",
+            hintText: 'Default: 60',
             prefixIcon: const Icon(ThemeIcons.duration),
           ),
           keyboardType: TextInputType.number,

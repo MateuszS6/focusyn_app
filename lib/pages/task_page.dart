@@ -29,7 +29,7 @@ class _TaskPageState extends State<TaskPage> {
   late List<Task> _tasks;
   late List<String> _filters;
   String _selectedFilter = Keys.all;
-  String _sortBy = 'Date';
+  String? _sortBy;
   String? _lastEditedTaskId;
 
   List<Task> get _filteredTasks {
@@ -174,6 +174,7 @@ class _TaskPageState extends State<TaskPage> {
 
     switch (widget.category) {
       case Keys.actions:
+        _sortBy ??= 'Priority';
         options = [
           RadioListTile(
             title: const Text('Priority'),
@@ -215,6 +216,7 @@ class _TaskPageState extends State<TaskPage> {
         break;
 
       case Keys.flows:
+        _sortBy ??= 'Date';
         options = [
           RadioListTile(
             title: const Text('Date'),
@@ -256,6 +258,7 @@ class _TaskPageState extends State<TaskPage> {
         break;
 
       case Keys.moments:
+        _sortBy ??= 'Date';
         options = [
           RadioListTile(
             title: const Text('Date'),
@@ -288,6 +291,7 @@ class _TaskPageState extends State<TaskPage> {
         break;
 
       case Keys.thoughts:
+        _sortBy ??= 'Creation Date';
         options = [
           RadioListTile(
             title: const Text('Alphabetical'),
@@ -373,7 +377,7 @@ class _TaskPageState extends State<TaskPage> {
                       onPressed: _showAddDialog,
                       icon: const Icon(ThemeIcons.add, color: Colors.white),
                       label: Text(
-                        "Add ${widget.category.substring(0, widget.category.length - 1)}",
+                        'Add ${widget.category.substring(0, widget.category.length - 1)}',
                         style: const TextStyle(color: Colors.white),
                       ),
                       style: ElevatedButton.styleFrom(
@@ -549,16 +553,16 @@ class _TaskPageState extends State<TaskPage> {
   }
 
   void _openAddTagDialog() {
-    String newTag = "";
+    String newTag = '';
     showDialog(
       context: context,
       builder:
           (_) => AlertDialog(
-            title: const Text("Add List"),
+            title: const Text('Add List'),
             content: TextField(
               decoration: const InputDecoration(
-                labelText: "Enter new list name",
-                hintText: "E.g. Work, Home, etc.",
+                labelText: 'Enter new list name',
+                hintText: 'E.g. Work, Home, etc.',
                 border: OutlineInputBorder(),
               ),
               onChanged: (val) => newTag = val.trim(),
@@ -655,30 +659,30 @@ class _TaskPageState extends State<TaskPage> {
   String _getEmptyStateTitle() {
     switch (widget.category) {
       case Keys.actions:
-        return "No Actions Yet";
+        return 'No Actions Yet';
       case Keys.flows:
-        return "No Flows Yet";
+        return 'No Flows Yet';
       case Keys.moments:
-        return "No Moments Yet";
+        return 'No Moments Yet';
       case Keys.thoughts:
-        return "No Thoughts Yet";
+        return 'No Thoughts Yet';
       default:
-        return "No Tasks Yet";
+        return 'No Tasks Yet';
     }
   }
 
   String _getEmptyStateMessage() {
     switch (widget.category) {
       case Keys.actions:
-        return "Start adding tasks to your to-do list\nand track your progress!";
+        return 'Start adding tasks to your to-do list\nand track your progress!';
       case Keys.flows:
-        return "Create your first routine to build\npositive habits and stay focused!";
+        return 'Create your first routine to build\npositive habits and stay focused!';
       case Keys.moments:
-        return "Schedule your first event or deadline\nto stay organized and on track!";
+        return 'Schedule your first event or deadline\nto stay organized and on track!';
       case Keys.thoughts:
-        return "Capture your first idea or reflection\nto keep track of your insights!";
+        return 'Capture your first idea or reflection\nto keep track of your insights!';
       default:
-        return "Start by adding your first item\nto get started!";
+        return 'Start by adding your first item\nto get started!';
     }
   }
 }

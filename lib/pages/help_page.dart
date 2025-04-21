@@ -6,6 +6,58 @@ import 'package:focusyn_app/utils/my_app_bar.dart';
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 
+  // Helper function to convert marked up text to RichText
+  Widget _buildRichText(String content, {double fontSize = 16}) {
+    final List<TextSpan> spans = [];
+    final RegExp boldPattern = RegExp(r'\*(.*?)\*');
+    final RegExp italicPattern = RegExp(r'\/(.*?)\/');
+
+    String remainingText = content;
+
+    while (remainingText.isNotEmpty) {
+      Match? boldMatch = boldPattern.firstMatch(remainingText);
+      Match? italicMatch = italicPattern.firstMatch(remainingText);
+
+      // No more formatting found, add remaining text and break
+      if (boldMatch == null && italicMatch == null) {
+        spans.add(TextSpan(text: remainingText));
+        break;
+      }
+
+      // Determine which pattern comes first
+      bool boldFirst =
+          boldMatch != null &&
+          (italicMatch == null || boldMatch.start < italicMatch.start);
+      Match match = boldFirst ? boldMatch : italicMatch!;
+
+      // Add text before the match
+      if (match.start > 0) {
+        spans.add(TextSpan(text: remainingText.substring(0, match.start)));
+      }
+
+      // Add the formatted text
+      spans.add(
+        TextSpan(
+          text: match.group(1),
+          style: TextStyle(
+            fontWeight: boldFirst ? FontWeight.bold : FontWeight.normal,
+            fontStyle: boldFirst ? FontStyle.normal : FontStyle.italic,
+          ),
+        ),
+      );
+
+      // Update remaining text
+      remainingText = remainingText.substring(match.end);
+    }
+
+    return RichText(
+      text: TextSpan(
+        style: TextStyle(fontSize: fontSize, color: Colors.black87),
+        children: spans,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +94,7 @@ class HelpPage extends StatelessWidget {
                     'Recurring routines or processes that you want to maintain. These are your habits and regular activities.',
                 color: ThemeColours.flowsMain,
                 examples: [
-                  'Morning workout routine',
+                  'Morning workout',
                   'Weekly team meeting',
                   'Monthly budget review',
                 ],
@@ -52,7 +104,7 @@ class HelpPage extends StatelessWidget {
                 icon: ThemeIcons.moments,
                 title: 'Moments',
                 description:
-                    'Time-specific events or appointments. These are your scheduled activities with a specific date and time.',
+                    'Time-specific events or appointments. These are your scheduled activities with a specific date, time.',
                 color: ThemeColours.momentsMain,
                 examples: [
                   'Doctor\'s appointment',
@@ -77,16 +129,43 @@ class HelpPage extends StatelessWidget {
           ),
           const SizedBox(height: 32),
           _buildSection(
-            title: 'Tags & Organization',
+            title: 'Task Interactions',
+            children: [
+              _buildInfoCard(
+                title: 'Brain Points',
+                content:
+                    'Completing items uses /Brain Points/:\n\n'
+                    '• Actions: Points based on mental effort\n'
+                    '• Flows: Points based on maintaining streaks\n',
+                icon: Icons.psychology,
+                color: ThemeColours.thoughtsMain,
+              ),
+              const SizedBox(height: 16),
+              _buildInfoCard(
+                title: 'Managing Tasks',
+                content:
+                    'You can quickly manage your tasks with gestures:\n\n'
+                    '• *Tap* the /checkmark/ to mark as complete\n'
+                    '• *Hold* any task to edit its details\n'
+                    '• *Swipe left* on a task to delete it\n\n'
+                    'These gestures work the same way across all /Focus Categories/.',
+                icon: ThemeIcons.tasks,
+                color: ThemeColours.taskMain,
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          _buildSection(
+            title: 'Lists & Organization',
             children: [
               _buildInfoCard(
                 title: 'Using Lists',
                 content:
                     'Lists help you organize items within each category. You can:\n\n'
-                    '• Add multiple lists to any item\n'
-                    '• Filter items by lists\n'
-                    '• Create custom lists for your needs\n'
-                    '• Use lists to group similar items',
+                    '• Create /custom lists/ for your needs\n'
+                    '• Use lists to /group similar items/\n\n'
+                    '*Double tap* the list name to edit it.\n'
+                    '*Long press* the list name to delete it.',
                 icon: Icons.filter_list,
                 color: ThemeColours.taskMain,
               ),
@@ -101,16 +180,6 @@ class HelpPage extends StatelessWidget {
                     '• Thoughts: Ideas, Journal, Tasks',
                 icon: ThemeIcons.tag,
                 color: ThemeColours.actionsMain,
-              ),
-              const SizedBox(height: 16),
-              _buildInfoCard(
-                title: 'Brain Points',
-                content:
-                    'Completing items uses Brain Points:\n\n'
-                    '• Actions: Points based on mental effort\n'
-                    '• Flows: Points based on maintaining streaks\n',
-                icon: Icons.psychology,
-                color: ThemeColours.thoughtsMain,
               ),
             ],
           ),
@@ -225,7 +294,7 @@ class HelpPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          Text(content, style: const TextStyle(fontSize: 16)),
+          _buildRichText(content),
         ],
       ),
     );

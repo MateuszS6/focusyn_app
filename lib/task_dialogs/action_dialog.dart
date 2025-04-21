@@ -65,7 +65,7 @@ class ActionDialog extends StatelessWidget {
         TextField(
           decoration: inputDecoration.copyWith(
             labelText: _titleLabel,
-            hintText: "Describe your task",
+            hintText: "Describe this task",
             prefixIcon: const Icon(ThemeIcons.text),
           ),
           onChanged: (val) => title = val.trim(),
