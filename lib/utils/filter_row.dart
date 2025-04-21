@@ -45,6 +45,52 @@ class FilterRow extends StatelessWidget {
               final list = filters[index];
               final isSelected = list == selected;
               return GestureDetector(
+                onDoubleTap: () {
+                  if (list != Keys.all) {
+                    String newName = list;
+                    showDialog(
+                      context: context,
+                      builder:
+                          (context) => AlertDialog(
+                            title: const Text('Edit List Name'),
+                            content: TextField(
+                              autofocus: true,
+                              decoration: const InputDecoration(
+                                labelText: 'New name',
+                                hintText: 'E.g. "Work", "Personal"',
+                                border: OutlineInputBorder(),
+                              ),
+                              onChanged: (value) => newName = value.trim(),
+                              controller: TextEditingController(text: list),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Icon(ThemeIcons.cancel),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (newName.isNotEmpty &&
+                                      newName != list &&
+                                      !filters.contains(newName)) {
+                                    Navigator.pop(context);
+                                    // Update the list name in the filters
+                                    final index = filters.indexOf(list);
+                                    if (index != -1) {
+                                      filters[index] = newName;
+                                      onSelect(
+                                        newName,
+                                      ); // Select the renamed list
+                                    }
+                                  }
+                                },
+                                child: const Icon(ThemeIcons.done),
+                              ),
+                            ],
+                          ),
+                    );
+                  }
+                },
                 onLongPress: () {
                   if (list != Keys.all) {
                     showDialog(
