@@ -7,14 +7,14 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
-class AiPage extends StatefulWidget {
-  const AiPage({super.key});
+class AIPage extends StatefulWidget {
+  const AIPage({super.key});
 
   @override
-  State<AiPage> createState() => _AiPageState();
+  State<AIPage> createState() => _AIPageState();
 }
 
-class _AiPageState extends State<AiPage> {
+class _AIPageState extends State<AIPage> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<ChatMessage> _messages = [];
