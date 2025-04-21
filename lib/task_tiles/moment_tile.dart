@@ -20,9 +20,9 @@ class MomentTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isOverdue = task.isOverdue();
+    final isOverdue = Task.isOverdue(task.date!, task.time);
     final subtitleParts = [
-      task.formatDate(),
+      Task.formatDate(task.date!),
       task.time,
       '${task.duration}m',
       task.location,

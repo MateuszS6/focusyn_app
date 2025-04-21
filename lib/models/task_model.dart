@@ -97,10 +97,8 @@ class Task {
     }
   }
 
-  String formatDate() {
-    if (date == null) return '';
-
-    final inputDate = DateTime.tryParse(date!);
+  static String formatDate(String date) {
+    final inputDate = DateTime.tryParse(date);
     if (inputDate == null) return '';
 
     final now = DateTime.now();
@@ -114,19 +112,19 @@ class Task {
       return DateFormat.MMMd().format(inputDate); // e.g., "Apr 20"
     } else {
       // Else, just return the input date
-      return date!;
+      return date;
     }
   }
 
-  bool isOverdue() {
-    if (date == null || date!.isEmpty) return false;
+  static bool isOverdue(String date, String? time) {
+    if (date.isEmpty) return false;
 
-    final taskDate = DateTime.parse(date!);
+    final taskDate = DateTime.parse(date);
     final now = DateTime.now();
 
     // If time is specified, create a DateTime object with both date and time
-    if (time != null && time!.isNotEmpty) {
-      final timeParts = time!.split(':');
+    if (time != null && time.isNotEmpty) {
+      final timeParts = time.split(':');
       if (timeParts.length == 2) {
         final hours = int.tryParse(timeParts[0]) ?? 0;
         final minutes = int.tryParse(timeParts[1]) ?? 0;
