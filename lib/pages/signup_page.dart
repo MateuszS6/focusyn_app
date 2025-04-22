@@ -6,6 +6,14 @@ import 'package:hive/hive.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/pages/onboarding_page.dart';
 
+/// A page that handles new user registration and account creation.
+///
+/// This page provides:
+/// - User registration with name, email, and password
+/// - Input validation and error handling
+/// - Automatic initialization of user data and preferences
+/// - Navigation to onboarding after successful registration
+/// - Integration with Firebase Authentication and Cloud Firestore
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -13,110 +21,64 @@ class SignUpPage extends StatefulWidget {
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
+/// Manages the state of the signup page, including:
+/// - Form input controllers and validation
+/// - Loading state during registration
+/// - User data initialization
+/// - Error handling and user feedback
 class _SignUpPageState extends State<SignUpPage> {
+  // Controllers for form inputs
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final nameController = TextEditingController();
-  bool loading = false;
 
+  // State variables
+  bool loading = false;
+  bool _obscurePassword = true;
+
+  /// Handles the signup process by:
+  /// 1. Validating user inputs
+  /// 2. Creating Firebase Auth account
+  /// 3. Initializing user data and preferences
+  /// 4. Syncing data to Firestore
+  /// 5. Navigating to onboarding page
   void _signUp() async {
+    // Get and trim input values
     final name = nameController.text.trim();
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
 
-    // Validate inputs
+    // Validate name input
     if (name.isEmpty) {
-      showDialog(
-        context: context,
-        builder:
-            (_) => AlertDialog(
-              title: const Text("Invalid Name"),
-              content: const Text("Please enter your name"),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("OK"),
-                ),
-              ],
-            ),
-      );
+      _showErrorDialog("Invalid Name", "Please enter your name");
       return;
     }
 
     setState(() => loading = true);
     try {
+      // Create Firebase Auth account
       final userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
-      // Set display name in Auth
+      // Update user profile
       await userCredential.user?.updateDisplayName(name);
-      // Store in Firestore profile
       await CloudSyncService.updateUserProfile(name);
 
-      // Initialize example data for new account
+      // Initialize local storage boxes
       final taskBox = Hive.box<List>(Keys.taskBox);
       final filterBox = Hive.box(Keys.filterBox);
       final brainBox = Hive.box(Keys.brainBox);
 
-      // Initialize tasks
-      taskBox.putAll({
-        Keys.actions: [
-          {
-            'id': DateTime.now().millisecondsSinceEpoch.toString(),
-            'text': "Complete Focusyn App",
-            'priority': 1,
-            'brainPoints': 10,
-            'list': "Work",
-            'createdAt': DateTime.now().toIso8601String(),
-          },
-        ],
-        Keys.flows: [
-          {
-            'id': DateTime.now().millisecondsSinceEpoch.toString(),
-            'text': "Morning Routine",
-            'date': "2025-03-30",
-            'time': "07:30",
-            'duration': 15,
-            'repeat': "Daily",
-            'brainPoints': 10,
-            'list': "Morning",
-            'createdAt': DateTime.now().toIso8601String(),
-          },
-        ],
-        Keys.moments: [
-          {
-            'id': DateTime.now().millisecondsSinceEpoch.toString(),
-            'text': "Doctor's Appointment",
-            'date': "2025-04-03",
-            'time': "10:30",
-            'duration': 30,
-            'location': "Clinic",
-            'list': "Health",
-            'createdAt': DateTime.now().toIso8601String(),
-          },
-        ],
-        Keys.thoughts: [
-          {
-            'id': DateTime.now().millisecondsSinceEpoch.toString(),
-            'text': "I should start reading more books",
-            'createdAt': DateTime.now().toIso8601String(),
-          },
-        ],
-      });
+      // Initialize example tasks for new users
+      _initializeExampleTasks(taskBox);
 
-      // Initialize filters
-      filterBox.putAll({
-        Keys.actions: [Keys.all, 'Home', 'Errands', 'Work'],
-        Keys.flows: [Keys.all, 'Morning', 'Wellness'],
-        Keys.moments: [Keys.all, 'Appointments', 'Social'],
-        Keys.thoughts: [Keys.all, 'Ideas', 'Journal'],
-      });
+      // Initialize default filters
+      _initializeFilters(filterBox);
 
-      // Initialize brain points
-      brainBox.put(Keys.brainPoints, 100);
-      brainBox.put('lastReset', DateTime.now().toIso8601String());
+      // Initialize brain points system
+      _initializeBrainPoints(brainBox);
 
-      // Sync initialized data to Firestore
+      // Sync all initialized data to Firestore
       await CloudSyncService.syncOnLogin(
         taskBox,
         filterBox,
@@ -131,23 +93,92 @@ class _SignUpPageState extends State<SignUpPage> {
       );
     } catch (e) {
       if (!mounted) return;
-      showDialog(
-        context: context,
-        builder:
-            (_) => AlertDialog(
-              title: const Text("Sign Up Failed"),
-              content: Text(e.toString()),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text("OK"),
-                ),
-              ],
-            ),
-      );
+      _showErrorDialog("Sign Up Failed", e.toString());
     } finally {
       if (mounted) setState(() => loading = false);
     }
+  }
+
+  /// Shows an error dialog with the given title and message
+  void _showErrorDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder:
+          (_) => AlertDialog(
+            title: Text(title),
+            content: Text(message),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("OK"),
+              ),
+            ],
+          ),
+    );
+  }
+
+  /// Initializes example tasks for new users
+  void _initializeExampleTasks(Box<List> taskBox) {
+    taskBox.putAll({
+      Keys.actions: [
+        {
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+          'text': "Complete Focusyn App",
+          'priority': 1,
+          'brainPoints': 10,
+          'list': "Work",
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      ],
+      Keys.flows: [
+        {
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+          'text': "Morning Routine",
+          'date': "2025-03-30",
+          'time': "07:30",
+          'duration': 15,
+          'repeat': "Daily",
+          'brainPoints': 10,
+          'list': "Morning",
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      ],
+      Keys.moments: [
+        {
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+          'text': "Doctor's Appointment",
+          'date': "2025-04-03",
+          'time': "10:30",
+          'duration': 30,
+          'location': "Clinic",
+          'list': "Health",
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      ],
+      Keys.thoughts: [
+        {
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+          'text': "I should start reading more books",
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      ],
+    });
+  }
+
+  /// Initializes default filters for different task types
+  void _initializeFilters(Box filterBox) {
+    filterBox.putAll({
+      Keys.actions: [Keys.all, 'Home', 'Errands', 'Work'],
+      Keys.flows: [Keys.all, 'Morning', 'Wellness'],
+      Keys.moments: [Keys.all, 'Appointments', 'Social'],
+      Keys.thoughts: [Keys.all, 'Ideas', 'Journal'],
+    });
+  }
+
+  /// Initializes brain points system with starting values
+  void _initializeBrainPoints(Box brainBox) {
+    brainBox.put(Keys.brainPoints, 100);
+    brainBox.put('lastReset', DateTime.now().toIso8601String());
   }
 
   @override
@@ -169,7 +200,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo
+                    // App Logo
                     Image.asset(
                       'assets/logo_transparent_text.png',
                       height: 200,
@@ -177,14 +208,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     Text(
                       "Create your account",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey[700],
-                      ),
+                      style: Theme.of(context).textTheme.headlineLarge
+                          ?.copyWith(color: Colors.grey[500]),
                     ),
                     const SizedBox(height: 32),
-                    // Input Fields
+                    // Sign Up Form
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
@@ -200,11 +228,12 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                       child: Column(
                         children: [
+                          // Name Input
                           TextField(
                             controller: nameController,
                             decoration: InputDecoration(
                               labelText: 'Display Name',
-                              hintText: 'Enter your display name',
+                              hintText: 'Create a display name',
                               prefixIcon: Icon(
                                 ThemeIcons.user,
                                 color: Colors.blue[300],
@@ -221,11 +250,13 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           ),
                           const SizedBox(height: 16),
+                          // Email Input
                           TextField(
                             controller: emailController,
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               labelText: 'Email',
+                              hintText: 'Enter your email',
                               prefixIcon: Icon(
                                 ThemeIcons.email,
                                 color: Colors.blue[300],
@@ -242,14 +273,29 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           ),
                           const SizedBox(height: 16),
+                          // Password Input
                           TextField(
                             controller: passwordController,
-                            obscureText: true,
+                            obscureText: _obscurePassword,
                             decoration: InputDecoration(
                               labelText: 'Password (min 6 chars)',
+                              hintText: 'Create a password',
                               prefixIcon: Icon(
                                 ThemeIcons.lock,
                                 color: Colors.blue[300],
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? ThemeIcons.visibilityOff
+                                      : ThemeIcons.visibilityOn,
+                                  color: Colors.grey[600],
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -263,6 +309,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             ),
                           ),
                           const SizedBox(height: 24),
+                          // Sign Up Button
                           loading
                               ? const CircularProgressIndicator()
                               : ElevatedButton(
