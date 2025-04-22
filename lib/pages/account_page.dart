@@ -9,6 +9,19 @@ import '../pages/login_page.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
 
+/// A page that provides user account management functionality.
+///
+/// This page allows users to:
+/// - View and update their profile information
+/// - Change their display name
+/// - Update their email address
+/// - Change their password
+/// - Access privacy settings
+/// - View terms of use and about information
+/// - Log out of their account
+///
+/// The page integrates with Firebase Authentication for user management
+/// and CloudSyncService for data synchronization.
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
 
@@ -16,7 +29,21 @@ class AccountPage extends StatefulWidget {
   State<AccountPage> createState() => _AccountPageState();
 }
 
+/// The state class for [AccountPage].
+///
+/// Manages the user's account settings and provides methods for:
+/// - Updating user profile information
+/// - Handling authentication changes
+/// - Managing account security
+/// - Logging out
 class _AccountPageState extends State<AccountPage> {
+  /// Updates the user's display name.
+  ///
+  /// Shows a dialog to input the new display name and updates it in:
+  /// - Firebase Authentication
+  /// - Firestore profile
+  ///
+  /// Displays success/error messages using SnackBar.
   Future<void> _updateDisplayName() async {
     final currentUser = FirebaseAuth.instance.currentUser;
     final controller = TextEditingController(
@@ -85,6 +112,12 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
+  /// Updates the user's password.
+  ///
+  /// Requires reauthentication with current password before allowing the change.
+  /// Validates the new password meets minimum length requirements.
+  ///
+  /// Shows appropriate success/error messages using SnackBar.
   Future<void> _updatePassword() async {
     if (!mounted) return;
 
@@ -198,6 +231,12 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
+  /// Updates the user's email address.
+  ///
+  /// Requires reauthentication with current password before allowing the change.
+  /// Sends a verification email to the new address.
+  ///
+  /// Updates both Firebase Auth and Firestore profile.
   Future<void> _updateEmail() async {
     if (!mounted) return;
 
@@ -334,6 +373,12 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
+  /// Logs the user out of the application.
+  ///
+  /// Performs the following actions:
+  /// - Clears local data using CloudSyncService
+  /// - Signs out from Firebase Authentication
+  /// - Navigates to the login page
   Future<void> _logout() async {
     try {
       // Clear local data
@@ -362,6 +407,9 @@ class _AccountPageState extends State<AccountPage> {
     }
   }
 
+  /// Shows a dialog with the given title and content.
+  ///
+  /// Used for displaying terms of use and about information.
   void _showDialog(String title, String content) {
     showDialog(
       context: context,
@@ -379,6 +427,7 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
+  // Icon constants for consistent usage throughout the page
   static const settingsIcon = ThemeIcons.settings;
   static const userIcon = ThemeIcons.user;
   static const emailIcon = ThemeIcons.email;
@@ -415,7 +464,7 @@ class _AccountPageState extends State<AccountPage> {
         child: ListView(
           padding: const EdgeInsets.all(24),
           children: [
-            // Profile Section
+            // Profile Section - Displays user's avatar, name, and email
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -465,7 +514,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ),
             const SizedBox(height: 24),
-            // Settings List
+            // Settings List - Contains all account management options
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -547,7 +596,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
             ),
             const SizedBox(height: 24),
-            // Logout Button
+            // Logout Button - Provides a way to sign out of the application
             FilledButton.tonal(
               onPressed: _logout,
               style: FilledButton.styleFrom(
@@ -579,6 +628,12 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
+  /// Builds a setting item with an icon, label, and tap action.
+  ///
+  /// [context] is the build context
+  /// [icon] is the icon to display
+  /// [label] is the text label
+  /// [onTap] is the callback when the item is tapped
   Widget _buildSettingItem(
     BuildContext context, {
     required IconData icon,
@@ -610,6 +665,9 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
+  /// Builds a divider for separating setting items.
+  ///
+  /// Uses a custom style with indentation to align with the setting items.
   Widget _buildDivider() {
     return Divider(
       height: 1,
