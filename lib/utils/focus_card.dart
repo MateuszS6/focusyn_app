@@ -2,20 +2,42 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/services/task_service.dart';
 import 'package:focusyn_app/pages/task_page.dart';
 
+/// A card widget that displays a focus category with an icon and description.
+/// This card provides:
+/// - Visual representation of a focus category
+/// - Icon and color coding for quick identification
+/// - Description of the category's purpose
+/// - Tap gesture to navigate to the category's task list
 class FocusCard extends StatelessWidget {
+  /// Icon to display for this focus category
   final IconData icon;
-  final Color? color;
-  final String category;
-  final String description;
-  final VoidCallback? onUpdate;
 
+  /// Color to use for the icon and accent elements
+  final Color color;
+
+  /// Name of the focus category
+  final String category;
+
+  /// Description of what this focus category represents
+  final String description;
+
+  /// Callback function when the card is tapped
+  final VoidCallback onUpdate;
+
+  /// Creates a focus card with the specified properties.
+  ///
+  /// [icon] - The icon to display for this category
+  /// [color] - The color to use for the icon and accents
+  /// [category] - The name of the focus category
+  /// [description] - Description of the category's purpose
+  /// [onUpdate] - Callback when the card is tapped
   const FocusCard({
     super.key,
     required this.icon,
-    this.color = Colors.grey,
+    required this.color,
     required this.category,
     required this.description,
-    this.onUpdate,
+    required this.onUpdate,
   });
 
   @override
@@ -27,7 +49,7 @@ class FocusCard extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [color?.withAlpha(13) ?? Colors.grey.shade50, Colors.white],
+            colors: [color.withAlpha(13), Colors.white],
           ),
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
@@ -50,7 +72,7 @@ class FocusCard extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 24,
-                    backgroundColor: color?.withAlpha(179),
+                    backgroundColor: color.withAlpha(179),
                     child: Icon(icon, color: Colors.white, size: 24),
                   ),
                   const SizedBox(width: 16),
@@ -94,7 +116,7 @@ class FocusCard extends StatelessWidget {
       MaterialPageRoute(builder: (_) => TaskPage(category: category)),
     ).then((_) {
       // Trigger rebuild when returning from task page
-      if (onUpdate != null) onUpdate!();
+      onUpdate();
     });
   }
 }
