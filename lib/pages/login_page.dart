@@ -4,6 +4,14 @@ import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/pages/signup_page.dart';
 import '../main_screen.dart';
 
+/// A page that handles user authentication through email and password login.
+///
+/// This page provides:
+/// - Email and password input fields with validation
+/// - Secure password handling with visibility toggle
+/// - Error handling for failed login attempts
+/// - Navigation to signup page for new users
+/// - Automatic navigation to main screen on successful login
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -11,11 +19,22 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
+/// Manages the state of the login page, including:
+/// - Form input controllers
+/// - Loading state during authentication
+/// - Password visibility toggle
+/// - Error handling and user feedback
 class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool loading = false;
+  bool _obscurePassword = true;
 
+  /// Handles the login process by:
+  /// 1. Validating user credentials
+  /// 2. Attempting authentication with Firebase
+  /// 3. Handling success/failure cases
+  /// 4. Navigating to appropriate screens
   void _signIn() async {
     setState(() => loading = true);
     try {
@@ -105,6 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                             keyboardType: TextInputType.emailAddress,
                             decoration: InputDecoration(
                               labelText: 'Email',
+                              hintText: 'Enter your email',
                               prefixIcon: Icon(
                                 ThemeIcons.email,
                                 color: Colors.blue[300],
@@ -123,12 +143,27 @@ class _LoginPageState extends State<LoginPage> {
                           const SizedBox(height: 16),
                           TextField(
                             controller: passwordController,
-                            obscureText: true,
+                            obscureText: _obscurePassword,
                             decoration: InputDecoration(
                               labelText: 'Password',
+                              hintText: 'Enter your password',
                               prefixIcon: Icon(
                                 ThemeIcons.lock,
                                 color: Colors.blue[300],
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword
+                                      ? ThemeIcons.visibilityOff
+                                      : ThemeIcons.visibilityOn,
+                                  color: Colors.grey[600],
+                                ),
+                                // padding: EdgeInsets.symmetric(horizontal: 16),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
                               ),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
