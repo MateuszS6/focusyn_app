@@ -4,6 +4,14 @@ import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/main_screen.dart';
 import 'package:hive/hive.dart';
 
+/// A page that introduces new users to the app's features and functionality.
+///
+/// This page provides:
+/// - Interactive onboarding experience with multiple slides
+/// - Visual and textual explanations of key features
+/// - Progress indicators and navigation controls
+/// - Option to skip or complete the onboarding
+/// - Automatic navigation to main screen after completion
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
 
@@ -11,11 +19,23 @@ class OnboardingPage extends StatefulWidget {
   State<OnboardingPage> createState() => _OnboardingPageState();
 }
 
+/// Manages the state of the onboarding page, including:
+/// - Page navigation and progress tracking
+/// - Onboarding content and presentation
+/// - User interaction handling
+/// - Completion state management
 class _OnboardingPageState extends State<OnboardingPage> {
+  // Page controller for managing slide transitions
   final PageController _pageController = PageController();
+
+  // Current page index and total number of pages
   int _currentPage = 0;
   final int _totalPages = 5;
 
+  /// List of onboarding items, each representing a slide with:
+  /// - Title and description
+  /// - Visual element (icon or image)
+  /// - Color theme
   final List<OnboardingItem> _items = [
     OnboardingItem(
       title: 'Welcome to Focusyn',
@@ -60,12 +80,16 @@ class _OnboardingPageState extends State<OnboardingPage> {
     super.dispose();
   }
 
+  /// Handles page change events and updates the current page index
   void _onPageChanged(int page) {
     setState(() {
       _currentPage = page;
     });
   }
 
+  /// Completes the onboarding process by:
+  /// 1. Marking onboarding as completed in settings
+  /// 2. Navigating to the main screen
   void _completeOnboarding() async {
     // Mark onboarding as completed
     final settingsBox = Hive.box(Keys.settingBox);
@@ -85,6 +109,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       body: SafeArea(
         child: Column(
           children: [
+            // Onboarding Slides
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -95,6 +120,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 },
               ),
             ),
+            // Navigation Controls
             _buildBottomSection(),
           ],
         ),
@@ -102,12 +128,17 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+  /// Builds a single onboarding page with:
+  /// - Visual element (icon or image)
+  /// - Title and description
+  /// - Consistent styling and layout
   Widget _buildPage(OnboardingItem item) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          // Visual Element Container
           Container(
             width: 120,
             height: 120,
@@ -123,12 +154,14 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ),
           ),
           const SizedBox(height: 40),
+          // Title
           Text(
             item.title,
             style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
+          // Description
           Text(
             item.description,
             style: const TextStyle(fontSize: 16, color: Colors.black54),
@@ -139,17 +172,23 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+  /// Builds the bottom section containing:
+  /// - Page indicators
+  /// - Navigation buttons (Next/Skip or Get Started)
   Widget _buildBottomSection() {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: Column(
         children: [
+          // Page Indicators
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(_totalPages, (index) => _buildDot(index)),
           ),
           const SizedBox(height: 24),
+          // Navigation Buttons
           if (_currentPage == _totalPages - 1)
+            // Get Started Button (on last page)
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -169,6 +208,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
               ),
             )
           else
+            // Next/Skip Buttons (on other pages)
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -204,6 +244,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     );
   }
 
+  /// Builds a page indicator dot with:
+  /// - Active state (filled)
+  /// - Inactive state (outlined)
   Widget _buildDot(int index) {
     return Container(
       width: 10,
@@ -217,6 +260,10 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 }
 
+/// Represents a single onboarding slide with:
+/// - Title and description text
+/// - Visual element (either icon or image)
+/// - Color theme for consistent styling
 class OnboardingItem {
   final String title;
   final String description;
