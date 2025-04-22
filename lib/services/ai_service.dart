@@ -86,7 +86,7 @@ class AIService {
     final tasks = (chatContext?['tasks'] as List<String>?) ?? [];
 
     // Construct system prompt with user context
-    // Note: The initial system prompt was generated with assistance from ChatGPT,
+    // Note: The initial system prompt was generated with assistance from genAI,
     // while the definitions were added by the developer to clarify key concepts
     final systemPrompt = '''
     You are Synthe, a calm, supportive, and motivating AI guide inside a productivity app called Focusyn.
