@@ -5,18 +5,45 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
+/// A dialog widget for creating or editing action tasks.
+/// This dialog provides:
+/// - Title input with validation
+/// - Priority level selection
+/// - Brain points assignment
+/// - List categorization
 class ActionDialog extends StatelessWidget {
+  /// Title for the add action dialog
   static const String _dialogTitle = "Add Action";
+
+  /// Title for the edit action dialog
   static const String _editDialogTitle = "Edit Action";
+
+  /// Label for the title input field
   static const String _titleLabel = "Title *";
+
+  /// Label for the priority selection
   static const String _priorityLabel = "Priority";
+
+  /// Label for the brain points input field
   static const String _brainPointsLabel = "Brain Points";
+
+  /// Label for the list selection
   static const String _listLabel = "List";
 
+  /// Callback function when an action task is created or edited
   final void Function(Task) onAdd;
+
+  /// Default list name to pre-select
   final String? defaultList;
+
+  /// Initial task data for editing
   final Task? initialTask;
 
+  /// Creates an action dialog with the specified properties.
+  ///
+  /// [onAdd] - Callback when an action task is created or edited
+  /// [defaultList] - Optional default list name
+  /// [initialTask] - Optional initial task data for editing
   const ActionDialog({
     super.key,
     required this.onAdd,
@@ -26,6 +53,7 @@ class ActionDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Initialize variables with default values
     String title = initialTask?.title ?? '';
     int priority = initialTask?.priority ?? 1;
     int brainPoints = initialTask?.brainPoints ?? 5;
