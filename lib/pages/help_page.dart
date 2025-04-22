@@ -3,15 +3,30 @@ import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 
+/// A page that provides help and documentation for the application.
+///
+/// This page includes:
+/// - Detailed explanations of focus categories
+/// - Task interaction guidelines
+/// - List management instructions
+/// - Rich text formatting support
 class HelpPage extends StatelessWidget {
   const HelpPage({super.key});
 
-  // Helper function to convert marked up text to RichText
+  /// Converts text with simple markup to a RichText widget.
+  ///
+  /// Supports the following formatting:
+  /// - *text* for bold text
+  /// - /text/ for italic text
+  ///
+  /// [content] is the text to format
+  /// [fontSize] is the base font size (defaults to 16)
   Widget _buildRichText(String content, {double fontSize = 16}) {
-    final List<TextSpan> spans = [];
-    final RegExp boldPattern = RegExp(r'\*(.*?)\*');
-    final RegExp italicPattern = RegExp(r'\/(.*?)\/');
+    final List<TextSpan> spans = []; // List of text spans to display
+    final RegExp boldPattern = RegExp(r'\*(.*?)\*'); // Bold text
+    final RegExp italicPattern = RegExp(r'\/(.*?)\/'); // Italic text
 
+    // Remaining text to process
     String remainingText = content;
 
     while (remainingText.isNotEmpty) {
@@ -71,6 +86,7 @@ class HelpPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(24),
         children: [
+          // Focus Categories section
           _buildSection(
             title: 'Focus Categories',
             children: [
@@ -128,6 +144,7 @@ class HelpPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 32),
+          // Task Interactions section
           _buildSection(
             title: 'Task Interactions',
             children: [
@@ -155,6 +172,7 @@ class HelpPage extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 32),
+          // Lists & Organization section
           _buildSection(
             title: 'Lists & Organization',
             children: [
@@ -188,6 +206,10 @@ class HelpPage extends StatelessWidget {
     );
   }
 
+  /// Builds a section with a title and its content.
+  ///
+  /// [title] is the section header
+  /// [children] are the widgets to display in the section
   Widget _buildSection({
     required String title,
     required List<Widget> children,
@@ -205,6 +227,13 @@ class HelpPage extends StatelessWidget {
     );
   }
 
+  /// Builds a card displaying information about a focus category.
+  ///
+  /// [icon] is the category's icon
+  /// [title] is the category name
+  /// [description] explains the category's purpose
+  /// [color] is the category's theme color
+  /// [examples] are sample tasks for the category
   Widget _buildCategoryCard({
     required IconData icon,
     required String title,
@@ -263,6 +292,12 @@ class HelpPage extends StatelessWidget {
     );
   }
 
+  /// Builds a card displaying general information.
+  ///
+  /// [title] is the information title
+  /// [content] is the formatted text content
+  /// [icon] is the information icon
+  /// [color] is the card's theme color
   Widget _buildInfoCard({
     required String title,
     required String content,
