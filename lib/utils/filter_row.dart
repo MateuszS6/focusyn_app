@@ -4,14 +4,39 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
+/// A horizontal scrollable row of filter chips for task categories.
+/// This widget provides:
+/// - Category-specific color coding
+/// - Add/Edit/Delete functionality for filter lists
+/// - Horizontal scrolling with shadow effect
+/// - Visual feedback for selected filters
 class FilterRow extends StatelessWidget {
+  /// The category this filter row belongs to (e.g., Actions, Flows)
   final String category;
+
+  /// List of available filters for this category
   final List<String> filters;
+
+  /// Currently selected filter
   final String selected;
+
+  /// Callback when a filter is selected
   final void Function(String) onSelect;
+
+  /// Callback to add a new filter
   final VoidCallback onAdd;
+
+  /// Callback to delete a filter
   final Future<void> Function(String) onDelete;
 
+  /// Creates a filter row with the specified properties.
+  ///
+  /// [category] - The category this filter row belongs to
+  /// [filters] - List of available filters
+  /// [selected] - Currently selected filter
+  /// [onSelect] - Callback when a filter is selected
+  /// [onAdd] - Callback to add a new filter
+  /// [onDelete] - Callback to delete a filter
   const FilterRow({
     super.key,
     required this.category,
@@ -24,6 +49,7 @@ class FilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine the color based on the category
     final color = switch (category) {
       Keys.actions => ThemeColours.actionsMain,
       Keys.flows => ThemeColours.flowsMain,
