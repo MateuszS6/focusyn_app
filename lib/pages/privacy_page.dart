@@ -7,6 +7,13 @@ import 'package:focusyn_app/pages/login_page.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/constants/keys.dart';
 
+/// A page that provides privacy and security information and controls.
+///
+/// This page provides:
+/// - Data collection and protection information
+/// - Contact information
+/// - Account management options
+/// - Data reset and deletion controls
 class PrivacyPage extends StatefulWidget {
   const PrivacyPage({super.key});
 
@@ -14,6 +21,10 @@ class PrivacyPage extends StatefulWidget {
   State<PrivacyPage> createState() => _PrivacyPageState();
 }
 
+/// Manages the state of the privacy page, including:
+/// - Privacy information display
+/// - Account management actions
+/// - Data protection controls
 class _PrivacyPageState extends State<PrivacyPage> {
   @override
   Widget build(BuildContext context) {
@@ -118,6 +129,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
     );
   }
 
+  /// Builds a tile showing data collection information
   Widget _buildDataCollectionTile(BuildContext context) {
     return ListTile(
       leading: const Icon(ThemeIcons.data),
@@ -155,6 +167,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
     );
   }
 
+  /// Builds a tile showing data protection information
   Widget _buildDataProtectionTile(BuildContext context) {
     return ListTile(
       leading: const Icon(ThemeIcons.privacy),
@@ -190,6 +203,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
     );
   }
 
+  /// Builds a tile for deleting the user's account
   Widget _buildDeleteAccountTile(BuildContext context) {
     return ListTile(
       leading: const Icon(ThemeIcons.delete, color: Colors.red),
@@ -201,6 +215,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
     );
   }
 
+  /// Builds a tile for resetting app data
   Widget _buildResetDataTile(BuildContext context) {
     return ListTile(
       leading: const Icon(ThemeIcons.delete, color: Colors.red),
@@ -218,7 +233,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text('Cancel'),
+                    child: const Icon(ThemeIcons.cancel),
                   ),
                   FilledButton(
                     onPressed: () {
@@ -250,16 +265,13 @@ class _PrivacyPageState extends State<PrivacyPage> {
                             if (!mounted) return;
                             scaffoldMessenger.showSnackBar(
                               SnackBar(
-                                content: Text('Failed to reset app data: $e'),
+                                content: Text('Error resetting data: $e'),
                                 backgroundColor: Colors.red,
                               ),
                             );
                           });
                     },
-                    style: FilledButton.styleFrom(
-                      backgroundColor: Colors.red.shade50,
-                      foregroundColor: Colors.red.shade700,
-                    ),
+                    style: FilledButton.styleFrom(backgroundColor: Colors.red),
                     child: const Text('Reset'),
                   ),
                 ],
@@ -269,6 +281,42 @@ class _PrivacyPageState extends State<PrivacyPage> {
     );
   }
 
+  /// Builds a tile showing contact information
+  Widget _buildContactTile(BuildContext context) {
+    return ListTile(
+      leading: const Icon(ThemeIcons.email),
+      title: const Text('Contact Us'),
+      subtitle: const Text('Get in touch with our support team'),
+      trailing: const Icon(ThemeIcons.open, size: 20),
+      onTap: () {
+        showDialog(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: const Text('Contact Us'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text('Need help or have questions?'),
+                    SizedBox(height: 16),
+                    Text('Email: mstepien1104@gmail.com'),
+                    Text('Hours: Mon-Fri, 9am-5pm GMT'),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Close'),
+                  ),
+                ],
+              ),
+        );
+      },
+    );
+  }
+
+  /// Deletes the user's account and all associated data
   Future<void> _deleteAccount() async {
     // First confirm the user wants to delete their account
     final confirmed = await showDialog<bool>(
@@ -282,14 +330,11 @@ class _PrivacyPageState extends State<PrivacyPage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
+                child: const Icon(ThemeIcons.cancel),
               ),
               FilledButton(
                 onPressed: () => Navigator.pop(context, true),
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red.shade50,
-                  foregroundColor: Colors.red.shade700,
-                ),
+                style: FilledButton.styleFrom(backgroundColor: Colors.red),
                 child: const Text('Delete'),
               ),
             ],
@@ -402,13 +447,5 @@ class _PrivacyPageState extends State<PrivacyPage> {
         ),
       );
     }
-  }
-
-  Widget _buildContactTile(BuildContext context) {
-    return const ListTile(
-      leading: Icon(ThemeIcons.email),
-      title: Text('Questions?'),
-      subtitle: Text('mstepien1104@gmail.com'),
-    );
   }
 }
