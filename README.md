@@ -81,7 +81,8 @@ The app uses:
 - **Cloud Firestore**: For cloud synchronization
 - **Brain Points System**: For tracking mental energy
 
-🧪 Testing
+## Testing
+
 Run all unit tests:
 
 ```bash
