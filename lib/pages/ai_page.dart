@@ -7,6 +7,14 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
+/// A page that provides an interactive chat interface with the AI assistant.
+///
+/// This page provides:
+/// - Real-time chat with the AI assistant
+/// - Message history persistence
+/// - Context-aware responses based on user data
+/// - Chat management features (clear history)
+/// - Visual feedback for AI responses
 class AIPage extends StatefulWidget {
   const AIPage({super.key});
 
@@ -14,9 +22,17 @@ class AIPage extends StatefulWidget {
   State<AIPage> createState() => _AIPageState();
 }
 
+/// Manages the state of the AI chat page, including:
+/// - Message history and persistence
+/// - User input handling
+/// - AI response generation
+/// - Chat UI state management
 class _AIPageState extends State<AIPage> {
+  // Controllers for input and scrolling
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+
+  // Chat state
   final List<ChatMessage> _messages = [];
   bool _isTyping = false;
 
@@ -27,6 +43,7 @@ class _AIPageState extends State<AIPage> {
     _scrollToBottom();
   }
 
+  /// Loads saved messages from local storage or initializes with welcome message
   void _loadMessages() {
     final box = Hive.box(Keys.chatBox);
     final savedMessages = box.get(
@@ -57,6 +74,7 @@ class _AIPageState extends State<AIPage> {
     });
   }
 
+  /// Saves current messages to local storage
   void _saveMessages() {
     final box = Hive.box(Keys.chatBox);
     final messagesToSave =
@@ -66,6 +84,7 @@ class _AIPageState extends State<AIPage> {
     box.put('messages', messagesToSave);
   }
 
+  /// Shows confirmation dialog and clears chat history
   void _clearChat() {
     showDialog(
       context: context,
@@ -111,6 +130,7 @@ class _AIPageState extends State<AIPage> {
     super.dispose();
   }
 
+  /// Adds a new message to the chat and optionally saves it
   void _addMessage({
     required String text,
     required bool isUser,
@@ -125,6 +145,7 @@ class _AIPageState extends State<AIPage> {
     _scrollToBottom();
   }
 
+  /// Scrolls the chat to the bottom with animation
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
@@ -137,6 +158,7 @@ class _AIPageState extends State<AIPage> {
     });
   }
 
+  /// Handles user message submission and generates AI response
   void _handleSubmitted(String text) async {
     if (text.trim().isEmpty) return;
 
@@ -152,6 +174,7 @@ class _AIPageState extends State<AIPage> {
               .map((msg) => {'text': msg.text, 'isUser': msg.isUser})
               .toList();
 
+      // Prepare context for AI including user data and tasks
       final taskBox = Hive.box<List>(Keys.taskBox);
       final chatContext = {
         'userName': FirebaseAuth.instance.currentUser?.displayName,
@@ -173,6 +196,7 @@ class _AIPageState extends State<AIPage> {
             ].where((text) => text.isNotEmpty).take(3).toList(),
       };
 
+      // Get AI response and add to chat
       final reply = await AIService.askAI(
         text,
         chatHistory,
@@ -197,11 +221,13 @@ class _AIPageState extends State<AIPage> {
       appBar: MyAppBar(
         title: Keys.aiName,
         actions: [
+          // Clear Chat Button
           IconButton(
             icon: const Icon(ThemeIcons.clear),
             tooltip: 'Clear Chat',
             onPressed: _clearChat,
           ),
+          // About Button
           IconButton(
             icon: const Icon(ThemeIcons.info),
             tooltip: 'About ${Keys.aiName}',
@@ -252,16 +278,16 @@ class _AIPageState extends State<AIPage> {
                           ),
                           const SizedBox(height: 8),
                           const Text(
-                            '• Task creation and management\n'
-                            '• Calendar integration\n'
-                            '• Advanced AI capabilities',
+                            '• Voice interaction\n'
+                            '• Task automation\n'
+                            '• Advanced analytics\n',
                           ),
                         ],
                       ),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text('Got it'),
+                          child: const Text('Close'),
                         ),
                       ],
                     ),
@@ -270,181 +296,58 @@ class _AIPageState extends State<AIPage> {
           ),
         ],
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(color: Colors.grey[50]),
-                child: MyScrollShadow(
-                  child: ListView.builder(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                      horizontal: 16,
-                    ),
-                    itemCount: _messages.length + (_isTyping ? 1 : 0),
-                    itemBuilder: (context, index) {
-                      if (index == _messages.length && _isTyping) {
-                        return _buildTypingIndicator();
-                      }
-                      return _buildMessage(_messages[index]);
-                    },
-                  ),
-                ),
-              ),
-            ),
-            _buildInputArea(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMessage(ChatMessage message) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        mainAxisAlignment:
-            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
+      body: Column(
         children: [
-          if (!message.isUser) _buildAvatar(),
-          const SizedBox(width: 8),
-          Flexible(
-            child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              decoration: BoxDecoration(
-                color: message.isUser ? Colors.blue : Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(13),
-                    blurRadius: 5,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Text(
-                message.text,
-                style: TextStyle(
-                  color: message.isUser ? Colors.white : Colors.black87,
-                  fontSize: 16,
-                  fontFamily: null,
-                  fontStyle: FontStyle.normal,
-                ),
+          // Chat Messages
+          Expanded(
+            child: MyScrollShadow(
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.all(16),
+                itemCount: _messages.length,
+                itemBuilder: (context, index) {
+                  final message = _messages[index];
+                  return ChatBubble(
+                    message: message,
+                    isTyping: _isTyping && index == _messages.length - 1,
+                  );
+                },
               ),
             ),
           ),
-          const SizedBox(width: 8),
-          if (message.isUser) _buildAvatar(isUser: true),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAvatar({bool isUser = false}) {
-    return Container(
-      width: 36,
-      height: 36,
-      decoration: BoxDecoration(
-        color: isUser ? Colors.blue[100] : Colors.purple[100],
-        shape: BoxShape.circle,
-      ),
-      child: Center(
-        child: Icon(
-          isUser ? ThemeIcons.user : ThemeIcons.robot,
-          color: isUser ? Colors.blue : Colors.purple,
-          size: 20,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTypingIndicator() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildAvatar(),
-          const SizedBox(width: 8),
+          // Input Area
           Container(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(13),
-                  blurRadius: 5,
-                  offset: const Offset(0, 2),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(color: Colors.white),
+            child: Row(
+              children: [
+                // Message Input
+                Expanded(
+                  child: TextField(
+                    controller: _messageController,
+                    decoration: InputDecoration(
+                      hintText: 'Type a message...',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(24),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 12,
+                      ),
+                    ),
+                    onSubmitted: _handleSubmitted,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Send Button
+                IconButton(
+                  onPressed: () => _handleSubmitted(_messageController.text),
+                  icon: Icon(ThemeIcons.send, color: Colors.blue[300]),
                 ),
               ],
-            ),
-            child: Row(children: [_buildDot(0), _buildDot(1), _buildDot(2)]),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDot(int index) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(begin: 0.0, end: 1.0),
-        duration: Duration(milliseconds: 600),
-        curve: Curves.easeInOut,
-        builder: (context, value, child) {
-          return Container(
-            width: 8,
-            height: 8,
-            decoration: BoxDecoration(
-              color: Colors.purple.withAlpha(179),
-              shape: BoxShape.circle,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildInputArea() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      color: Colors.white,
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: TextField(
-                controller: _messageController,
-                decoration: const InputDecoration(
-                  hintText: 'Type a message...',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 12),
-                ),
-                textCapitalization: TextCapitalization.sentences,
-                onSubmitted: _handleSubmitted,
-              ),
-            ),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-            ),
-            child: IconButton(
-              icon: const Icon(ThemeIcons.send, color: Colors.white),
-              onPressed: () => _handleSubmitted(_messageController.text),
             ),
           ),
         ],
@@ -453,9 +356,126 @@ class _AIPageState extends State<AIPage> {
   }
 }
 
+/// Represents a chat message with:
+/// - Message text content
+/// - Sender identification (user or AI)
 class ChatMessage {
   final String text;
   final bool isUser;
 
-  ChatMessage({required this.text, required this.isUser});
+  const ChatMessage({required this.text, required this.isUser});
+}
+
+/// A widget that displays a chat message bubble with:
+/// - Different styling for user and AI messages
+/// - Typing indicator for AI responses
+/// - Consistent layout and spacing
+class ChatBubble extends StatelessWidget {
+  final ChatMessage message;
+  final bool isTyping;
+
+  const ChatBubble({super.key, required this.message, this.isTyping = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Row(
+        mainAxisAlignment:
+            message.isUser ? MainAxisAlignment.end : MainAxisAlignment.start,
+        children: [
+          if (!message.isUser) ...[
+            // AI Avatar
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: Colors.purple[100],
+                shape: BoxShape.circle,
+              ),
+              child: Icon(ThemeIcons.robot, color: Colors.purple, size: 18),
+            ),
+            const SizedBox(width: 8),
+          ],
+          // Message Bubble
+          Flexible(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: message.isUser ? Colors.blue[100] : Colors.grey[100],
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child:
+                  isTyping
+                      ? const TypingIndicator()
+                      : Text(
+                        message.text,
+                        style: TextStyle(
+                          color:
+                              message.isUser
+                                  ? Colors.blue[900]
+                                  : Colors.black87,
+                          fontSize: 16,
+                          height: 1.4,
+                        ),
+                      ),
+            ),
+          ),
+          if (message.isUser) ...[
+            const SizedBox(width: 8),
+            // User Avatar
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: Colors.blue[100],
+                shape: BoxShape.circle,
+              ),
+              child: Icon(ThemeIcons.user, color: Colors.blue[700], size: 18),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// A widget that displays an animated typing indicator
+class TypingIndicator extends StatelessWidget {
+  const TypingIndicator({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        _buildDot(0),
+        const SizedBox(width: 4),
+        _buildDot(1),
+        const SizedBox(width: 4),
+        _buildDot(2),
+      ],
+    );
+  }
+
+  /// Builds a dot for the typing indicator
+  Widget _buildDot(int index) {
+    return Container(
+      width: 8,
+      height: 8,
+      decoration: const BoxDecoration(
+        color: Colors.black54,
+        shape: BoxShape.circle,
+      ),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0.0, end: 1.0),
+        duration: Duration(milliseconds: 600 + (index * 200)),
+        curve: Curves.easeInOut,
+        builder: (context, value, child) {
+          return Opacity(opacity: value, child: child);
+        },
+        child: null,
+      ),
+    );
+  }
 }
