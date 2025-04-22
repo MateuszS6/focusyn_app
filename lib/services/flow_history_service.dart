@@ -2,10 +2,22 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:hive/hive.dart';
 
+/// A service class for managing flow completion history.
+/// This service provides:
+/// - Local storage of flow completion dates using Hive
+/// - Methods to track and retrieve flow completion history
+/// - Cloud synchronization of history data
 class FlowHistoryService {
+  /// Key used to store flow history in Hive box
   static const String _historyKey = 'flow_history';
 
-  /// Get all flow completion dates
+  /// Retrieves all flow completion dates from storage.
+  /// This method:
+  /// - Fetches history data from local storage
+  /// - Converts stored date strings to DateTime objects
+  /// - Returns an empty list if no history exists
+  ///
+  /// Returns a list of DateTime objects representing completion dates
   static List<DateTime> getCompletions() {
     final historyBox = Hive.box(Keys.historyBox);
     final history =
@@ -14,7 +26,15 @@ class FlowHistoryService {
     return history.map((date) => DateTime.parse(date.toString())).toList();
   }
 
-  /// Add a completion date to the history
+  /// Records a new flow completion date.
+  /// This method:
+  /// - Adds the new date to existing history
+  /// - Saves the updated history to local storage
+  /// - Triggers cloud synchronization
+  ///
+  /// [date] - The date of flow completion to record
+  ///
+  /// Throws an exception if the update or sync fails
   static Future<void> addCompletion(DateTime date) async {
     final historyBox = Hive.box(Keys.historyBox);
     final history = List<String>.from(
@@ -31,7 +51,13 @@ class FlowHistoryService {
     await CloudSyncService.uploadFlowHistory(historyBox);
   }
 
-  /// Clear all history
+  /// Removes all flow completion history.
+  /// This method:
+  /// - Clears all stored completion dates
+  /// - Updates local storage with an empty list
+  /// - Triggers cloud synchronization
+  ///
+  /// Throws an exception if the update or sync fails
   static Future<void> clearHistory() async {
     final historyBox = Hive.box(Keys.historyBox);
     await historyBox.put(_historyKey, <String>[]);
