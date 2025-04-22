@@ -8,6 +8,24 @@ import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
+/// The main screen of the application that serves as the root container.
+///
+/// This screen provides:
+/// - Bottom navigation for switching between main sections
+/// - Cloud synchronization status indicator
+/// - Container for displaying the current page
+///
+/// The main sections are:
+/// 1. Today - Daily tasks and progress
+/// 2. Focuses - Focus session management
+/// 3. AI - AI-powered assistance
+/// 4. Planner - Task planning and organization
+///
+/// The screen handles:
+/// - Navigation state management
+/// - Cloud synchronization
+/// - UI updates and transitions
+/// - Error handling for sync operations
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -15,10 +33,28 @@ class MainScreen extends StatefulWidget {
   State<MainScreen> createState() => _MainScreenState();
 }
 
+/// The state class for [MainScreen].
+///
+/// This class manages:
+/// - Current navigation index
+/// - Cloud synchronization state
+/// - Page transitions
+/// - Error handling
+///
+/// It provides methods for:
+/// - Initializing cloud sync
+/// - Handling navigation changes
+/// - Managing sync status display
+///
+/// The state is updated in response to:
+/// - Navigation changes
+/// - Sync completion
+/// - Error conditions
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 0;
-  bool _isSyncing = false;
+  int _selectedIndex = 0; // Current navigation index
+  bool _isSyncing = false; // Sync operation status
 
+  /// List of main application pages in navigation order.
   static const List<Widget> _pages = [
     TodayPage(),
     FocusesPage(),
@@ -29,7 +65,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    // Schedule the sync for after the widget is built
+    // Schedule initial sync after widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _syncData();
     });
@@ -40,16 +76,31 @@ class _MainScreenState extends State<MainScreen> {
     super.dispose();
   }
 
+  /// Performs cloud synchronization of local data.
+  ///
+  /// This method:
+  /// 1. Checks if sync is already in progress
+  /// 2. Verifies Hive boxes are open
+  /// 3. Calls CloudSyncService to sync data
+  /// 4. Handles success and error cases
+  /// 5. Updates sync status UI
+  ///
+  /// Error handling:
+  /// - Shows error message if boxes aren't open
+  /// - Displays sync failure notification
+  /// - Ensures sync status is reset
   Future<void> _syncData() async {
     if (_isSyncing || !mounted) return;
     setState(() => _isSyncing = true);
 
     try {
+      // Get references to all required Hive boxes
       final taskBox = Hive.box<List>(Keys.taskBox);
       final filterBox = Hive.box(Keys.filterBox);
       final brainBox = Hive.box(Keys.brainBox);
       final historyBox = Hive.box(Keys.historyBox);
 
+      // Verify all boxes are open
       if (!taskBox.isOpen ||
           !filterBox.isOpen ||
           !brainBox.isOpen ||
@@ -57,6 +108,7 @@ class _MainScreenState extends State<MainScreen> {
         throw Exception('One or more Hive boxes are not open');
       }
 
+      // Perform cloud synchronization
       await CloudSyncService.syncOnLogin(
         taskBox,
         filterBox,
@@ -65,6 +117,7 @@ class _MainScreenState extends State<MainScreen> {
       );
     } catch (e) {
       if (!mounted) return;
+      // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Sync failed: ${e.toString()}'),
@@ -76,13 +129,31 @@ class _MainScreenState extends State<MainScreen> {
     }
   }
 
+  /// Builds the main application screen.
+  ///
+  /// This method constructs:
+  /// 1. Main content area with current page
+  /// 2. Sync status indicator (when active)
+  /// 3. Bottom navigation bar with:
+  ///    - Custom styling
+  ///    - Dynamic label behavior
+  ///    - Navigation icons
+  ///
+  /// The layout features:
+  /// - Clean white background
+  /// - Stack layout for overlays
+  /// - Responsive navigation
+  /// - Visual feedback for sync status
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Stack(
         children: [
+          // Main content area
           _pages[_selectedIndex],
+
+          // Sync status indicator
           if (_isSyncing)
             Positioned(
               bottom: 16,
@@ -128,9 +199,11 @@ class _MainScreenState extends State<MainScreen> {
             ),
         ],
       ),
+      // Bottom navigation bar with dynamic label behavior
       bottomNavigationBar: ValueListenableBuilder(
         valueListenable: Hive.box(Keys.settingBox).listenable(),
         builder: (context, box, _) {
+          // Get navigation label behavior from settings
           final labelBehavior = NavigationDestinationLabelBehavior.values
               .byName(
                 box.get(
