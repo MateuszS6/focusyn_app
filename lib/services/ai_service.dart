@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 /// A service class for interacting with OpenAI's GPT API.
@@ -9,8 +10,7 @@ import 'package:http/http.dart' as http;
 /// - Context-aware responses
 class AIService {
   /// OpenAI API key for authentication
-  static const _apiKey =
-      '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';
+  static final _apiKey = dotenv.env['OPENAI_API_KEY'];
 
   /// OpenAI API endpoint for chat completions
   static const _endpoint = 'https://api.openai.com/v1/chat/completions';

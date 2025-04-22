@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:focusyn_app/constants/quotes.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:focusyn_app/init/app_data_init.dart';
@@ -19,12 +20,14 @@ class AppInit {
   /// 2. Sets up Hive for local storage
   /// 3. Initializes Firebase services
   /// 4. Configures notifications
-  /// 5. Initializes app data
+  /// 5. Loads environment variables
+  /// 6. Initializes app data
   static Future<void> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
     await _initializeHive();
     await _initializeFirebase();
     await _initializeNotifications();
+    await dotenv.load();
     await AppDataInit.run();
   }
 
