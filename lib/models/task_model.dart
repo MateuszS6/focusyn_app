@@ -197,4 +197,22 @@ class Task {
 
     return taskDateOnly.isBefore(nowDateOnly);
   }
+
+  /// Calculates the next occurrence date for a recurring task.
+  ///
+  /// [repeat] - The repeat pattern ('Daily', 'Weekly', 'Monthly')
+  /// Returns the next date based on the repeat pattern
+  static DateTime calculateNextDate(String repeat) {
+    final now = DateTime.now();
+    switch (repeat) {
+      case 'Daily':
+        return now.add(const Duration(days: 1));
+      case 'Weekly':
+        return now.add(const Duration(days: 7));
+      case 'Monthly':
+        return DateTime(now.year, now.month + 1, now.day);
+      default:
+        return now;
+    }
+  }
 }
