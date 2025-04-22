@@ -3,9 +3,21 @@ import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
 import 'package:hive/hive.dart';
 
+/// A service class for managing task data persistence and synchronization.
+/// This service provides:
+/// - Local storage of tasks using Hive
+/// - Task data conversion between models and storage format
+/// - Cloud synchronization of task data
 class TaskService {
+  /// Hive box for storing task lists
   static final _taskBox = Hive.box<List>(Keys.taskBox);
 
+  /// Gets all tasks organized by category.
+  /// This getter:
+  /// - Retrieves tasks from local storage
+  /// - Converts raw storage data to Task objects
+  /// - Organizes tasks by their category
+  /// - Handles missing or invalid data gracefully
   static Map<String, List<Task>> get tasks {
     final result = <String, List<Task>>{};
     for (var key in _taskBox.keys) {
@@ -40,6 +52,16 @@ class TaskService {
     return result;
   }
 
+  /// Updates the tasks for a specific category.
+  /// This method:
+  /// - Converts Task objects to storage format
+  /// - Updates local storage
+  /// - Triggers cloud synchronization
+  ///
+  /// [category] - The category of tasks to update
+  /// [list] - The list of tasks to store
+  ///
+  /// Throws an exception if the update or sync fails
   static Future<void> updateTasks(String category, List<Task> list) async {
     try {
       // Convert Task objects to maps before storing
@@ -67,6 +89,7 @@ class TaskService {
       // Sync to cloud
       await CloudSyncService.uploadTasks(_taskBox);
     } catch (e) {
+      // Rethrow the exception to be handled by the caller
       rethrow;
     }
   }
