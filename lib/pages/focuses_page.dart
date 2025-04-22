@@ -6,6 +6,13 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/utils/focus_card.dart';
 import 'package:focusyn_app/pages/help_page.dart';
 
+/// Represents a category of tasks in the application.
+///
+/// Each focus category has:
+/// - A name (e.g., 'actions', 'flows', 'moments', 'thoughts')
+/// - A description explaining its purpose
+/// - An icon for visual representation
+/// - A color key for consistent theming
 class FocusCategory {
   final String name;
   final String description;
@@ -20,6 +27,13 @@ class FocusCategory {
   });
 }
 
+/// A page that displays different categories of tasks (focuses).
+///
+/// This page provides:
+/// - Overview of all task categories
+/// - Task count statistics
+/// - Visual representation of each focus
+/// - Quick access to help information
 class FocusesPage extends StatefulWidget {
   const FocusesPage({super.key});
 
@@ -27,7 +41,12 @@ class FocusesPage extends StatefulWidget {
   State<FocusesPage> createState() => _FocusesPageState();
 }
 
+/// Manages the state of the focuses page, including:
+/// - Task category definitions
+/// - Task statistics
+/// - UI state for focus cards
 class _FocusesPageState extends State<FocusesPage> {
+  /// List of all available focus categories with their properties
   static const List<FocusCategory> _categories = [
     FocusCategory(
       name: Keys.actions,
@@ -55,12 +74,16 @@ class _FocusesPageState extends State<FocusesPage> {
     ),
   ];
 
+  /// Gets the total number of tasks across all focus categories.
   int get _totalTasks {
     return _categories.fold(0, (sum, category) {
       return sum + (TaskService.tasks[category.name]?.length ?? 0);
     });
   }
 
+  /// Gets the name of the focus category with the most tasks.
+  ///
+  /// Returns an empty string if no tasks exist in any category.
   String get _mostActiveFocus {
     int maxTasks = 0;
     String category = '';
@@ -78,8 +101,10 @@ class _FocusesPageState extends State<FocusesPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Calculate statistics
     final totalTasks = _totalTasks;
     final mostActive = _mostActiveFocus;
+    // Determine the color for the most active focus
     final mostActiveColor = switch (mostActive) {
       Keys.actions => ThemeColours.actionsMain,
       Keys.flows => ThemeColours.flowsMain,
@@ -96,6 +121,7 @@ class _FocusesPageState extends State<FocusesPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header with help button
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -116,6 +142,7 @@ class _FocusesPageState extends State<FocusesPage> {
                 ],
               ),
               const SizedBox(height: 12),
+              // Task statistics section
               if (totalTasks > 0) ...[
                 Text(
                   'You have $totalTasks items across your focuses',
@@ -155,6 +182,7 @@ class _FocusesPageState extends State<FocusesPage> {
                   ),
                 ],
               ] else ...[
+                // Empty state message
                 Text(
                   'Start organizing your tasks into different focuses',
                   style: Theme.of(
@@ -163,6 +191,7 @@ class _FocusesPageState extends State<FocusesPage> {
                 ),
               ],
               const SizedBox(height: 32),
+              // Focus cards list
               Expanded(
                 child: ListView(
                   padding: EdgeInsets.zero,
