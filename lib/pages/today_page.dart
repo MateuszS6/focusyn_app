@@ -72,8 +72,7 @@ class TodayPage extends StatefulWidget {
 /// - User interactions
 /// - Task completion events
 /// - Focus session state changes
-class _TodayPageState extends State<TodayPage>
-    with SingleTickerProviderStateMixin {
+class _TodayPageState extends State<TodayPage> {
   DateTime? _lastUpdateDate;
   List<DateTime>? _cachedCompletions;
   late int _points;
