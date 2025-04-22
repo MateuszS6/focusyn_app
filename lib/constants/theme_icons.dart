@@ -66,6 +66,8 @@ class ThemeIcons {
   static const IconData user = Icons.person_rounded;
   static const IconData email = Icons.email_rounded;
   static const IconData lock = Icons.lock_rounded;
+  static const IconData visibilityOn = Icons.visibility_rounded;
+  static const IconData visibilityOff = Icons.visibility_off_rounded;
 
   // Settings and Data Icons
   // Icons for app settings, data management, and legal information
