@@ -3,16 +3,41 @@ import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
+/// A customizable dialog for creating or editing tasks.
+/// This dialog provides:
+/// - Fixed width and maximum height
+/// - Scrollable content area with shadow
+/// - Customizable form fields
+/// - Validation and task creation callbacks
 class TaskDialog extends StatefulWidget {
+  /// Fixed width of the dialog
   static const double _dialogWidth = 400.0;
+
+  /// Maximum height of the dialog
   static const double _maxDialogHeight = 500.0;
 
+  /// Title displayed at the top of the dialog
   final String title;
+
+  /// List of form fields to display in the dialog
   final List<Widget> fields;
+
+  /// Function to create a Task object from the form data
   final Task Function() buildTask;
+
+  /// Function to validate the form input
   final bool Function() validateInput;
+
+  /// Callback function when a task is successfully created
   final void Function(Task) onAdd;
 
+  /// Creates a task dialog with the specified properties.
+  ///
+  /// [title] - The title to display at the top of the dialog
+  /// [fields] - List of form fields to display
+  /// [buildTask] - Function to create a Task from form data
+  /// [validateInput] - Function to validate form input
+  /// [onAdd] - Callback when a task is created
   const TaskDialog({
     super.key,
     required this.title,
@@ -40,7 +65,7 @@ class _TaskDialogState extends State<TaskDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Fixed header
+            // Fixed header with title
             Padding(
               padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
               child: Text(
@@ -52,7 +77,7 @@ class _TaskDialogState extends State<TaskDialog> {
                 textAlign: TextAlign.center,
               ),
             ),
-            // Scrollable content
+            // Scrollable content area with shadow
             Expanded(
               child: MyScrollShadow(
                 size: 8,
@@ -73,7 +98,7 @@ class _TaskDialogState extends State<TaskDialog> {
                 ),
               ),
             ),
-            // Fixed footer
+            // Fixed footer with action buttons
             Padding(
               padding: const EdgeInsets.all(24),
               child: Row(
