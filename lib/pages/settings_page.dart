@@ -6,6 +6,13 @@ import 'package:focusyn_app/services/notification_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import 'package:hive/hive.dart';
 
+/// A page that provides user settings and preferences.
+///
+/// This page provides:
+/// - Navigation bar label behavior settings
+/// - Daily quote notification settings
+/// - Notification time selection
+/// - Settings persistence using Hive
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
 
@@ -13,11 +20,22 @@ class SettingsPage extends StatefulWidget {
   State<SettingsPage> createState() => _SettingsPageState();
 }
 
+/// Manages the state of the settings page, including:
+/// - Loading and saving settings
+/// - Notification management
+/// - UI state for settings controls
 class _SettingsPageState extends State<SettingsPage> {
+  /// The current navigation bar label behavior setting
   String _navigationBarText =
       NavigationDestinationLabelBehavior.alwaysShow.name;
+
+  /// Whether daily quote notifications are enabled
   bool _notificationsEnabled = false;
+
+  /// The time at which daily quote notifications should be sent
   TimeOfDay _notificationTime = const TimeOfDay(hour: 9, minute: 0);
+
+  /// Hive box for storing settings persistently
   final _settingBox = Hive.box(Keys.settingBox);
 
   @override
@@ -26,6 +44,10 @@ class _SettingsPageState extends State<SettingsPage> {
     _loadSettings();
   }
 
+  /// Loads settings from persistent storage and updates the UI state.
+  ///
+  /// This method is called during initialization to restore the user's
+  /// previous settings.
   void _loadSettings() {
     setState(() {
       _navigationBarText = _settingBox.get(
@@ -42,6 +64,10 @@ class _SettingsPageState extends State<SettingsPage> {
     });
   }
 
+  /// Saves the current settings to persistent storage.
+  ///
+  /// This method is called whenever a setting is changed to ensure
+  /// the user's preferences are preserved.
   Future<void> _saveSettings() async {
     await _settingBox.put(Keys.navigationBarTextBehaviour, _navigationBarText);
     await _settingBox.put(Keys.notificationsEnabled, _notificationsEnabled);
@@ -49,6 +75,10 @@ class _SettingsPageState extends State<SettingsPage> {
     await _settingBox.put(Keys.notificationMinute, _notificationTime.minute);
   }
 
+  /// Shows a time picker dialog to select the notification time.
+  ///
+  /// Updates the notification time if a new time is selected and
+  /// saves the setting.
   Future<void> _selectTime() async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
@@ -248,17 +278,17 @@ class _SettingsPageState extends State<SettingsPage> {
                       Text(
                         'About Notifications',
                         style: TextStyle(
+                          fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.blue[700],
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 8),
                   Text(
-                    'You will receive a daily motivational quote at your selected time. '
-                    'These notifications are designed to help you stay motivated and focused throughout your day.',
-                    style: TextStyle(color: Colors.blue[900]),
+                    'Daily quote notifications will help you stay motivated and focused throughout your day. You can choose when to receive these notifications.',
+                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                   ),
                 ],
               ),
