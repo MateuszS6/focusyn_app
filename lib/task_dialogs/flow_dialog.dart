@@ -5,21 +5,56 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
+/// A dialog widget for creating or editing flow tasks.
+/// This dialog provides:
+/// - Title input with validation
+/// - Date and time selection
+/// - Duration configuration
+/// - Repeat pattern selection
+/// - Brain points assignment
+/// - List categorization
 class FlowDialog extends StatefulWidget {
+  /// Title for the add flow dialog
   static const String _dialogTitle = 'Add Flow';
+
+  /// Title for the edit flow dialog
   static const String _editDialogTitle = 'Edit Flow';
+
+  /// Label for the title input field
   static const String _titleLabel = 'Title *';
+
+  /// Label for the date input field
   static const String _dateLabel = 'Start Date';
+
+  /// Label for the time input field
   static const String _timeLabel = 'Reminder Time';
+
+  /// Label for the duration input field
   static const String _durationLabel = 'Duration (minutes)';
+
+  /// Label for the repeat pattern selection
   static const String _repeatLabel = 'Repeat';
+
+  /// Label for the brain points input field
   static const String _brainPointsLabel = 'Brain Points';
+
+  /// Label for the list selection
   static const String _listLabel = 'List';
 
+  /// Callback function when a flow task is created or edited
   final void Function(Task) onAdd;
+
+  /// Default list name to pre-select
   final String? defaultList;
+
+  /// Initial task data for editing
   final Task? initialTask;
 
+  /// Creates a flow dialog with the specified properties.
+  ///
+  /// [onAdd] - Callback when a flow task is created or edited
+  /// [defaultList] - Optional default list name
+  /// [initialTask] - Optional initial task data for editing
   const FlowDialog({
     super.key,
     required this.onAdd,
@@ -31,19 +66,39 @@ class FlowDialog extends StatefulWidget {
   State<FlowDialog> createState() => _FlowDialogState();
 }
 
+/// State class for managing the flow dialog's form data and UI.
 class _FlowDialogState extends State<FlowDialog> {
+  /// Current task title
   late String title;
+
+  /// Selected start date
   late DateTime selectedDate;
+
+  /// Selected reminder time
   late TimeOfDay selectedTime;
+
+  /// Task duration in minutes
   late int duration;
+
+  /// Selected repeat pattern
   late String repeat;
+
+  /// Assigned brain points
   late int brainPoints;
+
+  /// Selected list name
   late String list;
+
+  /// Available lists for selection
   late final List<String> lists;
 
-  // Controllers
+  /// Controller for the title input field
   late TextEditingController titleController;
+
+  /// Controller for the duration input field
   late TextEditingController durationController;
+
+  /// Controller for the brain points input field
   late TextEditingController brainPointsController;
 
   @override
