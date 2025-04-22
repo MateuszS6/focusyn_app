@@ -5,20 +5,52 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
+/// A dialog widget for creating or editing moment tasks.
+/// This dialog provides:
+/// - Title input with validation
+/// - Date and time selection
+/// - Duration configuration
+/// - Location information
+/// - List categorization
 class MomentDialog extends StatefulWidget {
+  /// Title for the add moment dialog
   static const String _dialogTitle = 'Add Moment';
+
+  /// Title for the edit moment dialog
   static const String _editDialogTitle = 'Edit Moment';
+
+  /// Label for the title input field
   static const String _titleLabel = 'Title *';
+
+  /// Label for the date input field
   static const String _dateLabel = 'Date';
+
+  /// Label for the time input field
   static const String _timeLabel = 'Time';
+
+  /// Label for the duration input field
   static const String _durationLabel = 'Duration (minutes)';
+
+  /// Label for the location input field
   static const String _locationLabel = 'Location';
+
+  /// Label for the list selection
   static const String _listLabel = 'List';
 
+  /// Callback function when a moment task is created or edited
   final void Function(Task) onAdd;
+
+  /// Default list name to pre-select
   final String? defaultList;
+
+  /// Initial task data for editing
   final Task? initialTask;
 
+  /// Creates a moment dialog with the specified properties.
+  ///
+  /// [onAdd] - Callback when a moment task is created or edited
+  /// [defaultList] - Optional default list name
+  /// [initialTask] - Optional initial task data for editing
   const MomentDialog({
     super.key,
     required this.onAdd,
@@ -30,18 +62,36 @@ class MomentDialog extends StatefulWidget {
   State<MomentDialog> createState() => _MomentDialogState();
 }
 
+/// State class for managing the moment dialog's form data and UI.
 class _MomentDialogState extends State<MomentDialog> {
+  /// Current task title
   late String title;
+
+  /// Selected date
   late DateTime selectedDate;
+
+  /// Selected time
   late TimeOfDay selectedTime;
+
+  /// Task duration in minutes
   late int duration;
+
+  /// Task location
   late String location;
+
+  /// Selected list name
   late String list;
+
+  /// Available lists for selection
   late final List<String> lists;
 
-  // Controllers
+  /// Controller for the title input field
   late TextEditingController titleController;
+
+  /// Controller for the duration input field
   late TextEditingController durationController;
+
+  /// Controller for the location input field
   late TextEditingController locationController;
 
   @override
