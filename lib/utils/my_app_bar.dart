@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
 
+/// A custom app bar implementation that provides consistent styling
+/// and behavior across the application.
+///
+/// This app bar:
+/// - Uses the displayLarge text style for the title
+/// - Provides proper padding based on leading widget presence
+/// - Removes elevation and shadow effects
+/// - Maintains consistent spacing
 class MyAppBar extends AppBar {
+  /// Creates a custom app bar with consistent styling.
+  ///
+  /// [title] - The text to display in the app bar
+  /// [actions] - Optional list of widgets to display after the title
+  /// [leading] - Optional widget to display before the title
+  /// [backgroundColor] - Optional custom background color
+  /// [elevation] - The elevation of the app bar (default: 0)
   MyAppBar({
     super.key,
     required String title,
