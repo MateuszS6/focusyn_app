@@ -96,11 +96,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Text(
                       "Sign in to continue",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey[700],
-                      ),
+                      style: Theme.of(context).textTheme.headlineLarge
+                          ?.copyWith(color: Colors.grey[500]),
                     ),
                     const SizedBox(height: 32),
                     // Input Fields
