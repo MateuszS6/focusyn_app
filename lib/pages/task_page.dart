@@ -17,21 +17,61 @@ import 'package:focusyn_app/task_tiles/thought_tile.dart';
 import 'package:focusyn_app/utils/filter_row.dart';
 import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
+/// A page that displays and manages tasks for a specific category.
+///
+/// This page provides functionality for:
+/// - Viewing tasks in different categories (Actions, Flows, Moments, Thoughts)
+/// - Filtering tasks by lists
+/// - Sorting tasks by various criteria
+/// - Adding, editing, and deleting tasks
+/// - Managing task lists
+///
+/// The page integrates with [TaskService] for task management
+/// and [FilterService] for list management.
 class TaskPage extends StatefulWidget {
-  final String category;
+  /// Creates a task page for the specified category.
+  ///
+  /// [category] must be one of: 'Actions', 'Flows', 'Moments', or 'Thoughts'.
   const TaskPage({super.key, required this.category});
+
+  /// The category of tasks to display and manage.
+  final String category;
 
   @override
   State<TaskPage> createState() => _TaskPageState();
 }
 
+/// The state class for [TaskPage].
+///
+/// Manages the task list state and provides methods for:
+/// - Filtering and sorting tasks
+/// - Task operations (add, edit, delete)
+/// - List management
+/// - UI state management
 class _TaskPageState extends State<TaskPage> {
+  /// The list of tasks for the current category.
   late List<Task> _tasks;
+
+  /// The list of available filters/lists for the current category.
   late List<String> _filters;
+
+  /// The currently selected filter/list.
   String _selectedFilter = Keys.all;
+
+  /// The current sorting criteria.
   String? _sortBy;
+
+  /// The ID of the last edited task, used for highlighting.
   String? _lastEditedTaskId;
 
+  /// Gets the filtered and sorted list of tasks.
+  ///
+  /// Filters tasks by the selected list and sorts them according to [_sortBy].
+  /// The sorting criteria vary by category:
+  /// - Actions: Priority, Brain Points, Alphabetical, Creation Date
+  /// - Flows: Date, Brain Points, Alphabetical, Creation Date
+  /// - Moments: Date, Alphabetical, Creation Date
+  /// - Thoughts: Alphabetical, Creation Date
   List<Task> get _filteredTasks {
     var filtered =
         _selectedFilter == Keys.all
@@ -74,6 +114,10 @@ class _TaskPageState extends State<TaskPage> {
     return filtered;
   }
 
+  /// Initializes the state of the task page.
+  ///
+  /// Loads tasks and filters for the current category from [TaskService] and [FilterService].
+  /// Ensures the 'All' filter is always present in the list.
   @override
   void initState() {
     super.initState();
@@ -87,6 +131,13 @@ class _TaskPageState extends State<TaskPage> {
     }
   }
 
+  /// Builds the task page UI.
+  ///
+  /// The UI consists of:
+  /// - A header with back button, category title, and sort button
+  /// - A filter row for selecting lists
+  /// - A list of tasks or empty state
+  /// - A floating action button for adding tasks
   @override
   Widget build(BuildContext context) {
     final color = switch (widget.category) {
@@ -169,6 +220,13 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
+  /// Shows a dialog for selecting the sorting criteria.
+  ///
+  /// The available options depend on the task category:
+  /// - Actions: Priority, Brain Points, Alphabetical, Creation Date
+  /// - Flows: Date, Brain Points, Alphabetical, Creation Date
+  /// - Moments: Date, Alphabetical, Creation Date
+  /// - Thoughts: Alphabetical, Creation Date
   void _showSortDialog() {
     List<RadioListTile> options = [];
 
@@ -325,6 +383,13 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
+  /// Builds the empty state widget when no tasks are present.
+  ///
+  /// Shows a centered message with:
+  /// - Category-specific icon
+  /// - Empty state title
+  /// - Empty state message
+  /// - Add button
   Widget _buildEmptyState() {
     final color = switch (widget.category) {
       Keys.actions => ThemeColours.actionsMain,
@@ -402,6 +467,9 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
+  /// Builds the list of tasks.
+  ///
+  /// Uses [MyScrollShadow] for visual feedback and separates items with spacing.
   Widget _buildTaskList() {
     return MyScrollShadow(
       child: ListView.separated(
@@ -413,6 +481,15 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
+  /// Builds a task tile with appropriate actions.
+  ///
+  /// The tile type depends on the category:
+  /// - Actions: [ActionTile]
+  /// - Flows: [FlowTile]
+  /// - Moments: [MomentTile]
+  /// - Thoughts: [ThoughtTile]
+  ///
+  /// Includes swipe-to-delete functionality and highlights recently edited tasks.
   Widget _buildTaskTile(Task task) {
     final key = ValueKey(task);
     final isLastEdited = task.id == _lastEditedTaskId;
@@ -505,7 +582,9 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
-  // Task Operations
+  /// Updates a task in the list and syncs with the cloud.
+  ///
+  /// [task] is the updated task to save.
   Future<void> _updateTask(Task task) async {
     setState(() {
       _lastEditedTaskId = task.id;
@@ -513,6 +592,9 @@ class _TaskPageState extends State<TaskPage> {
     await TaskService.updateTasks(widget.category, _tasks);
   }
 
+  /// Removes a task from the list and syncs with the cloud.
+  ///
+  /// [task] is the task to remove.
   Future<void> _removeTask(Task task) async {
     setState(() {
       _tasks.remove(task);
@@ -523,7 +605,13 @@ class _TaskPageState extends State<TaskPage> {
     await TaskService.updateTasks(widget.category, _tasks);
   }
 
-  // Dialog Operations
+  /// Shows the add task dialog for the current category.
+  ///
+  /// Uses the appropriate dialog based on category:
+  /// - Actions: [ActionDialog]
+  /// - Flows: [FlowDialog]
+  /// - Moments: [MomentDialog]
+  /// - Thoughts: [ThoughtDialog]
   void _showAddDialog() {
     showDialog(
       context: context,
@@ -552,6 +640,9 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
+  /// Shows a dialog for adding a new list/filter.
+  ///
+  /// Validates the new list name and updates the filters in the cloud.
   void _openAddTagDialog() {
     String newTag = '';
     showDialog(
@@ -593,6 +684,15 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
+  /// Shows the edit task dialog for the current category.
+  ///
+  /// Uses the appropriate dialog based on category:
+  /// - Actions: [ActionDialog]
+  /// - Flows: [FlowDialog]
+  /// - Moments: [MomentDialog]
+  /// - Thoughts: [ThoughtDialog]
+  ///
+  /// [task] is the task to edit.
   void _showEditDialog(Task task) {
     showDialog(
       context: context,
@@ -640,7 +740,14 @@ class _TaskPageState extends State<TaskPage> {
     );
   }
 
-  // Empty State Helpers
+  /// Gets the empty state icon based on the category.
+  ///
+  /// Returns the appropriate icon for each category:
+  /// - Actions: [ThemeIcons.actions]
+  /// - Flows: [ThemeIcons.flows]
+  /// - Moments: [ThemeIcons.moments]
+  /// - Thoughts: [ThemeIcons.thoughts]
+  /// - Default: [ThemeIcons.tasks]
   IconData _getEmptyStateIcon() {
     switch (widget.category) {
       case Keys.actions:
@@ -656,6 +763,14 @@ class _TaskPageState extends State<TaskPage> {
     }
   }
 
+  /// Gets the empty state title based on the category.
+  ///
+  /// Returns a category-specific title:
+  /// - Actions: "No Actions Yet"
+  /// - Flows: "No Flows Yet"
+  /// - Moments: "No Moments Yet"
+  /// - Thoughts: "No Thoughts Yet"
+  /// - Default: "No Tasks Yet"
   String _getEmptyStateTitle() {
     switch (widget.category) {
       case Keys.actions:
@@ -671,6 +786,14 @@ class _TaskPageState extends State<TaskPage> {
     }
   }
 
+  /// Gets the empty state message based on the category.
+  ///
+  /// Returns a category-specific message:
+  /// - Actions: Message about adding tasks to to-do list
+  /// - Flows: Message about creating routines and habits
+  /// - Moments: Message about scheduling events and deadlines
+  /// - Thoughts: Message about capturing ideas and reflections
+  /// - Default: Generic message about adding items
   String _getEmptyStateMessage() {
     switch (widget.category) {
       case Keys.actions:
