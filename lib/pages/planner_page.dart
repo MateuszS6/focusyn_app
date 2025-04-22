@@ -6,6 +6,13 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/my_scroll_shadow.dart';
 
+/// A page that displays a weekly planner view of scheduled tasks.
+///
+/// This page provides:
+/// - A 7-day date selector
+/// - Timeline view of scheduled tasks
+/// - Visual distinction between flows and moments
+/// - Task details including time, duration, and location
 class PlannerPage extends StatefulWidget {
   const PlannerPage({super.key});
 
@@ -13,21 +20,32 @@ class PlannerPage extends StatefulWidget {
   State<PlannerPage> createState() => _PlannerPageState();
 }
 
+/// Manages the state of the planner page, including:
+/// - Date selection
+/// - Task filtering and sorting
+/// - Timeline display
 class _PlannerPageState extends State<PlannerPage> {
+  /// The currently selected date in the planner
   DateTime selectedDate = DateTime.now();
 
+  /// Gets all scheduled tasks for the selected date, sorted by time.
+  ///
+  /// Combines both flows and moments tasks, and sorts them chronologically.
   List<Task> get allScheduledTasks {
     final formattedDate = _formatDate(selectedDate);
+    // Get flows scheduled for the selected date
     final flows =
         TaskService.tasks[Keys.flows]!
             .where((task) => task.date == formattedDate)
             .toList();
 
+    // Get moments scheduled for the selected date
     final moments =
         TaskService.tasks[Keys.moments]!
             .where((task) => task.date == formattedDate)
             .toList();
 
+    // Combine and sort by time
     return [...flows, ...moments]..sort(
       (a, b) => _parseTime(a.time ?? '').compareTo(_parseTime(b.time ?? '')),
     );
@@ -55,6 +73,9 @@ class _PlannerPageState extends State<PlannerPage> {
     );
   }
 
+  /// Builds a horizontal scrollable list of days for date selection.
+  ///
+  /// Shows 7 days starting from today, with visual indication of the selected date.
   Widget _buildDaySelector() {
     final today = DateTime.now();
     final days = List.generate(7, (i) => today.add(Duration(days: i)));
@@ -123,6 +144,10 @@ class _PlannerPageState extends State<PlannerPage> {
     );
   }
 
+  /// Builds a timeline view of scheduled tasks for the selected date.
+  ///
+  /// Shows an empty state if no tasks are scheduled, otherwise displays
+  /// a scrollable list of tasks sorted by time.
   Widget _buildTimeline() {
     if (allScheduledTasks.isEmpty) {
       return Center(
@@ -151,6 +176,7 @@ class _PlannerPageState extends State<PlannerPage> {
         separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (_, i) {
           final task = allScheduledTasks[i];
+          // Determine if the task is a moment or flow
           final isMoment = TaskService.tasks[Keys.moments]!.any(
             (moment) =>
                 moment.title == task.title &&
@@ -159,6 +185,7 @@ class _PlannerPageState extends State<PlannerPage> {
           );
           final color = isMoment ? Colors.red : Colors.green;
 
+          // Build a card for each scheduled task
           return Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -263,27 +290,34 @@ class _PlannerPageState extends State<PlannerPage> {
     );
   }
 
-  String _formatDate(DateTime d) =>
-      "${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}";
-
-  bool _isSameDay(DateTime a, DateTime b) =>
-      a.year == b.year && a.month == b.month && a.day == b.day;
-
-  String _dayLabel(DateTime d) {
-    return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][d.weekday % 7];
+  /// Formats a DateTime object into a string in 'yyyy-MM-dd' format.
+  String _formatDate(DateTime date) {
+    return '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
   }
 
-  DateTime _parseTime(String? time) {
-    if (time == null) return DateTime(0);
-    try {
-      final now = DateTime.now();
-      final t = TimeOfDay(
-        hour: int.parse(time.split(":")[0]),
-        minute: int.parse(time.split(":")[1].split(" ")[0]),
-      );
-      return DateTime(now.year, now.month, now.day, t.hour, t.minute);
-    } catch (_) {
-      return DateTime(0);
-    }
+  /// Parses a time string in 'HH:mm' format into a DateTime object.
+  ///
+  /// Returns a DateTime object with the current date and the specified time.
+  DateTime _parseTime(String time) {
+    final parts = time.split(':');
+    final now = DateTime.now();
+    return DateTime(
+      now.year,
+      now.month,
+      now.day,
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+    );
+  }
+
+  /// Checks if two DateTime objects represent the same day.
+  bool _isSameDay(DateTime a, DateTime b) {
+    return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  /// Returns a short day label (e.g., 'Mon', 'Tue') for a given date.
+  String _dayLabel(DateTime date) {
+    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return days[date.weekday - 1];
   }
 }
