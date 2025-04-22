@@ -1,20 +1,51 @@
+// Core Flutter imports for UI components and state management
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/constants/theme_icons.dart';
-import 'package:focusyn_app/services/task_service.dart';
-import 'package:focusyn_app/services/brain_points_service.dart';
-import 'package:focusyn_app/services/flow_history_service.dart';
-import 'package:focusyn_app/constants/keys.dart';
-import 'package:focusyn_app/constants/quotes.dart';
-import 'package:focusyn_app/pages/account_page.dart';
-import 'package:focusyn_app/pages/task_page.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'dart:math' as math;
-import 'package:focusyn_app/pages/onboarding_page.dart';
-import 'package:focusyn_app/services/cloud_sync_service.dart';
-import 'package:focusyn_app/utils/my_scroll_shadow.dart';
-import 'package:hive/hive.dart';
 
+// Application-specific imports
+import 'package:focusyn_app/constants/theme_icons.dart'; // Custom icon definitions
+import 'package:focusyn_app/services/task_service.dart'; // Task management service
+import 'package:focusyn_app/services/brain_points_service.dart'; // Brain points management
+import 'package:focusyn_app/services/flow_history_service.dart'; // Flow session history
+import 'package:focusyn_app/constants/keys.dart'; // Application constants and keys
+import 'package:focusyn_app/constants/quotes.dart'; // Daily motivational quotes
+import 'package:focusyn_app/pages/account_page.dart'; // User account page
+import 'package:focusyn_app/pages/task_page.dart'; // Task management page
+import 'package:fl_chart/fl_chart.dart'; // Chart visualization library
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase authentication
+import 'dart:math' as math; // Math utilities
+import 'package:focusyn_app/pages/onboarding_page.dart'; // User onboarding page
+import 'package:focusyn_app/services/cloud_sync_service.dart'; // Cloud synchronization
+import 'package:focusyn_app/utils/my_scroll_shadow.dart'; // Custom scroll shadow widget
+import 'package:hive/hive.dart'; // Local storage
+
+/// A page that displays the user's daily tasks, focus sessions, and progress.
+///
+/// This page serves as the main dashboard for users to:
+/// - View and manage their daily tasks
+/// - Track focus sessions and flow states
+/// - Monitor their progress through various metrics
+/// - Access quick actions for task management
+/// - View their weekly progress in a visual chart
+///
+/// The page is divided into several sections:
+/// 1. Header with date and brain points
+/// 2. Focus session controls and timer
+/// 3. Task list with completion tracking
+/// 4. Weekly progress chart
+/// 5. Quick action buttons for task management
+///
+/// The page maintains its own state for:
+/// - Focus session timer
+/// - Task completion status
+/// - Brain points balance
+/// - Weekly progress data
+///
+/// It also handles various user interactions:
+/// - Starting/stopping focus sessions
+/// - Completing tasks
+/// - Adding new tasks
+/// - Managing brain points
+/// - Viewing detailed progress
 class TodayPage extends StatefulWidget {
   const TodayPage({super.key});
 
@@ -22,7 +53,27 @@ class TodayPage extends StatefulWidget {
   State<TodayPage> createState() => _TodayPageState();
 }
 
-class _TodayPageState extends State<TodayPage> {
+/// The state class for [TodayPage].
+///
+/// This class manages:
+/// - Timer state for focus sessions
+/// - Task completion status
+/// - UI updates and animations
+/// - User interactions and input validation
+///
+/// It provides methods for:
+/// - Starting and stopping focus sessions
+/// - Managing task completion
+/// - Updating brain points
+/// - Building the UI components
+///
+/// The state is updated in response to:
+/// - Timer ticks
+/// - User interactions
+/// - Task completion events
+/// - Focus session state changes
+class _TodayPageState extends State<TodayPage>
+    with SingleTickerProviderStateMixin {
   DateTime? _lastUpdateDate;
   List<DateTime>? _cachedCompletions;
   late int _points;
@@ -71,6 +122,13 @@ class _TodayPageState extends State<TodayPage> {
     }
   }
 
+  /// Refreshes the flow history cache and updates the last update date.
+  ///
+  /// This method retrieves the flow completions for the last 7 days and updates:
+  /// - The cached completions list
+  /// - The last update date
+  ///
+  /// It also ensures the UI is updated when the data is refreshed.
   void _refreshFlowHistory() {
     _cachedCompletions = _getFlowCompletions();
     _lastUpdateDate = DateTime.now();
@@ -79,6 +137,12 @@ class _TodayPageState extends State<TodayPage> {
     }
   }
 
+  /// Refreshes the data cache and updates the last update date.
+  ///
+  /// This method checks if the cached data is outdated and refreshes it if necessary.
+  /// It compares the last update date with the current date to determine if an update is needed.
+  ///
+  /// The method also ensures the UI is updated when the data is refreshed.
   void _refreshData() {
     final now = DateTime.now();
     // Refresh if there's no cached data or if it's a new day
@@ -87,6 +151,25 @@ class _TodayPageState extends State<TodayPage> {
     }
   }
 
+  /// Builds the main page layout.
+  ///
+  /// This method constructs the entire Today page UI, which includes:
+  /// 1. Header section with date and user info
+  /// 2. Greeting card with brain points
+  /// 3. Daily quote card
+  /// 4. Task summary card
+  /// 5. Flow streak card
+  /// 6. Weekly progress chart
+  ///
+  /// The layout is built using a ListView with padding and includes:
+  /// - SafeArea for proper display on different devices
+  /// - RefreshIndicator for pull-to-refresh functionality
+  /// - MyScrollShadow for visual feedback during scrolling
+  ///
+  /// The method also:
+  /// - Checks for data refresh needs
+  /// - Formats the current date
+  /// - Handles user authentication state
   @override
   Widget build(BuildContext context) {
     _refreshData(); // Check if we need to refresh data
@@ -116,6 +199,7 @@ class _TodayPageState extends State<TodayPage> {
             child: ListView(
               padding: const EdgeInsets.all(24),
               children: [
+                // Header with date and user info
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,6 +218,7 @@ class _TodayPageState extends State<TodayPage> {
                         ),
                       ],
                     ),
+                    // User avatar and onboarding button
                     Padding(
                       padding: const EdgeInsets.only(top: 4),
                       child: Row(
@@ -247,7 +332,27 @@ class _TodayPageState extends State<TodayPage> {
   bool _isSameDate(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
 
+  /// Builds the greeting card with brain points display.
+  ///
+  /// This method creates a card that shows:
+  /// 1. Time-based greeting (morning/afternoon/evening)
+  /// 2. User's name
+  /// 3. Brain points status with:
+  ///    - Current points display
+  ///    - Progress bar
+  ///    - Add points button
+  /// 4. Status message based on points level:
+  ///    - ≥70 points: "You're doing great today!"
+  ///    - ≥40 points: "Keep up the good work!"
+  ///    - <40 points: "Time to recharge"
+  ///
+  /// The card uses:
+  /// - Gradient background
+  /// - Custom shadows
+  /// - Responsive layout
+  /// - Interactive elements
   Widget _greetingCard(int points) {
+    // Determine greeting based on time of day
     final hour = DateTime.now().hour;
     String greeting =
         hour < 12
@@ -257,6 +362,8 @@ class _TodayPageState extends State<TodayPage> {
             : "Good evening";
 
     final currentUser = FirebaseAuth.instance.currentUser;
+
+    // Set status message and color based on points level
     final statusMessage =
         points >= 70
             ? "You're doing great today!"
@@ -405,6 +512,18 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
+  /// Builds the daily quote card.
+  ///
+  /// This method creates a card that displays:
+  /// 1. A random motivational quote from the quotes collection
+  /// 2. The quote's category (e.g., Motivation, Productivity)
+  /// 3. The quote's author
+  ///
+  /// The card features:
+  /// - Gradient background with purple theme
+  /// - Custom shadow for depth
+  /// - Proper text formatting and spacing
+  /// - Responsive layout
   Widget _quoteCard() {
     final quote = Quotes.getRandomQuote();
     return Column(
@@ -471,21 +590,41 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
+  /// Builds the task summary card.
+  ///
+  /// This method creates a card that shows:
+  /// 1. Task counts by category:
+  ///    - Actions (immediate tasks)
+  ///    - Flows (scheduled focus sessions)
+  ///    - Moments (special events)
+  /// 2. Total brain points for today's tasks
+  /// 3. Next upcoming tasks with:
+  ///    - Task title
+  ///    - Scheduled time
+  ///    - Category icon
+  ///
+  /// The card features:
+  /// - Interactive task type indicators
+  /// - Navigation to detailed task pages
+  /// - Visual representation of task counts
+  /// - Upcoming task preview
   Widget _summaryCard(int actionsCount) {
     final today = DateTime.now();
     final formattedDate =
         "${today.year}-${today.month.toString().padLeft(2, '0')}-${today.day.toString().padLeft(2, '0')}";
 
+    // Get tasks from different categories
     final actions = TaskService.tasks[Keys.actions] ?? [];
     final flows = TaskService.tasks[Keys.flows] ?? [];
     final moments = TaskService.tasks[Keys.moments] ?? [];
 
+    // Filter today's tasks
     final todayFlows =
         flows.where((task) => task.date == formattedDate).toList();
     final todayMoments =
         moments.where((task) => task.date == formattedDate).toList();
 
-    // Calculate total brain points from uncompleted actions and overdue flows
+    // Calculate total brain points from uncompleted tasks
     final totalActionBrainPoints = actions.fold<int>(
       0,
       (sum, action) => sum + action.brainPoints!.toInt(),
@@ -501,6 +640,7 @@ class _TodayPageState extends State<TodayPage> {
     });
     final totalBrainPoints = totalActionBrainPoints + totalFlowBrainPoints;
 
+    // Get next upcoming tasks
     final nextFlow = todayFlows.isNotEmpty ? todayFlows.first : null;
     final nextMoment = todayMoments.isNotEmpty ? todayMoments.first : null;
 
@@ -641,6 +781,17 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
+  /// Builds a task type indicator with icon and count.
+  ///
+  /// This method creates a visual representation of a task category that shows:
+  /// 1. Category icon
+  /// 2. Task count badge (if count > 0)
+  /// 3. Category label
+  ///
+  /// The indicator features:
+  /// - Interactive tap handling
+  /// - Visual feedback for empty/active states
+  /// - Consistent styling with the app theme
   Widget _buildTaskType({
     required IconData icon,
     required int count,
@@ -691,6 +842,17 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
+  /// Builds a next task item with icon, title, and time.
+  ///
+  /// This method creates a compact task preview that shows:
+  /// 1. Task category icon
+  /// 2. Task title (with ellipsis for overflow)
+  /// 3. Scheduled time
+  ///
+  /// The item features:
+  /// - Consistent styling with the app theme
+  /// - Proper text overflow handling
+  /// - Clear visual hierarchy
   Widget _buildNextTask({
     required IconData icon,
     required String title,
@@ -715,6 +877,23 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
+  /// Builds the flow streak card.
+  ///
+  /// This method creates a card that displays:
+  /// 1. Current flow streak count
+  /// 2. Streak status message
+  /// 3. Visual indicator (fire emoji)
+  ///
+  /// The streak is calculated based on consecutive days with flow completions:
+  /// - A streak is maintained by completing at least one flow per day
+  /// - The streak breaks if a day is missed
+  /// - The current day must have a completion to maintain the streak
+  ///
+  /// The card features:
+  /// - Gradient background with teal theme
+  /// - Custom shadow for depth
+  /// - Dynamic streak count display
+  /// - Motivational message based on streak status
   Widget _flowStreakCard() {
     final streak = _calculateStreak(_cachedCompletions ?? []);
     final streakText =
@@ -775,15 +954,36 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
+  /// Builds the weekly progress chart.
+  ///
+  /// This method creates a bar chart that visualizes:
+  /// 1. Daily flow completions for the last 7 days
+  /// 2. Relative progress compared to the best day
+  /// 3. Current day highlight
+  ///
+  /// The chart features:
+  /// - Interactive bar display
+  /// - Day labels (Mn, Te, Wd, etc.)
+  /// - Completion count above each bar
+  /// - Gradient fill for visual appeal
+  /// - Maximum completions indicator
+  ///
+  /// Data processing includes:
+  /// - Filtering completions for the last 7 days
+  /// - Calculating relative percentages
+  /// - Determining maximum completions
+  /// - Formatting day labels
   Widget _weeklyProgressChart() {
     final completions = _cachedCompletions ?? [];
     final today = DateTime.now();
 
-    // Get the maximum completions in a day to use as the baseline for percentage
+    // Generate list of last 7 days
     final last7Days = List.generate(
       7,
       (i) => today.subtract(Duration(days: 6 - i)),
     );
+
+    // Calculate completions per day
     final completedPerDay =
         last7Days.map((day) {
           final dayCompletions =
@@ -791,13 +991,13 @@ class _TodayPageState extends State<TodayPage> {
           return {'count': dayCompletions, 'date': day};
         }).toList();
 
-    // Find the maximum completions in a day
+    // Find maximum completions for scaling
     final maxCompletions = completedPerDay.fold<int>(
       0,
       (max, day) => math.max(max, day['count'] as int),
     );
 
-    // Update the data to include percentages based on the maximum
+    // Calculate percentages for bar heights
     for (var day in completedPerDay) {
       day['percentage'] =
           maxCompletions > 0 ? (day['count'] as int) / maxCompletions : 0.0;
@@ -862,7 +1062,7 @@ class _TodayPageState extends State<TodayPage> {
                     groupsSpace: 35, // Increased space between bars
                     barTouchData: BarTouchData(
                       enabled: false,
-                    ), // Disabled tooltips since we show values on top
+                    ), // Disable touch interaction since values are shown above bars
                     titlesData: FlTitlesData(
                       show: true,
                       topTitles: AxisTitles(
@@ -937,7 +1137,7 @@ class _TodayPageState extends State<TodayPage> {
                         barRods: [
                           BarChartRodData(
                             toY: data['percentage'] as double,
-                            width: 8, // Keep the thinner bars
+                            width: 8,
                             gradient: LinearGradient(
                               colors: [
                                 Colors.green.withAlpha(179),
@@ -978,6 +1178,23 @@ class _TodayPageState extends State<TodayPage> {
     );
   }
 
+  /// Shows a dialog for adding brain points.
+  ///
+  /// This method creates a dialog that allows users to:
+  /// 1. Enter a number of brain points to add
+  /// 2. Validate the input (must be between 1 and 100)
+  /// 3. Confirm or cancel the action
+  ///
+  /// The dialog features:
+  /// - Input field with number keyboard
+  /// - Clear validation feedback
+  /// - Success/error messages
+  /// - Proper state management
+  ///
+  /// After successful addition:
+  /// - Updates the brain points
+  /// - Shows a success message
+  /// - Refreshes the UI
   void _showAddBrainPointsDialog() {
     final controller = TextEditingController(text: "5");
     final scaffoldMessenger = ScaffoldMessenger.of(context);
