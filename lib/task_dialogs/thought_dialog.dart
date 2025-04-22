@@ -5,16 +5,38 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_dialog.dart';
 
+/// A dialog widget for creating or editing thought tasks.
+/// This dialog provides:
+/// - Title input with validation
+/// - List categorization
+/// - Simple and focused interface for capturing thoughts
 class ThoughtDialog extends StatelessWidget {
+  /// Title for the add thought dialog
   static const String _dialogTitle = 'Add Thought';
+
+  /// Title for the edit thought dialog
   static const String _editDialogTitle = 'Edit Thought';
+
+  /// Label for the title input field
   static const String _titleLabel = 'Title *';
+
+  /// Label for the list selection
   static const String _listLabel = 'List';
 
+  /// Callback function when a thought task is created or edited
   final void Function(Task) onAdd;
+
+  /// Default list name to pre-select
   final String? defaultList;
+
+  /// Initial task data for editing
   final Task? initialTask;
 
+  /// Creates a thought dialog with the specified properties.
+  ///
+  /// [onAdd] - Callback when a thought task is created or edited
+  /// [defaultList] - Optional default list name
+  /// [initialTask] - Optional initial task data for editing
   const ThoughtDialog({
     super.key,
     required this.onAdd,
