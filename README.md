@@ -2,6 +2,12 @@
 
 **Focusyn** is a modern productivity and focus management app built with Flutter. It helps you stay on track, manage mental energy, and grow focus habits through a calm, minimal UI — powered by task planning, streak tracking, and an AI assistant named Synthe.
 
+## Coursework Details
+
+- **Course**: IN3007 Individual Project
+- **Institution**: City, University of London
+- **Term**: Spring 2025
+
 ## Features
 
 ### Core Features
