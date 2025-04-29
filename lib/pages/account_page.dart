@@ -390,6 +390,7 @@ class _AccountPageState extends State<AccountPage> {
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
         Hive.box(Keys.historyBox),
+        Hive.box(Keys.chatBox),
       );
 
       // Finally navigate to login page

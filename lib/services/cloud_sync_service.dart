@@ -438,6 +438,7 @@ class CloudSyncService {
     Box<dynamic> filterBox,
     Box<dynamic> brainBox,
     Box<dynamic> historyBox,
+    Box<dynamic> chatBox,
   ) async {
     try {
       // Clear all task categories
@@ -466,6 +467,9 @@ class CloudSyncService {
 
       // Clear flow history
       await historyBox.put('flow_history', <String>[]);
+
+      // Clear chat history
+      await chatBox.put('messages', <String>[]);
     } catch (e) {
       rethrow;
     }
@@ -505,6 +509,7 @@ class CloudSyncService {
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
         Hive.box(Keys.historyBox),
+        Hive.box(Keys.chatBox),
       );
     } catch (e) {
       rethrow;

@@ -248,6 +248,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
                               Hive.box(Keys.filterBox),
                               Hive.box(Keys.brainBox),
                               Hive.box(Keys.historyBox),
+                              Hive.box(Keys.chatBox),
                             );
                           })
                           .then((_) {
@@ -409,6 +410,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
         Hive.box(Keys.historyBox),
+        Hive.box(Keys.chatBox),
       );
 
       // Delete user data from Firestore
