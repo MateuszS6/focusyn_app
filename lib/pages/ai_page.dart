@@ -210,7 +210,9 @@ class _AIPageState extends State<AIPage> {
         isUser: false,
       );
     } finally {
-      setState(() => _isTyping = false);
+      if (mounted) {
+        setState(() => _isTyping = false);
+      }
     }
   }
 
@@ -406,7 +408,7 @@ class ChatBubble extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               child:
-                  isTyping
+                  !message.isUser && isTyping
                       ? const TypingIndicator()
                       : Text(
                         message.text,
