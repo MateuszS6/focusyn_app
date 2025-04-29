@@ -381,15 +381,12 @@ class _PrivacyPageState extends State<PrivacyPage> {
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
+                child: const Icon(ThemeIcons.cancel),
               ),
               FilledButton(
                 onPressed:
                     () => Navigator.pop(context, passwordController.text),
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.red.shade50,
-                  foregroundColor: Colors.red.shade700,
-                ),
+                style: FilledButton.styleFrom(backgroundColor: Colors.red),
                 child: const Text('Confirm'),
               ),
             ],
