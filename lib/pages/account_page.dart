@@ -376,12 +376,15 @@ class _AccountPageState extends State<AccountPage> {
   /// Logs the user out of the application.
   ///
   /// Performs the following actions:
-  /// - Clears local data using CloudSyncService
   /// - Signs out from Firebase Authentication
+  /// - Clears local data using CloudSyncService
   /// - Navigates to the login page
   Future<void> _logout() async {
     try {
-      // Clear local data
+      // First sign out from Firebase
+      await FirebaseAuth.instance.signOut();
+
+      // Then clear local data
       await CloudSyncService.clearLocalData(
         Hive.box<List>(Keys.taskBox),
         Hive.box(Keys.filterBox),
@@ -389,13 +392,11 @@ class _AccountPageState extends State<AccountPage> {
         Hive.box(Keys.historyBox),
       );
 
-      // Sign out from Firebase
-      await FirebaseAuth.instance.signOut();
-
-      // Navigate to login page
+      // Finally navigate to login page
       if (mounted) {
-        Navigator.of(context).pushReplacement(
+        Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (context) => const LoginPage()),
+          (route) => false,
         );
       }
     } catch (e) {
