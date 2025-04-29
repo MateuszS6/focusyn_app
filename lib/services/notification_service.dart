@@ -48,6 +48,18 @@ class NotificationService {
     }
     tz.setLocalLocation(tz.getLocation(currentTimeZone));
 
+    // Initialize the notification plugin
+    const initializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
+    const initializationSettingsIOS = DarwinInitializationSettings();
+    const initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await _notificationsPlugin.initialize(initializationSettings);
+
     // Create the Android notification channel
     await _notificationsPlugin
         .resolvePlatformSpecificImplementation<

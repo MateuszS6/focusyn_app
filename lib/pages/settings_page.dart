@@ -268,29 +268,66 @@ class _SettingsPageState extends State<SettingsPage> {
                 color: Colors.blue.shade50,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(ThemeIcons.info, color: Colors.blue[700]),
-                      const SizedBox(width: 8),
-                      Text(
-                        'About Notifications',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue[700],
+              child: InkWell(
+                onTap: () async {
+                  final scaffoldMessenger = ScaffoldMessenger.of(context);
+                  try {
+                    // Ensure notification service is initialized
+                    if (!NotificationService.isInitialized) {
+                      await NotificationService.initialize();
+                    }
+
+                    // Show a test notification
+                    await NotificationService.show(
+                      title: 'Test Notification',
+                      body:
+                          'This is a test notification to demonstrate how daily quotes will appear.',
+                    );
+                  } catch (e) {
+                    if (mounted) {
+                      scaffoldMessenger.showSnackBar(
+                        const SnackBar(
+                          content: Text('Failed to show test notification'),
+                          backgroundColor: Colors.red,
                         ),
+                      );
+                    }
+                  }
+                },
+                borderRadius: BorderRadius.circular(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(ThemeIcons.info, color: Colors.blue[700]),
+                        const SizedBox(width: 8),
+                        Text(
+                          'About Notifications',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue[700],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Daily quote notifications will help you stay motivated and focused throughout your day. You can choose when to receive these notifications.',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Tap here to see a test notification',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.blue[700],
+                        fontStyle: FontStyle.italic,
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Daily quote notifications will help you stay motivated and focused throughout your day. You can choose when to receive these notifications.',
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                  ),
-                ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ],
