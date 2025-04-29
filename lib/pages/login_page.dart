@@ -48,6 +48,39 @@ class _LoginPageState extends State<LoginPage> {
         MaterialPageRoute(builder: (_) => const MainScreen()),
         (route) => false,
       );
+    } on FirebaseAuthException catch (e) {
+      if (!mounted) return;
+      String errorMessage;
+      switch (e.code) {
+        case 'user-not-found':
+          errorMessage = 'No account found with this email.';
+          break;
+        case 'wrong-password':
+          errorMessage = 'Incorrect password. Please try again.';
+          break;
+        case 'invalid-email':
+          errorMessage = 'Please enter a valid email address.';
+          break;
+        case 'user-disabled':
+          errorMessage = 'This account has been disabled.';
+          break;
+        default:
+          errorMessage = 'Login failed. Please try again.';
+      }
+      showDialog(
+        context: context,
+        builder:
+            (_) => AlertDialog(
+              title: const Text("Login Failed"),
+              content: Text(errorMessage),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("OK"),
+                ),
+              ],
+            ),
+      );
     } catch (e) {
       if (!mounted) return;
       showDialog(
@@ -55,7 +88,9 @@ class _LoginPageState extends State<LoginPage> {
         builder:
             (_) => AlertDialog(
               title: const Text("Login Failed"),
-              content: Text(e.toString()),
+              content: const Text(
+                "An unexpected error occurred. Please try again.",
+              ),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.pop(context),
