@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/pages/focuses_page.dart';
-import 'package:focusyn_app/pages/today_page.dart';
+import 'package:focusyn_app/pages/dashboard.dart';
 import 'package:focusyn_app/pages/planner_page.dart';
 import 'package:focusyn_app/pages/ai_page.dart';
 import 'package:focusyn_app/services/cloud_sync_service.dart';
