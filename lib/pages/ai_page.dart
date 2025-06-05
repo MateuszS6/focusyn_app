@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
@@ -157,7 +158,6 @@ class _AIPageState extends State<AIPage> {
       }
     });
   }
-
   /// Handles user message submission and generates AI response
   void _handleSubmitted(String text) async {
     if (text.trim().isEmpty) return;
@@ -165,7 +165,12 @@ class _AIPageState extends State<AIPage> {
     _messageController.clear();
     _addMessage(text: text, isUser: true);
 
-    setState(() => _isTyping = true);
+    // Add placeholder message and set typing state
+    setState(() {
+      _isTyping = true;
+      _messages.add(ChatMessage(text: '', isUser: false)); // Placeholder for typing indicator
+    });
+    _scrollToBottom(); // Ensure the typing indicator is visible
 
     try {
       // Convert messages to format expected by AIService
@@ -203,7 +208,13 @@ class _AIPageState extends State<AIPage> {
         chatContext: chatContext,
       );
       await Future.delayed(const Duration(milliseconds: 600));
-      _addMessage(text: reply, isUser: false);
+      setState(() {
+        if (_messages.isNotEmpty && !_messages.last.isUser && _messages.last.text == '') {
+          _messages[_messages.length - 1] = ChatMessage(text: reply, isUser: false);
+        } else {
+          _messages.add(ChatMessage(text: reply, isUser: false));
+        }
+      });
     } catch (e) {
       _addMessage(
         text: "${Keys.aiName} had trouble replying. Please try again later.",
@@ -380,6 +391,8 @@ class ChatBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showTypingIndicator = !message.isUser && message.text.isEmpty && isTyping;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Row(
@@ -407,20 +420,16 @@ class ChatBubble extends StatelessWidget {
                 color: message.isUser ? Colors.blue[100] : Colors.grey[100],
                 borderRadius: BorderRadius.circular(16),
               ),
-              child:
-                  !message.isUser && isTyping
-                      ? const TypingIndicator()
-                      : Text(
-                        message.text,
-                        style: TextStyle(
-                          color:
-                              message.isUser
-                                  ? Colors.blue[900]
-                                  : Colors.black87,
-                          fontSize: 16,
-                          height: 1.4,
-                        ),
+              child: showTypingIndicator
+                  ? const TypingIndicator()
+                  : Text(
+                      message.text,
+                      style: TextStyle(
+                        color: message.isUser ? Colors.blue[900] : Colors.black87,
+                        fontSize: 16,
+                        height: 1.4,
                       ),
+                    ),
             ),
           ),
           if (message.isUser) ...[
@@ -471,12 +480,20 @@ class TypingIndicator extends StatelessWidget {
       ),
       child: TweenAnimationBuilder<double>(
         tween: Tween(begin: 0.0, end: 1.0),
-        duration: Duration(milliseconds: 600 + (index * 200)),
+        duration: Duration(milliseconds: 600),
         curve: Curves.easeInOut,
         builder: (context, value, child) {
-          return Opacity(opacity: value, child: child);
+          return Opacity(
+            opacity: (sin((value + index * 0.4) * 2 * 3.14159) + 1) / 2,
+            child: child,
+          );
         },
-        child: null,
+        child: Container(
+          decoration: const BoxDecoration(
+            color: Colors.black54,
+            shape: BoxShape.circle,
+          ),
+        ),
       ),
     );
   }
