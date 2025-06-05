@@ -24,10 +24,13 @@
 
 ## Screenshots
 
+### Sign In
 ![signin](images/sign-in.jpg)
 
+### Dashboard
 ![dashboard](images/dashboard-sync.jpg)
 
+### Synthe AI
 ![synthe](images/synthe-ai.jpg)
 
 ## Getting Started
