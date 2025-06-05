@@ -22,6 +22,14 @@
 - **Cloud Sync**: Automatic synchronization of your data
 - **Responsive Design**: Works seamlessly across different screen sizes
 
+## Screenshots
+
+![signin](images/sign-in.jpg)
+
+![dashboard](images/dashboard-sync.jpg)
+
+![synthe](images/synthe-ai.jpg)
+
 ## Getting Started
 
 ### Prerequisites
