@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
-import 'package:focusyn_app/services/brain_points_service.dart';
+import 'package:focusyn_app/services/brain_service.dart';
 import 'package:focusyn_app/models/task_model.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 
@@ -56,7 +56,7 @@ class ActionTile extends StatelessWidget {
       leading: IconButton(
         icon: const Icon(ThemeIcons.done),
         onPressed: () {
-          BrainPointsService.subtractPoints(task.brainPoints!);
+          BrainService.subtractPoints(task.brainPoints!);
           onComplete();
         },
       ),

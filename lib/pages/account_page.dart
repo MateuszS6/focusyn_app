@@ -7,7 +7,7 @@ import 'package:focusyn_app/pages/privacy_page.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import '../pages/login_page.dart';
 import 'package:hive/hive.dart';
-import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 
 /// A page that provides user account management functionality.
 ///
@@ -79,7 +79,7 @@ class _AccountPageState extends State<AccountPage> {
         // Update Auth display name
         await currentUser?.updateDisplayName(result);
         // Update Firestore profile
-        await CloudSyncService.updateUserProfile(result);
+        await CloudService.updateUserProfile(result);
         await currentUser?.reload();
 
         if (!mounted) return;
@@ -327,7 +327,7 @@ class _AccountPageState extends State<AccountPage> {
         );
 
         // Update email in Firestore profile
-        await CloudSyncService.updateUserProfile(
+        await CloudService.updateUserProfile(
           FirebaseAuth.instance.currentUser?.displayName ?? '',
           newEmail: newEmail,
         );
@@ -385,7 +385,7 @@ class _AccountPageState extends State<AccountPage> {
       await FirebaseAuth.instance.signOut();
 
       // Then clear local data
-      await CloudSyncService.clearLocalData(
+      await CloudService.clearLocalData(
         Hive.box<List>(Keys.taskBox),
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),

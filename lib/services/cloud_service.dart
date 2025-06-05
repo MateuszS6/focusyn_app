@@ -9,7 +9,7 @@ import 'package:hive/hive.dart';
 /// - Methods for uploading and downloading app data
 /// - User profile management
 /// - Data cleanup and reset functionality
-class CloudSyncService {
+class CloudService {
   /// Firebase Auth instance for user authentication
   static final _auth = FirebaseAuth.instance;
 

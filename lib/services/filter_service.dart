@@ -1,5 +1,5 @@
 import 'package:focusyn_app/constants/keys.dart';
-import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:hive/hive.dart';
 
 /// A service class for managing task filtering preferences.
@@ -42,7 +42,7 @@ class FilterService {
       // Update local storage
       await _filterBox.put(category, list);
       // Sync to cloud
-      await CloudSyncService.uploadFilters(_filterBox);
+      await CloudService.uploadFilters(_filterBox);
     } catch (e) {
       // Rethrow the exception to be handled by the caller
       rethrow;

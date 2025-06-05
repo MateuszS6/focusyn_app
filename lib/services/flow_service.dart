@@ -1,5 +1,5 @@
 import 'package:focusyn_app/constants/keys.dart';
-import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:hive/hive.dart';
 
 /// A service class for managing flow completion history.
@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 /// - Local storage of flow completion dates using Hive
 /// - Methods to track and retrieve flow completion history
 /// - Cloud synchronization of history data
-class FlowHistoryService {
+class FlowService {
   /// Key used to store flow history in Hive box
   static const String _historyKey = 'flow_history';
 
@@ -48,7 +48,7 @@ class FlowHistoryService {
     await historyBox.put(_historyKey, history);
 
     // Sync to cloud
-    await CloudSyncService.uploadFlowHistory(historyBox);
+    await CloudService.uploadFlowHistory(historyBox);
   }
 
   /// Removes all flow completion history.
@@ -61,6 +61,6 @@ class FlowHistoryService {
   static Future<void> clearHistory() async {
     final historyBox = Hive.box(Keys.historyBox);
     await historyBox.put(_historyKey, <String>[]);
-    await CloudSyncService.uploadFlowHistory(historyBox);
+    await CloudService.uploadFlowHistory(historyBox);
   }
 }

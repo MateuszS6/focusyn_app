@@ -4,7 +4,7 @@ import 'package:focusyn_app/pages/focuses_page.dart';
 import 'package:focusyn_app/pages/dashboard.dart';
 import 'package:focusyn_app/pages/planner_page.dart';
 import 'package:focusyn_app/pages/ai_page.dart';
-import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -109,7 +109,7 @@ class _MainScreenState extends State<MainScreen> {
       }
 
       // Perform cloud synchronization
-      await CloudSyncService.syncOnLogin(
+      await CloudService.syncOnLogin(
         taskBox,
         filterBox,
         brainBox,

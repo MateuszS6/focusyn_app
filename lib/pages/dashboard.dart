@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 // Application-specific imports
 import 'package:focusyn_app/constants/theme_icons.dart'; // Custom icon definitions
 import 'package:focusyn_app/services/task_service.dart'; // Task management service
-import 'package:focusyn_app/services/brain_points_service.dart'; // Brain points management
-import 'package:focusyn_app/services/flow_history_service.dart'; // Flow session history
+import 'package:focusyn_app/services/brain_service.dart'; // Brain points management
+import 'package:focusyn_app/services/flow_service.dart'; // Flow session history
 import 'package:focusyn_app/constants/keys.dart'; // Application constants and keys
 import 'package:focusyn_app/constants/quotes.dart'; // Daily motivational quotes
 import 'package:focusyn_app/pages/account_page.dart'; // User account page
@@ -14,7 +14,7 @@ import 'package:fl_chart/fl_chart.dart'; // Chart visualization library
 import 'package:firebase_auth/firebase_auth.dart'; // Firebase authentication
 import 'dart:math' as math; // Math utilities
 import 'package:focusyn_app/pages/onboarding_page.dart'; // User onboarding page
-import 'package:focusyn_app/services/cloud_sync_service.dart'; // Cloud synchronization
+import 'package:focusyn_app/services/cloud_service.dart'; // Cloud synchronization
 import 'package:focusyn_app/utils/my_scroll_shadow.dart'; // Custom scroll shadow widget
 import 'package:hive/hive.dart'; // Local storage
 
@@ -95,7 +95,7 @@ class _TodayPageState extends State<TodayPage> {
 
     try {
       // First sync with Firestore
-      await CloudSyncService.syncOnLogin(
+      await CloudService.syncOnLogin(
         Hive.box<List>(Keys.taskBox),
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
@@ -105,7 +105,7 @@ class _TodayPageState extends State<TodayPage> {
       // Then update local state
       if (!mounted) return;
       setState(() {
-        _points = BrainPointsService.getPoints();
+        _points = BrainService.getPoints();
         _actions = TaskService.tasks[Keys.actions] ?? [];
       });
 
@@ -314,7 +314,7 @@ class _TodayPageState extends State<TodayPage> {
 
   List<DateTime> _getFlowCompletions() {
     // Get all completions from the history service
-    final allCompletions = FlowHistoryService.getCompletions();
+    final allCompletions = FlowService.getCompletions();
 
     // Filter to only include completions from the last 7 days
     final now = DateTime.now();
@@ -1229,7 +1229,7 @@ class _TodayPageState extends State<TodayPage> {
                 onPressed: () {
                   final points = int.tryParse(controller.text) ?? 0;
                   if (points > 0 && points <= 100) {
-                    BrainPointsService.addPoints(points);
+                    BrainService.addPoints(points);
                     Navigator.pop(context);
                     if (mounted) {
                       setState(() {});

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
-import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/pages/onboarding_page.dart';
@@ -62,7 +62,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
       // Update user profile
       await userCredential.user?.updateDisplayName(name);
-      await CloudSyncService.updateUserProfile(name);
+      await CloudService.updateUserProfile(name);
 
       // Initialize local storage boxes
       final taskBox = Hive.box<List>(Keys.taskBox);
@@ -79,7 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
       _initializeBrainPoints(brainBox);
 
       // Sync all initialized data to Firestore
-      await CloudSyncService.syncOnLogin(
+      await CloudService.syncOnLogin(
         taskBox,
         filterBox,
         brainBox,

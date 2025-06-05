@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
-import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import 'package:focusyn_app/pages/login_page.dart';
 import 'package:hive/hive.dart';
@@ -240,10 +240,10 @@ class _PrivacyPageState extends State<PrivacyPage> {
                       Navigator.pop(context);
                       final scaffoldMessenger = ScaffoldMessenger.of(context);
                       // Clear only app data in Firestore (tasks, filters, brain points)
-                      CloudSyncService.clearAppData()
+                      CloudService.clearAppData()
                           .then((_) {
                             // Then clear local data
-                            return CloudSyncService.clearLocalData(
+                            return CloudService.clearLocalData(
                               Hive.box<List>(Keys.taskBox),
                               Hive.box(Keys.filterBox),
                               Hive.box(Keys.brainBox),
@@ -405,7 +405,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
       await user.reauthenticateWithCredential(credential);
 
       // Clear local data first
-      await CloudSyncService.clearLocalData(
+      await CloudService.clearLocalData(
         Hive.box<List>(Keys.taskBox),
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
@@ -414,7 +414,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
       );
 
       // Delete user data from Firestore
-      await CloudSyncService.deleteUserData();
+      await CloudService.deleteUserData();
 
       // Delete Firebase Auth account
       await user.delete();

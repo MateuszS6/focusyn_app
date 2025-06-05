@@ -1,5 +1,5 @@
 import 'package:focusyn_app/constants/keys.dart';
-import 'package:focusyn_app/services/cloud_sync_service.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:hive/hive.dart';
 
 /// A service class for managing brain points, a gamification feature.
@@ -8,7 +8,7 @@ import 'package:hive/hive.dart';
 /// - Methods to add, subtract, and retrieve points
 /// - Cloud synchronization of points data
 /// - Enforces minimum and maximum point limits
-class BrainPointsService {
+class BrainService {
   /// Hive box for storing brain points data
   static final _box = Hive.box(Keys.brainBox);
 
@@ -45,7 +45,7 @@ class BrainPointsService {
   /// Throws an exception if the update or sync fails
   static Future<void> setPoints(int value) async {
     _box.put(_pointsKey, value.clamp(_minPoints, _maxPoints));
-    await CloudSyncService.uploadBrainPoints(_box);
+    await CloudService.uploadBrainPoints(_box);
   }
 
   /// Adds points to the current total.
@@ -102,7 +102,7 @@ class BrainPointsService {
   static Future<void> reset() async {
     _box.put(_pointsKey, _maxPoints);
     _box.put(_dateKey, DateTime.now().toIso8601String());
-    await CloudSyncService.uploadBrainPoints(_box);
+    await CloudService.uploadBrainPoints(_box);
   }
 
   /// Checks if points need to be reset based on date.
