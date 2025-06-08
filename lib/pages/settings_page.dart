@@ -3,6 +3,8 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/quotes.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/notification_service.dart';
+import 'package:focusyn_app/services/setting_service.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import 'package:hive/hive.dart';
 
@@ -35,44 +37,49 @@ class _SettingsPageState extends State<SettingsPage> {
   /// The time at which daily quote notifications should be sent
   TimeOfDay _notificationTime = const TimeOfDay(hour: 9, minute: 0);
 
-  /// Hive box for storing settings persistently
-  final _settingBox = Hive.box(Keys.settingBox);
-
   @override
   void initState() {
     super.initState();
     _loadSettings();
   }
 
-  /// Loads settings from persistent storage and updates the UI state.
+  /// Loads settings from SettingService and updates the UI state.
   ///
   /// This method is called during initialization to restore the user's
   /// previous settings.
   void _loadSettings() {
     setState(() {
-      _navigationBarText = _settingBox.get(
-        Keys.navigationBarTextBehaviour,
-        defaultValue: NavigationDestinationLabelBehavior.alwaysShow.name,
-      );
-      _notificationsEnabled = _settingBox.get(
-        Keys.notificationsEnabled,
-        defaultValue: false,
-      );
-      final hour = _settingBox.get(Keys.notificationHour, defaultValue: 9);
-      final minute = _settingBox.get(Keys.notificationMinute, defaultValue: 0);
-      _notificationTime = TimeOfDay(hour: hour, minute: minute);
+      _navigationBarText = SettingService.getNavigationBarText();
+      _notificationsEnabled = SettingService.getNotificationsEnabled();
+      _notificationTime = SettingService.getNotificationTime();
     });
   }
 
-  /// Saves the current settings to persistent storage.
+  /// Saves the current settings using SettingService and syncs to cloud.
   ///
   /// This method is called whenever a setting is changed to ensure
-  /// the user's preferences are preserved.
+  /// the user's preferences are preserved both locally and in the cloud.
   Future<void> _saveSettings() async {
-    await _settingBox.put(Keys.navigationBarTextBehaviour, _navigationBarText);
-    await _settingBox.put(Keys.notificationsEnabled, _notificationsEnabled);
-    await _settingBox.put(Keys.notificationHour, _notificationTime.hour);
-    await _settingBox.put(Keys.notificationMinute, _notificationTime.minute);
+    // Save settings locally
+    await SettingService.setNavigationBarText(_navigationBarText);
+    await SettingService.setNotificationsEnabled(_notificationsEnabled);
+    await SettingService.setNotificationTime(_notificationTime);
+    
+    // Upload settings to cloud
+    try {
+      await CloudService.uploadSettings(Hive.box(Keys.settingBox));
+    } catch (e) {
+      // Ignore cloud sync errors, settings are still saved locally
+      debugPrint('Failed to sync settings to cloud: $e');
+    }
+    
+    // Upload settings to cloud
+    try {
+      await CloudService.uploadSettings(Hive.box(Keys.settingBox));
+    } catch (e) {
+      // Ignore cloud sync errors, settings are still saved locally
+      debugPrint('Failed to sync settings to cloud: $e');
+    }
   }
 
   /// Shows a time picker dialog to select the notification time.
