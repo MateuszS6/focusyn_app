@@ -214,12 +214,21 @@ class _AIPageState extends State<AIPage> {
         } else {
           _messages.add(ChatMessage(text: reply, isUser: false));
         }
+      });    } catch (e) {
+      // Remove the empty message and replace with error message
+      setState(() {
+        if (_messages.isNotEmpty && !_messages.last.isUser && _messages.last.text.isEmpty) {
+          _messages[_messages.length - 1] = ChatMessage(
+            text: "${Keys.aiName} had trouble replying. Please try again later.",
+            isUser: false,
+          );
+        } else {
+          _addMessage(
+            text: "${Keys.aiName} had trouble replying. Please try again later.",
+            isUser: false,
+          );
+        }
       });
-    } catch (e) {
-      _addMessage(
-        text: "${Keys.aiName} had trouble replying. Please try again later.",
-        isUser: false,
-      );
     } finally {
       if (mounted) {
         setState(() => _isTyping = false);
