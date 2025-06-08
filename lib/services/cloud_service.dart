@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/services/setting_service.dart';
 import 'package:hive/hive.dart';
 
 /// A service class for managing cloud synchronization of app data.
@@ -216,6 +217,32 @@ class CloudService {
     }
   }
 
+  static Future<void> uploadSettings(Box<dynamic> settingsBox) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw Exception('No user found in uploadSettings');
+    }
+
+    final settingsRef = _firestore
+        .collection('user_data')
+        .doc(user.uid)
+        .collection('settings')
+        .doc('settings');
+
+    try {
+      // Get current settings using SettingService
+      final settings = SettingService.getAllSettings();
+
+      // Update settings in Firestore
+      await settingsRef.set({
+        'settings': settings,
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   /// Downloads all user data from Firestore.
   /// This method:
   /// - Downloads tasks for all categories
@@ -372,6 +399,34 @@ class CloudService {
     }
   }
 
+  static Future<void> downloadSettings(Box<dynamic> settingsBox) async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw Exception('No user found in downloadSettings');
+    }
+
+    final settingsRef = _firestore
+        .collection('user_data')
+        .doc(user.uid)
+        .collection('settings')
+        .doc('settings');
+
+    try {
+      final settingsDoc = await settingsRef.get();
+      if (settingsDoc.exists) {
+        final data = settingsDoc.data();
+        if (data != null && data['settings'] != null) {
+          // Update settings using SettingService
+          await SettingService.updateAllSettings(
+            Map<String, dynamic>.from(data['settings']),
+          );
+        }
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   /// Performs initial synchronization on user login.
   /// This method:
   /// - For new users: uploads all local data
@@ -390,6 +445,7 @@ class CloudService {
     Box<dynamic> filterBox,
     Box<dynamic> brainBox,
     Box<dynamic> historyBox,
+    Box<dynamic> settingBox,
   ) async {
     try {
       final user = _auth.currentUser;
@@ -407,13 +463,16 @@ class CloudService {
         await uploadFilters(filterBox);
         await uploadBrainPoints(brainBox);
         await uploadFlowHistory(historyBox);
+        await uploadSettings(settingBox);
       } else {
         await downloadTasks(taskBox, filterBox, brainBox);
         await downloadFlowHistory(historyBox);
+        await downloadSettings(settingBox);
         await uploadTasks(taskBox);
         await uploadFilters(filterBox);
         await uploadBrainPoints(brainBox);
         await uploadFlowHistory(historyBox);
+        await uploadSettings(settingBox);
       }
     } catch (e) {
       rethrow;

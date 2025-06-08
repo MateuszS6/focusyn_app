@@ -68,6 +68,8 @@ class _SignUpPageState extends State<SignUpPage> {
       final taskBox = Hive.box<List>(Keys.taskBox);
       final filterBox = Hive.box(Keys.filterBox);
       final brainBox = Hive.box(Keys.brainBox);
+      final historyBox = Hive.box(Keys.historyBox);
+      final settingBox = Hive.box(Keys.settingBox);
 
       // Initialize example tasks for new users
       _initializeExampleTasks(taskBox);
@@ -83,7 +85,8 @@ class _SignUpPageState extends State<SignUpPage> {
         taskBox,
         filterBox,
         brainBox,
-        Hive.box(Keys.historyBox),
+        historyBox,
+        settingBox,
       );
 
       if (!mounted) return;

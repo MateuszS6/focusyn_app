@@ -99,12 +99,14 @@ class _MainScreenState extends State<MainScreen> {
       final filterBox = Hive.box(Keys.filterBox);
       final brainBox = Hive.box(Keys.brainBox);
       final historyBox = Hive.box(Keys.historyBox);
+      final settingBox = Hive.box(Keys.settingBox);
 
       // Verify all boxes are open
       if (!taskBox.isOpen ||
           !filterBox.isOpen ||
           !brainBox.isOpen ||
-          !historyBox.isOpen) {
+          !historyBox.isOpen ||
+          !settingBox.isOpen) {
         throw Exception('One or more Hive boxes are not open');
       }
 
@@ -114,6 +116,7 @@ class _MainScreenState extends State<MainScreen> {
         filterBox,
         brainBox,
         historyBox,
+        settingBox,
       );
     } catch (e) {
       if (!mounted) return;

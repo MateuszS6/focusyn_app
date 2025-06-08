@@ -100,6 +100,7 @@ class _TodayPageState extends State<TodayPage> {
         Hive.box(Keys.filterBox),
         Hive.box(Keys.brainBox),
         Hive.box(Keys.historyBox),
+        Hive.box(Keys.settingBox),
       );
 
       // Then update local state
