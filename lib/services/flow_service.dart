@@ -48,7 +48,7 @@ class FlowService {
     await historyBox.put(_historyKey, history);
 
     // Sync to cloud
-    await CloudService.uploadFlowHistory(historyBox);
+    await CloudService.uploadFlowHistory();
   }
 
   /// Removes all flow completion history.
@@ -61,6 +61,6 @@ class FlowService {
   static Future<void> clearHistory() async {
     final historyBox = Hive.box(Keys.historyBox);
     await historyBox.put(_historyKey, <String>[]);
-    await CloudService.uploadFlowHistory(historyBox);
+    await CloudService.uploadFlowHistory();
   }
 }

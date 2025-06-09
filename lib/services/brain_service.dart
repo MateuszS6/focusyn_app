@@ -45,7 +45,7 @@ class BrainService {
   /// Throws an exception if the update or sync fails
   static Future<void> setPoints(int value) async {
     _box.put(_pointsKey, value.clamp(_minPoints, _maxPoints));
-    await CloudService.uploadBrainPoints(_box);
+    await CloudService.uploadBrainPoints();
   }
 
   /// Adds points to the current total.
@@ -102,7 +102,7 @@ class BrainService {
   static Future<void> reset() async {
     _box.put(_pointsKey, _maxPoints);
     _box.put(_dateKey, DateTime.now().toIso8601String());
-    await CloudService.uploadBrainPoints(_box);
+    await CloudService.uploadBrainPoints();
   }
 
   /// Checks if points need to be reset based on date.

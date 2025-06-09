@@ -42,7 +42,7 @@ class FilterService {
       // Update local storage
       await _filterBox.put(category, list);
       // Sync to cloud
-      await CloudService.uploadFilters(_filterBox);
+      await CloudService.uploadFilters();
     } catch (e) {
       // Rethrow the exception to be handled by the caller
       rethrow;

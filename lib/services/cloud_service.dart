@@ -33,24 +33,14 @@ class CloudService {
     }
 
     // Initialize Firestore references for user data
-    final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final profileRef = _firestore.collection('profiles').doc(user.uid);
+    final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final brainPointsRef = userDataRef.collection('brainPoints').doc('current');
 
     try {
       // Check if user documents exist
-      final userDataDoc = await userDataRef.get();
       final profileDoc = await profileRef.get();
-
-      // Create initial user data if it doesn't exist
-      if (!userDataDoc.exists) {
-        await userDataRef.set({'createdAt': FieldValue.serverTimestamp()});
-        await brainPointsRef.set({
-          'points': 100,
-          'lastReset': DateTime.now().toIso8601String(),
-          'updatedAt': FieldValue.serverTimestamp(),
-        });
-      }
+      final userDataDoc = await userDataRef.get();
 
       // Create initial profile if it doesn't exist
       if (!profileDoc.exists) {
@@ -58,6 +48,16 @@ class CloudService {
           'displayName': user.displayName ?? '',
           'email': user.email ?? '',
           'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        });
+      }
+
+      // Create initial user data if it doesn't exist
+      if (!userDataDoc.exists) {
+        await userDataRef.set({'createdAt': FieldValue.serverTimestamp()});
+        await brainPointsRef.set({
+          'points': 100,
+          'lastReset': DateTime.now().toIso8601String(),
           'updatedAt': FieldValue.serverTimestamp(),
         });
       }
@@ -76,7 +76,7 @@ class CloudService {
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Upload fails
-  static Future<void> uploadTasks(Box<List> taskBox) async {
+  static Future<void> uploadTasks() async {
     final user = _auth.currentUser;
     if (user == null) {
       throw Exception('No user found in uploadTasks');
@@ -85,6 +85,7 @@ class CloudService {
     final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final batch = _firestore.batch();
 
+    final taskBox = Hive.box<List>(Keys.taskBox);
     try {
       // Upload tasks for each category in a single batch operation
       for (final category in [
@@ -114,7 +115,7 @@ class CloudService {
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Upload fails
-  static Future<void> uploadFilters(Box<dynamic> filterBox) async {
+  static Future<void> uploadFilters() async {
     final user = _auth.currentUser;
     if (user == null) {
       throw Exception('No user found in uploadFilters');
@@ -123,6 +124,7 @@ class CloudService {
     final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final batch = _firestore.batch();
 
+    final filterBox = Hive.box(Keys.filterBox);
     try {
       // Upload filters for each category in a single batch operation
       for (final category in [
@@ -152,7 +154,7 @@ class CloudService {
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Upload fails
-  static Future<void> uploadBrainPoints(Box<dynamic> brainBox) async {
+  static Future<void> uploadBrainPoints() async {
     final user = _auth.currentUser;
     if (user == null) {
       throw Exception('No user found in uploadBrainPoints');
@@ -164,6 +166,7 @@ class CloudService {
         .collection('brainPoints')
         .doc('current');
 
+    final brainBox = Hive.box(Keys.brainBox);
     try {
       // Get current brain points data
       final brainPoints = brainBox.get(Keys.brainPoints) ?? 100;
@@ -191,7 +194,7 @@ class CloudService {
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Upload fails
-  static Future<void> uploadFlowHistory(Box<dynamic> historyBox) async {
+  static Future<void> uploadFlowHistory() async {
     final user = _auth.currentUser;
     if (user == null) {
       throw Exception('No user found in uploadFlowHistory');
@@ -203,6 +206,7 @@ class CloudService {
         .collection('history')
         .doc('flow');
 
+    final historyBox = Hive.box(Keys.historyBox);
     try {
       // Get current flow history
       final history = historyBox.get('flow_history') as List<dynamic>? ?? [];
@@ -217,7 +221,7 @@ class CloudService {
     }
   }
 
-  static Future<void> uploadSettings(Box<dynamic> settingsBox) async {
+  static Future<void> uploadSettings() async {
     final user = _auth.currentUser;
     if (user == null) {
       throw Exception('No user found in uploadSettings');
@@ -257,16 +261,15 @@ class CloudService {
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Download fails
-  static Future<void> downloadTasks(
-    Box<List> taskBox,
-    Box<dynamic> filterBox,
-    Box<dynamic> brainBox,
-  ) async {
+  static Future<void> downloadTasks() async {
     final user = _auth.currentUser;
     if (user == null) {
       throw Exception('No user found in downloadTasks');
     }
 
+    final taskBox = Hive.box<List>(Keys.taskBox);
+    final filterBox = Hive.box(Keys.filterBox);
+    final brainBox = Hive.box(Keys.brainBox);
     try {
       await _ensureUserDocument();
       final userDataRef = _firestore.collection('user_data').doc(user.uid);
@@ -364,7 +367,7 @@ class CloudService {
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Download fails
-  static Future<void> downloadFlowHistory(Box<dynamic> historyBox) async {
+  static Future<void> downloadFlowHistory() async {
     final user = _auth.currentUser;
     if (user == null) {
       throw Exception('No user found in downloadFlowHistory');
@@ -376,6 +379,7 @@ class CloudService {
         .collection('history')
         .doc('flow');
 
+    final historyBox = Hive.box(Keys.historyBox);
     try {
       final historyDoc = await historyRef.get();
       if (historyDoc.exists) {
@@ -399,7 +403,7 @@ class CloudService {
     }
   }
 
-  static Future<void> downloadSettings(Box<dynamic> settingsBox) async {
+  static Future<void> downloadSettings() async {
     final user = _auth.currentUser;
     if (user == null) {
       throw Exception('No user found in downloadSettings');
@@ -459,20 +463,20 @@ class CloudService {
 
       if (isNewUser) {
         await _ensureUserDocument();
-        await uploadTasks(taskBox);
-        await uploadFilters(filterBox);
-        await uploadBrainPoints(brainBox);
-        await uploadFlowHistory(historyBox);
-        await uploadSettings(settingBox);
+        await uploadTasks();
+        await uploadFilters();
+        await uploadBrainPoints();
+        await uploadFlowHistory();
+        await uploadSettings();
       } else {
-        await downloadTasks(taskBox, filterBox, brainBox);
-        await downloadFlowHistory(historyBox);
-        await downloadSettings(settingBox);
-        await uploadTasks(taskBox);
-        await uploadFilters(filterBox);
-        await uploadBrainPoints(brainBox);
-        await uploadFlowHistory(historyBox);
-        await uploadSettings(settingBox);
+        await downloadTasks();
+        await downloadFlowHistory();
+        await downloadSettings();
+        await uploadTasks();
+        await uploadFilters();
+        await uploadBrainPoints();
+        await uploadFlowHistory();
+        await uploadSettings();
       }
     } catch (e) {
       rethrow;

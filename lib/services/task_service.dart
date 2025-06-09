@@ -87,7 +87,7 @@ class TaskService {
       // Update local storage
       await _taskBox.put(category, taskMaps);
       // Sync to cloud
-      await CloudService.uploadTasks(_taskBox);
+      await CloudService.uploadTasks();
     } catch (e) {
       // Rethrow the exception to be handled by the caller
       rethrow;

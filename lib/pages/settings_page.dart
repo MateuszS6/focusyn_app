@@ -6,7 +6,6 @@ import 'package:focusyn_app/services/notification_service.dart';
 import 'package:focusyn_app/services/setting_service.dart';
 import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
-import 'package:hive/hive.dart';
 
 /// A page that provides user settings and preferences.
 ///
@@ -67,7 +66,7 @@ class _SettingsPageState extends State<SettingsPage> {
     
     // Upload settings to cloud
     try {
-      await CloudService.uploadSettings(Hive.box(Keys.settingBox));
+      await CloudService.uploadSettings();
     } catch (e) {
       // Ignore cloud sync errors, settings are still saved locally
       debugPrint('Failed to sync settings to cloud: $e');
@@ -75,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
     
     // Upload settings to cloud
     try {
-      await CloudService.uploadSettings(Hive.box(Keys.settingBox));
+      await CloudService.uploadSettings();
     } catch (e) {
       // Ignore cloud sync errors, settings are still saved locally
       debugPrint('Failed to sync settings to cloud: $e');
