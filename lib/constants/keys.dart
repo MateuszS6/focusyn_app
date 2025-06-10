@@ -56,8 +56,9 @@ abstract class Keys {
 
   // Settings Keys
   // Keys for user preferences and app configuration
-  static const String navigationBarTextBehaviour = 'navigationBarTextBehaviour';
-  static const String notificationsEnabled = 'notificationsEnabled';
-  static const String notificationHour = 'notificationHour';
-  static const String notificationMinute = 'notificationMinute';
+  static const String onboardingDone = 'onboardingDone';
+  static const String navBarTextBehaviour = 'navBarTextBehaviour';
+  static const String notisEnabled = 'notisEnabled';
+  static const String notiHour = 'notiHour';
+  static const String notiMinute = 'notiMinute';
 }

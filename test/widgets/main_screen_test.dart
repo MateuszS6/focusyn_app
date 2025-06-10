@@ -76,7 +76,7 @@ void main() {
 
       // Open and initialize settings box
       settingsBox = await Hive.openBox(Keys.settingBox);
-      await settingsBox.put('onboardingCompleted', true);
+      await settingsBox.put('onboardingDone', true);
     });
 
     tearDown(() async {

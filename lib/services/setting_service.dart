@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:hive/hive.dart';
 
 /// Service class for managing app settings
@@ -10,63 +11,76 @@ import 'package:hive/hive.dart';
 class SettingService {
   static final _box = Hive.box(Keys.settingBox);
 
+  /// Loads onboarding completion status
+  static bool isOnboardingDone() {
+    return _box.get(Keys.onboardingDone, defaultValue: false);
+  }
+
   /// Loads navigation bar text behavior setting
-  static String getNavigationBarText() {
+  static String getNavBarText() {
     return _box.get(
-      Keys.navigationBarTextBehaviour,
+      Keys.navBarTextBehaviour,
       defaultValue: NavigationDestinationLabelBehavior.alwaysShow.name,
     );
   }
 
   /// Loads notifications enabled setting
-  static bool getNotificationsEnabled() {
-    return _box.get(
-      Keys.notificationsEnabled,
-      defaultValue: false,
-    );
+  static bool isNotisEnabled() {
+    return _box.get(Keys.notisEnabled, defaultValue: false);
   }
 
   /// Loads notification time setting
   static TimeOfDay getNotificationTime() {
-    final hour = _box.get(Keys.notificationHour, defaultValue: 9);
-    final minute = _box.get(Keys.notificationMinute, defaultValue: 0);
+    final hour = _box.get(Keys.notiHour, defaultValue: 9);
+    final minute = _box.get(Keys.notiMinute, defaultValue: 0);
     return TimeOfDay(hour: hour, minute: minute);
   }
 
+  /// Saves onboarding completion status
+  static Future<void> setOnboardingDone(bool value) async {
+    await _box.put(Keys.onboardingDone, value);
+    CloudService.uploadSettings();
+  }
+
   /// Saves navigation bar text behavior setting
-  static Future<void> setNavigationBarText(String value) async {
-    await _box.put(Keys.navigationBarTextBehaviour, value);
+  static Future<void> setNavBarText(String value) async {
+    await _box.put(Keys.navBarTextBehaviour, value);
   }
 
   /// Saves notifications enabled setting
-  static Future<void> setNotificationsEnabled(bool value) async {
-    await _box.put(Keys.notificationsEnabled, value);
+  static Future<void> setNotisEnabled(bool value) async {
+    await _box.put(Keys.notisEnabled, value);
   }
 
   /// Saves notification time setting
-  static Future<void> setNotificationTime(TimeOfDay time) async {
-    await _box.put(Keys.notificationHour, time.hour);
-    await _box.put(Keys.notificationMinute, time.minute);
+  static Future<void> setNotiTime(TimeOfDay time) async {
+    await _box.put(Keys.notiHour, time.hour);
+    await _box.put(Keys.notiMinute, time.minute);
   }
 
   /// Gets all settings as a map for cloud sync
   static Map<String, dynamic> getAllSettings() {
     return {
-      Keys.navigationBarTextBehaviour: getNavigationBarText(),
-      Keys.notificationsEnabled: getNotificationsEnabled(),
-      Keys.notificationHour: getNotificationTime().hour,
-      Keys.notificationMinute: getNotificationTime().minute,
+      Keys.onboardingDone: isOnboardingDone(),
+      Keys.navBarTextBehaviour: getNavBarText(),
+      Keys.notisEnabled: isNotisEnabled(),
+      Keys.notiHour: getNotificationTime().hour,
+      Keys.notiMinute: getNotificationTime().minute,
     };
   }
 
   /// Updates all settings from a map (used for cloud sync)
   static Future<void> updateAllSettings(Map<String, dynamic> settings) async {
-    await setNavigationBarText(settings[Keys.navigationBarTextBehaviour] ?? NavigationDestinationLabelBehavior.alwaysShow.name);
-    await setNotificationsEnabled(settings[Keys.notificationsEnabled] ?? false);
-    await setNotificationTime(
+    await setOnboardingDone(settings[Keys.onboardingDone] ?? false);
+    await setNavBarText(
+      settings[Keys.navBarTextBehaviour] ??
+          NavigationDestinationLabelBehavior.alwaysShow.name,
+    );
+    await setNotisEnabled(settings[Keys.notisEnabled] ?? false);
+    await setNotiTime(
       TimeOfDay(
-        hour: settings[Keys.notificationHour] ?? 9,
-        minute: settings[Keys.notificationMinute] ?? 0,
+        hour: settings[Keys.notiHour] ?? 9,
+        minute: settings[Keys.notiMinute] ?? 0,
       ),
     );
   }

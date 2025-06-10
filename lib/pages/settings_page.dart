@@ -48,8 +48,8 @@ class _SettingsPageState extends State<SettingsPage> {
   /// previous settings.
   void _loadSettings() {
     setState(() {
-      _navigationBarText = SettingService.getNavigationBarText();
-      _notificationsEnabled = SettingService.getNotificationsEnabled();
+      _navigationBarText = SettingService.getNavBarText();
+      _notificationsEnabled = SettingService.isNotisEnabled();
       _notificationTime = SettingService.getNotificationTime();
     });
   }
@@ -60,9 +60,9 @@ class _SettingsPageState extends State<SettingsPage> {
   /// the user's preferences are preserved both locally and in the cloud.
   Future<void> _saveSettings() async {
     // Save settings locally
-    await SettingService.setNavigationBarText(_navigationBarText);
-    await SettingService.setNotificationsEnabled(_notificationsEnabled);
-    await SettingService.setNotificationTime(_notificationTime);
+    await SettingService.setNavBarText(_navigationBarText);
+    await SettingService.setNotisEnabled(_notificationsEnabled);
+    await SettingService.setNotiTime(_notificationTime);
     
     // Upload settings to cloud
     try {

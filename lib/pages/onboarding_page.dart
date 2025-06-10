@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/main_screen.dart';
-import 'package:hive/hive.dart';
+import 'package:focusyn_app/services/setting_service.dart';
 
 /// A page that introduces new users to the app's features and functionality.
 ///
@@ -92,8 +92,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   /// 2. Navigating to the main screen
   void _completeOnboarding() async {
     // Mark onboarding as completed
-    final settingsBox = Hive.box(Keys.settingBox);
-    await settingsBox.put('onboardingCompleted', true);
+    SettingService.setOnboardingDone(true);
 
     if (mounted) {
       Navigator.of(context).pushReplacement(

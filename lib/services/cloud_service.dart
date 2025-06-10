@@ -470,44 +470,20 @@ class CloudService {
   /// Throws an exception if clearing fails
   static Future<void> clearLocalData() async {
     try {
-      // Clear all task categories
-      for (final category in [
-        Keys.actions,
-        Keys.flows,
-        Keys.moments,
-        Keys.thoughts,
-      ]) {
-        await _taskBox.put(category, []);
-      }
+      // Clear all task data
+      await _taskBox.clear();
 
       // Clear all filter categories
-      for (final category in [
-        Keys.actions,
-        Keys.flows,
-        Keys.moments,
-        Keys.thoughts,
-      ]) {
-        await _filterBox.put(category, []);
-      }
+      await _filterBox.clear();
 
       // Reset brain points to default values
-      await _brainBox.put(Keys.brainPoints, 100);
-      await _brainBox.put('lastReset', DateTime.now().toIso8601String());
+      await _brainBox.clear();
 
       // Clear flow history
-      await _historyBox.put('flow_history', <String>[]);
+      await _historyBox.clear();
 
       // Clear settings
-      await _settingBox.putAll({
-        Keys.navigationBarTextBehaviour: NavigationDestinationLabelBehavior.alwaysShow.name,
-        Keys.notificationsEnabled: false,
-        Keys.notificationHour: 9,
-        Keys.notificationMinute: 0,
-      });
-
-      // Clear chat history
-      final chatBox = Hive.box<String>(Keys.chatBox);
-      await chatBox.put('messages', <String>[] as String);
+      await _settingBox.clear();
     } catch (e) {
       rethrow;
     }
@@ -537,6 +513,7 @@ class CloudService {
       await _deleteCollection(userRef.collection('tasks'));
       await _deleteCollection(userRef.collection('filters'));
       await _deleteCollection(userRef.collection('history'));
+      await _deleteCollection(userRef.collection('settings'));
 
       // Delete user documents
       await Future.wait([userRef.delete(), profileRef.delete()]);

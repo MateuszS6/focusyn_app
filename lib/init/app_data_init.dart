@@ -63,20 +63,23 @@ class AppDataInit {
     }
 
     // Initialize notification settings with default values
-    if (!settingBox.containsKey(Keys.navigationBarTextBehaviour)) {
+    if (!settingBox.containsKey(Keys.onboardingDone)) {
+      settingBox.put(Keys.onboardingDone, false);
+    }
+    if (!settingBox.containsKey(Keys.navBarTextBehaviour)) {
       settingBox.put(
-        Keys.navigationBarTextBehaviour,
+        Keys.navBarTextBehaviour,
         NavigationDestinationLabelBehavior.alwaysShow.name,
       );
     }
-    if (!settingBox.containsKey(Keys.notificationsEnabled)) {
-      settingBox.put(Keys.notificationsEnabled, false);
+    if (!settingBox.containsKey(Keys.notisEnabled)) {
+      settingBox.put(Keys.notisEnabled, false);
     }
-    if (!settingBox.containsKey(Keys.notificationHour)) {
-      settingBox.put(Keys.notificationHour, 9);
+    if (!settingBox.containsKey(Keys.notiHour)) {
+      settingBox.put(Keys.notiHour, 9);
     }
-    if (!settingBox.containsKey(Keys.notificationMinute)) {
-      settingBox.put(Keys.notificationMinute, 0);
+    if (!settingBox.containsKey(Keys.notiMinute)) {
+      settingBox.put(Keys.notiMinute, 0);
     }
   }
 }

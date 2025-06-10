@@ -71,12 +71,12 @@ class AppInit {
     await NotificationService.initialize();
     final box = await Hive.openBox(Keys.settingBox);
     final notificationsEnabled = box.get(
-      Keys.notificationsEnabled,
+      Keys.notisEnabled,
       defaultValue: false,
     );
     if (notificationsEnabled) {
-      final hour = box.get(Keys.notificationHour, defaultValue: 9);
-      final minute = box.get(Keys.notificationMinute, defaultValue: 0);
+      final hour = box.get(Keys.notiHour, defaultValue: 9);
+      final minute = box.get(Keys.notiMinute, defaultValue: 0);
       await NotificationService.schedule(
         title: 'Daily Quote',
         body: Quotes.getRandomQuote().text,

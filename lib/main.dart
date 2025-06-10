@@ -10,8 +10,8 @@ import 'package:focusyn_app/init/app_init.dart'; // Application initialization
 import 'package:focusyn_app/main_screen.dart'; // Main application screen
 import 'package:focusyn_app/pages/login_page.dart'; // User authentication
 import 'package:focusyn_app/pages/onboarding_page.dart'; // First-time user experience
+import 'package:focusyn_app/services/setting_service.dart';
 import 'package:focusyn_app/theme/app_theme.dart'; // Application theming
-import 'package:hive/hive.dart'; // Local storage
 
 /// The entry point of the Focusyn application.
 ///
@@ -75,14 +75,7 @@ class MyApp extends StatelessWidget {
       return const LoginPage();
     }
 
-    // Check onboarding completion status
-    final settingsBox = Hive.box(Keys.settingBox);
-    final onboardingCompleted = settingsBox.get(
-      'onboardingCompleted',
-      defaultValue: false,
-    );
-
     // Route to appropriate screen
-    return onboardingCompleted ? const MainScreen() : const OnboardingPage();
+    return SettingService.isOnboardingDone() ? const MainScreen() : const OnboardingPage();
   }
 }
