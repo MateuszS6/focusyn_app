@@ -8,11 +8,11 @@ import 'package:hive/hive.dart';
 /// - Default values management
 /// - Settings state management
 class SettingService {
-  static final _settingBox = Hive.box(Keys.settingBox);
+  static final _box = Hive.box(Keys.settingBox);
 
   /// Loads navigation bar text behavior setting
   static String getNavigationBarText() {
-    return _settingBox.get(
+    return _box.get(
       Keys.navigationBarTextBehaviour,
       defaultValue: NavigationDestinationLabelBehavior.alwaysShow.name,
     );
@@ -20,7 +20,7 @@ class SettingService {
 
   /// Loads notifications enabled setting
   static bool getNotificationsEnabled() {
-    return _settingBox.get(
+    return _box.get(
       Keys.notificationsEnabled,
       defaultValue: false,
     );
@@ -28,25 +28,25 @@ class SettingService {
 
   /// Loads notification time setting
   static TimeOfDay getNotificationTime() {
-    final hour = _settingBox.get(Keys.notificationHour, defaultValue: 9);
-    final minute = _settingBox.get(Keys.notificationMinute, defaultValue: 0);
+    final hour = _box.get(Keys.notificationHour, defaultValue: 9);
+    final minute = _box.get(Keys.notificationMinute, defaultValue: 0);
     return TimeOfDay(hour: hour, minute: minute);
   }
 
   /// Saves navigation bar text behavior setting
   static Future<void> setNavigationBarText(String value) async {
-    await _settingBox.put(Keys.navigationBarTextBehaviour, value);
+    await _box.put(Keys.navigationBarTextBehaviour, value);
   }
 
   /// Saves notifications enabled setting
   static Future<void> setNotificationsEnabled(bool value) async {
-    await _settingBox.put(Keys.notificationsEnabled, value);
+    await _box.put(Keys.notificationsEnabled, value);
   }
 
   /// Saves notification time setting
   static Future<void> setNotificationTime(TimeOfDay time) async {
-    await _settingBox.put(Keys.notificationHour, time.hour);
-    await _settingBox.put(Keys.notificationMinute, time.minute);
+    await _box.put(Keys.notificationHour, time.hour);
+    await _box.put(Keys.notificationMinute, time.minute);
   }
 
   /// Gets all settings as a map for cloud sync
