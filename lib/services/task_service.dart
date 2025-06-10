@@ -10,7 +10,7 @@ import 'package:hive/hive.dart';
 /// - Cloud synchronization of task data
 class TaskService {
   /// Hive box for storing task lists
-  static final _taskBox = Hive.box<List>(Keys.taskBox);
+  static final _box = Hive.box<List>(Keys.taskBox);
 
   /// Gets all tasks organized by category.
   /// This getter:
@@ -20,8 +20,8 @@ class TaskService {
   /// - Handles missing or invalid data gracefully
   static Map<String, List<Task>> get tasks {
     final result = <String, List<Task>>{};
-    for (var key in _taskBox.keys) {
-      final rawList = _taskBox.get(key);
+    for (var key in _box.keys) {
+      final rawList = _box.get(key);
       if (rawList is List) {
         // Convert each map in the list to a Task object
         result[key] =
@@ -85,7 +85,7 @@ class TaskService {
               .toList();
 
       // Update local storage
-      await _taskBox.put(category, taskMaps);
+      await _box.put(category, taskMaps);
       // Sync to cloud
       await CloudService.uploadTasks();
     } catch (e) {
