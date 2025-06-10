@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/services/setting_service.dart';
 import 'package:hive/hive.dart';
@@ -491,31 +490,17 @@ class CloudService {
   static Future<void> clearLocalData() async {
     try {
       // Clear all task categories
-      for (final category in [
-        Keys.actions,
-        Keys.flows,
-        Keys.moments,
-        Keys.thoughts,
-      ]) {
-        await _taskBox.put(category, []);
-        await _filterBox.put(category, []);
-      }
+      await _taskBox.clear();
+      await _filterBox.clear();
 
       // Reset brain points to default values
-      await _brainBox.put(Keys.brainPoints, 100);
-      await _brainBox.put('lastReset', DateTime.now().toIso8601String());
+      await _brainBox.clear();
 
       // Clear flow history
-      await _historyBox.put('flow_history', <String>[]);
+      await _historyBox.clear();
 
       // Reset settings to defaults using SettingService
-      await SettingService.updateAllSettings({
-        Keys.onboardingDone: false,
-        Keys.navBarTextBehaviour: NavigationDestinationLabelBehavior.alwaysShow.name,
-        Keys.notisEnabled: false,
-        Keys.notiHour: 9,
-        Keys.notiMinute: 0,
-      });
+      await _settingBox.clear();
     } catch (e) {
       rethrow;
     }
