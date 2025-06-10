@@ -111,13 +111,7 @@ class _MainScreenState extends State<MainScreen> {
       }
 
       // Perform cloud synchronization
-      await CloudService.syncOnLogin(
-        taskBox,
-        filterBox,
-        brainBox,
-        historyBox,
-        settingBox,
-      );
+      await CloudService.syncOnLogin();
     } catch (e) {
       if (!mounted) return;
       // Show error message
