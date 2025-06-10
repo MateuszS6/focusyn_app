@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:focusyn_app/services/filter_service.dart';
+import 'package:focusyn_app/services/task_service.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/pages/onboarding_page.dart';
@@ -67,7 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
       await CloudService.updateUserProfile(name);
 
       // Initialize example tasks for new users
-      _initializeExampleTasks();
+      TaskService.initExampleTasks();
 
       // Initialize default filters
       FilterService.initDefaultFilters();
@@ -107,55 +107,6 @@ class _SignUpPageState extends State<SignUpPage> {
             ],
           ),
     );
-  }
-
-  /// Initializes example tasks for new users
-  void _initializeExampleTasks() {
-    final taskBox = Hive.box<List>(Keys.taskBox);
-    taskBox.putAll({
-      Keys.actions: [
-        {
-          'id': DateTime.now().millisecondsSinceEpoch.toString(),
-          'text': "Complete Focusyn App",
-          'priority': 1,
-          'brainPoints': 10,
-          'list': "Work",
-          'createdAt': DateTime.now().toIso8601String(),
-        },
-      ],
-      Keys.flows: [
-        {
-          'id': DateTime.now().millisecondsSinceEpoch.toString(),
-          'text': "Morning Routine",
-          'date': "2025-03-30",
-          'time': "07:30",
-          'duration': 15,
-          'repeat': "Daily",
-          'brainPoints': 10,
-          'list': "Morning",
-          'createdAt': DateTime.now().toIso8601String(),
-        },
-      ],
-      Keys.moments: [
-        {
-          'id': DateTime.now().millisecondsSinceEpoch.toString(),
-          'text': "Doctor's Appointment",
-          'date': "2025-04-03",
-          'time': "10:30",
-          'duration': 30,
-          'location': "Clinic",
-          'list': "Health",
-          'createdAt': DateTime.now().toIso8601String(),
-        },
-      ],
-      Keys.thoughts: [
-        {
-          'id': DateTime.now().millisecondsSinceEpoch.toString(),
-          'text': "I should start reading more books",
-          'createdAt': DateTime.now().toIso8601String(),
-        },
-      ],
-    });
   }
 
   /// Initializes brain points system with starting values

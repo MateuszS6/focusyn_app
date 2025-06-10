@@ -52,6 +52,54 @@ class TaskService {
     return result;
   }
 
+  /// Initializes example tasks for new users
+  static void initExampleTasks() {
+    _box.putAll({
+      Keys.actions: [
+        {
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+          'text': "Complete Focusyn App",
+          'priority': 1,
+          'brainPoints': 10,
+          'list': "Work",
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      ],
+      Keys.flows: [
+        {
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+          'text': "Morning Routine",
+          'date': "2025-03-30",
+          'time': "07:30",
+          'duration': 15,
+          'repeat': "Daily",
+          'brainPoints': 10,
+          'list': "Morning",
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      ],
+      Keys.moments: [
+        {
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+          'text': "Doctor's Appointment",
+          'date': "2025-04-03",
+          'time': "10:30",
+          'duration': 30,
+          'location': "Clinic",
+          'list': "Health",
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      ],
+      Keys.thoughts: [
+        {
+          'id': DateTime.now().millisecondsSinceEpoch.toString(),
+          'text': "I should start reading more books",
+          'createdAt': DateTime.now().toIso8601String(),
+        },
+      ],
+    });
+  }
+
   /// Updates the tasks for a specific category.
   /// This method:
   /// - Converts Task objects to storage format
