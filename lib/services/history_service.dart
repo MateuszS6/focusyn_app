@@ -7,7 +7,9 @@ import 'package:hive/hive.dart';
 /// - Local storage of flow completion dates using Hive
 /// - Methods to track and retrieve flow completion history
 /// - Cloud synchronization of history data
-class FlowService {
+class HistoryService {
+  static final _box = Hive.box(Keys.historyBox);
+
   /// Key used to store flow history in Hive box
   static const String _historyKey = 'flow_history';
 
@@ -19,9 +21,8 @@ class FlowService {
   ///
   /// Returns a list of DateTime objects representing completion dates
   static List<DateTime> getCompletions() {
-    final historyBox = Hive.box(Keys.historyBox);
     final history =
-        historyBox.get(_historyKey, defaultValue: <String>[]) as List<dynamic>;
+        _box.get(_historyKey, defaultValue: <String>[]) as List<dynamic>;
 
     return history.map((date) => DateTime.parse(date.toString())).toList();
   }
@@ -36,16 +37,15 @@ class FlowService {
   ///
   /// Throws an exception if the update or sync fails
   static Future<void> addCompletion(DateTime date) async {
-    final historyBox = Hive.box(Keys.historyBox);
     final history = List<String>.from(
-      historyBox.get(_historyKey, defaultValue: <String>[]),
+      _box.get(_historyKey, defaultValue: <String>[]),
     );
 
     // Add the new date
     history.add(date.toIso8601String());
 
     // Save to Hive
-    await historyBox.put(_historyKey, history);
+    await _box.put(_historyKey, history);
 
     // Sync to cloud
     await CloudService.uploadFlowHistory();
@@ -59,8 +59,7 @@ class FlowService {
   ///
   /// Throws an exception if the update or sync fails
   static Future<void> clearHistory() async {
-    final historyBox = Hive.box(Keys.historyBox);
-    await historyBox.put(_historyKey, <String>[]);
+    await _box.put(_historyKey, <String>[]);
     await CloudService.uploadFlowHistory();
   }
 }

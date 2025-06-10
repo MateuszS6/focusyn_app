@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/theme_icons.dart'; // Custom icon definitions
 import 'package:focusyn_app/services/task_service.dart'; // Task management service
 import 'package:focusyn_app/services/brain_service.dart'; // Brain points management
-import 'package:focusyn_app/services/flow_service.dart'; // Flow session history
+import 'package:focusyn_app/services/history_service.dart'; // Flow session history
 import 'package:focusyn_app/constants/keys.dart'; // Application constants and keys
 import 'package:focusyn_app/constants/quotes.dart'; // Daily motivational quotes
 import 'package:focusyn_app/pages/account_page.dart'; // User account page
@@ -315,7 +315,7 @@ class _TodayPageState extends State<TodayPage> {
 
   List<DateTime> _getFlowCompletions() {
     // Get all completions from the history service
-    final allCompletions = FlowService.getCompletions();
+    final allCompletions = HistoryService.getCompletions();
 
     // Filter to only include completions from the last 7 days
     final now = DateTime.now();

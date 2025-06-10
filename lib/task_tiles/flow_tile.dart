@@ -3,7 +3,7 @@ import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/constants/theme_colours.dart';
 import 'package:focusyn_app/services/brain_service.dart';
-import 'package:focusyn_app/services/flow_service.dart';
+import 'package:focusyn_app/services/history_service.dart';
 import 'package:focusyn_app/utils/task_tile.dart';
 import 'package:focusyn_app/models/task_model.dart';
 
@@ -79,7 +79,7 @@ class FlowTile extends StatelessWidget {
           BrainService.subtractPoints(task.brainPoints!);
 
           // Record completion in the history service
-          await FlowService.addCompletion(DateTime.now());
+          await HistoryService.addCompletion(DateTime.now());
 
           // Calculate next date
           final nextDate = Task.calculateNextDate(task.repeat ?? 'Daily');
