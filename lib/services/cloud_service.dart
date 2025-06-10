@@ -24,6 +24,12 @@ class CloudService {
   static final _historyBox = Hive.box(Keys.historyBox);
   static final _settingBox = Hive.box(Keys.settingBox);
 
+  static final _userTasksRoot = _firestore.collection('user_tasks');
+  static final _userFiltersRoot = _firestore.collection('user_filters');
+  static final _userBrainPointsRoot = _firestore.collection('user_points');
+  static final _userHistoryRoot = _firestore.collection('user_history');
+  static final _userSettingsRoot = _firestore.collection('user_settings');
+
   /// Ensures user documents exist in Firestore.
   /// This method:
   /// - Creates user data document if missing
@@ -41,13 +47,22 @@ class CloudService {
 
     // Initialize Firestore references for user data
     final profileRef = _firestore.collection('profiles').doc(user.uid);
-    final userDataRef = _firestore.collection('user_data').doc(user.uid);
-    final brainPointsRef = userDataRef.collection('brainPoints').doc('current');
+    final userTasksRef = _firestore.collection('user_tasks').doc(user.uid);
+    final userFiltersRef = _firestore.collection('user_filters').doc(user.uid);
+    final userPointsRef = _firestore.collection('user_points').doc(user.uid);
+    final userHistoryRef = _firestore.collection('user_history').doc(user.uid);
+    final userSettingsRef = _firestore
+        .collection('user_settings')
+        .doc(user.uid);
 
     try {
       // Check if user documents exist
       final profileDoc = await profileRef.get();
-      final userDataDoc = await userDataRef.get();
+      final userTasksDoc = await userTasksRef.get();
+      final userFiltersDoc = await userFiltersRef.get();
+      final userPointsDoc = await userPointsRef.get();
+      final userHistoryDoc = await userHistoryRef.get();
+      final userSettingsDoc = await userSettingsRef.get();
 
       // Create initial profile if it doesn't exist
       if (!profileDoc.exists) {
@@ -60,13 +75,37 @@ class CloudService {
       }
 
       // Create initial user data if it doesn't exist
-      if (!userDataDoc.exists) {
-        await userDataRef.set({'createdAt': FieldValue.serverTimestamp()});
-        await brainPointsRef.set({
+      if (!userTasksDoc.exists) {
+        await userTasksRef.set({'createdAt': FieldValue.serverTimestamp()});
+      }
+
+      // Create initial filters if it doesn't exist
+      if (!userFiltersDoc.exists) {
+        await userFiltersRef.set({'createdAt': FieldValue.serverTimestamp()});
+      }
+
+      // Create initial brain points if it doesn't exist
+      if (!userPointsDoc.exists) {
+        await userPointsRef.set({
           'points': 100,
           'lastReset': DateTime.now().toIso8601String(),
+          'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
         });
+      }
+
+      // Create initial history if it doesn't exist
+      if (!userHistoryDoc.exists) {
+        await userHistoryRef.set({'createdAt': FieldValue.serverTimestamp()});
+      }
+
+      // Create initial settings if it doesn't exist
+      if (!userSettingsDoc.exists) {
+        await userSettingsRef.set({
+          'items': SettingService.getAllSettings(),
+          'createdAt': FieldValue.serverTimestamp(),
+          'updatedAt': FieldValue.serverTimestamp(),
+        }, SetOptions(merge: true));
       }
     } catch (e) {
       rethrow;
@@ -89,7 +128,7 @@ class CloudService {
       throw Exception('No user found in uploadTasks');
     }
 
-    final userDataRef = _firestore.collection('user_data').doc(user.uid);
+    final userTasksRef = _userTasksRoot.doc(user.uid);
     final batch = _firestore.batch();
 
     final taskBox = Hive.box<List>(Keys.taskBox);
@@ -102,7 +141,7 @@ class CloudService {
         Keys.thoughts,
       ]) {
         final tasks = taskBox.get(category) ?? [];
-        final tasksRef = userDataRef.collection('tasks').doc(category);
+        final tasksRef = userTasksRef.collection(category).doc(category);
         batch.set(tasksRef, {'items': tasks});
       }
 
@@ -126,7 +165,7 @@ class CloudService {
       throw Exception('No user found in uploadFilters');
     }
 
-    final userDataRef = _firestore.collection('user_data').doc(user.uid);
+    final userFiltersRef = _userFiltersRoot.doc(user.uid);
     final batch = _firestore.batch();
 
     try {
@@ -138,7 +177,7 @@ class CloudService {
         Keys.thoughts,
       ]) {
         final filters = _filterBox.get(category) as List<dynamic>? ?? [];
-        final filtersRef = userDataRef.collection('filters').doc(category);
+        final filtersRef = userFiltersRef.collection(category).doc(category);
         batch.set(filtersRef, {'items': filters});
       }
 
@@ -162,11 +201,7 @@ class CloudService {
       throw Exception('No user found in uploadBrainPoints');
     }
 
-    final brainPointsRef = _firestore
-        .collection('user_data')
-        .doc(user.uid)
-        .collection('brainPoints')
-        .doc('current');
+    final brainPointsRef = _userBrainPointsRoot.doc(user.uid);
 
     try {
       // Get current brain points data
@@ -199,11 +234,7 @@ class CloudService {
       throw Exception('No user found in uploadFlowHistory');
     }
 
-    final historyRef = _firestore
-        .collection('user_data')
-        .doc(user.uid)
-        .collection('history')
-        .doc('flow');
+    final historyRef = _userHistoryRoot.doc(user.uid);
 
     try {
       // Get current flow history
@@ -211,7 +242,7 @@ class CloudService {
 
       // Update flow history in Firestore
       await historyRef.set({
-        'items': history,
+        'flows': history,
         'updatedAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
@@ -225,11 +256,7 @@ class CloudService {
       throw Exception('No user found in uploadSettings');
     }
 
-    final settingsRef = _firestore
-        .collection('user_data')
-        .doc(user.uid)
-        .collection('settings')
-        .doc('settings');
+    final settingsRef = _userSettingsRoot.doc(user.uid);
 
     try {
       // Get current settings using SettingService
@@ -237,7 +264,7 @@ class CloudService {
 
       // Update settings in Firestore
       await settingsRef.set({
-        'settings': settings,
+        'items': settings,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     } catch (e) {
@@ -263,11 +290,12 @@ class CloudService {
 
     try {
       await _ensureUserDocument();
-      final userDataRef = _firestore.collection('user_data').doc(user.uid);
+      final userTasksRef = _userTasksRoot.doc(user.uid);
+      final userFiltersRef = _userFiltersRoot.doc(user.uid);
+      final userBrainPointsRef = _userBrainPointsRoot.doc(user.uid);
 
       // Download and update brain points
-      final brainPointsDoc =
-          await userDataRef.collection('brainPoints').doc('current').get();
+      final brainPointsDoc = await userBrainPointsRef.get();
 
       if (brainPointsDoc.exists) {
         final data = brainPointsDoc.data();
@@ -287,7 +315,7 @@ class CloudService {
             await _brainBox.put('lastReset', now.toIso8601String());
 
             // Update cloud data to reflect reset
-            await userDataRef.collection('brainPoints').doc('current').set({
+            await userBrainPointsRef.set({
               'points': 100,
               'lastReset': now.toIso8601String(),
               'updatedAt': FieldValue.serverTimestamp(),
@@ -307,7 +335,7 @@ class CloudService {
         Keys.thoughts,
       ]) {
         final tasksDoc =
-            await userDataRef.collection('tasks').doc(category).get();
+            await userTasksRef.collection(category).doc(category).get();
         if (tasksDoc.exists) {
           final data = tasksDoc.data();
           if (data != null && data['items'] != null) {
@@ -329,7 +357,7 @@ class CloudService {
         Keys.thoughts,
       ]) {
         final filtersDoc =
-            await userDataRef.collection('filters').doc(category).get();
+            await userFiltersRef.collection(category).doc(category).get();
         if (filtersDoc.exists) {
           final data = filtersDoc.data();
           if (data != null && data['items'] != null) {
@@ -362,11 +390,7 @@ class CloudService {
       throw Exception('No user found in downloadFlowHistory');
     }
 
-    final historyRef = _firestore
-        .collection('user_data')
-        .doc(user.uid)
-        .collection('history')
-        .doc('flow');
+    final historyRef = _userHistoryRoot.doc(user.uid);
 
     try {
       final historyDoc = await historyRef.get();
@@ -397,20 +421,16 @@ class CloudService {
       throw Exception('No user found in downloadSettings');
     }
 
-    final settingsRef = _firestore
-        .collection('user_data')
-        .doc(user.uid)
-        .collection('settings')
-        .doc('settings');
+    final settingsRef = _userSettingsRoot.doc(user.uid);
 
     try {
       final settingsDoc = await settingsRef.get();
       if (settingsDoc.exists) {
         final data = settingsDoc.data();
-        if (data != null && data['settings'] != null) {
+        if (data != null && data['items'] != null) {
           // Update settings using SettingService
           await SettingService.updateAllSettings(
-            Map<String, dynamic>.from(data['settings']),
+            Map<String, dynamic>.from(data['items']),
           );
         }
       }
@@ -434,9 +454,9 @@ class CloudService {
         throw Exception('No user found in syncOnLogin');
       }
 
-      final userDataRef = _firestore.collection('user_data').doc(user.uid);
-      final userDataDoc = await userDataRef.get();
-      final isNewUser = !userDataDoc.exists;
+      final profileRef = _firestore.collection('profiles').doc(user.uid);
+      final profileDoc = await profileRef.get();
+      final isNewUser = !profileDoc.exists;
 
       if (isNewUser) {
         await _ensureUserDocument();
@@ -470,20 +490,32 @@ class CloudService {
   /// Throws an exception if clearing fails
   static Future<void> clearLocalData() async {
     try {
-      // Clear all task data
-      await _taskBox.clear();
-
-      // Clear all filter categories
-      await _filterBox.clear();
+      // Clear all task categories
+      for (final category in [
+        Keys.actions,
+        Keys.flows,
+        Keys.moments,
+        Keys.thoughts,
+      ]) {
+        await _taskBox.put(category, []);
+        await _filterBox.put(category, []);
+      }
 
       // Reset brain points to default values
-      await _brainBox.clear();
+      await _brainBox.put(Keys.brainPoints, 100);
+      await _brainBox.put('lastReset', DateTime.now().toIso8601String());
 
       // Clear flow history
-      await _historyBox.clear();
+      await _historyBox.put('flow_history', <String>[]);
 
-      // Clear settings
-      await _settingBox.clear();
+      // Reset settings to defaults using SettingService
+      await SettingService.updateAllSettings({
+        Keys.onboardingDone: false,
+        Keys.navBarTextBehaviour: NavigationDestinationLabelBehavior.alwaysShow.name,
+        Keys.notisEnabled: false,
+        Keys.notiHour: 9,
+        Keys.notiMinute: 0,
+      });
     } catch (e) {
       rethrow;
     }
@@ -500,23 +532,35 @@ class CloudService {
   /// - Deletion fails
   static Future<void> deleteUserData() async {
     try {
-      final user = FirebaseAuth.instance.currentUser;
+      final user = _auth.currentUser;
       if (user == null) {
         throw Exception('No user found in deleteUserData');
       }
 
-      final userRef = _firestore.collection('user_data').doc(user.uid);
       final profileRef = _firestore.collection('profiles').doc(user.uid);
 
-      // Delete all subcollections
-      await _deleteCollection(userRef.collection('brainPoints'));
-      await _deleteCollection(userRef.collection('tasks'));
-      await _deleteCollection(userRef.collection('filters'));
-      await _deleteCollection(userRef.collection('history'));
-      await _deleteCollection(userRef.collection('settings'));
+      // Delete user data from root collections
+      final userTasksRef = _userTasksRoot.doc(user.uid);
+      final userFiltersRef = _userFiltersRoot.doc(user.uid);
+      final userPointsRef = _userBrainPointsRoot.doc(user.uid);
+      final userHistoryRef = _userHistoryRoot.doc(user.uid);
+      final userSettingsRef = _userSettingsRoot.doc(user.uid);
 
-      // Delete user documents
-      await Future.wait([userRef.delete(), profileRef.delete()]);
+      // Delete all category subcollections
+      for (final category in [Keys.actions, Keys.flows, Keys.moments, Keys.thoughts]) {
+        await _deleteCollection(userTasksRef.collection(category));
+        await _deleteCollection(userFiltersRef.collection(category));
+      }
+
+      // Delete user documents from root collections
+      await Future.wait([
+        userTasksRef.delete(),
+        userFiltersRef.delete(),
+        userPointsRef.delete(),
+        userHistoryRef.delete(),
+        userSettingsRef.delete(),
+        profileRef.delete(),
+      ]);
 
       // Clear local data
       await clearLocalData();
@@ -576,44 +620,39 @@ class CloudService {
       throw Exception('No user found in clearAppData');
     }
 
-    final userDataRef = _firestore.collection('user_data').doc(user.uid);
-
     try {
       // Reset brain points
-      final brainPointsRef = userDataRef
-          .collection('brainPoints')
-          .doc('current');
+      final brainPointsRef = _userBrainPointsRoot.doc(user.uid);
       await brainPointsRef.set({
         'points': 100,
         'lastReset': DateTime.now().toIso8601String(),
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      // Clear all tasks
-      final tasksRef = userDataRef.collection('tasks');
-      final tasksDocs = await tasksRef.get();
-      for (var doc in tasksDocs.docs) {
-        await doc.reference.set({'items': []});
-      }
+      // Get references to user's root documents
+      final userTasksRef = _userTasksRoot.doc(user.uid);
+      final userFiltersRef = _userFiltersRoot.doc(user.uid);
+      final userHistoryRef = _userHistoryRoot.doc(user.uid);
+      final userSettingsRef = _userSettingsRoot.doc(user.uid);
 
-      // Clear all filters
-      final filtersRef = userDataRef.collection('filters');
-      final filtersDocs = await filtersRef.get();
-      for (var doc in filtersDocs.docs) {
-        await doc.reference.set({'items': []});
+      // Clear tasks and filters for each category
+      for (final category in [Keys.actions, Keys.flows, Keys.moments, Keys.thoughts]) {
+        final tasksCategoryRef = userTasksRef.collection(category).doc(category);
+        final filtersCategoryRef = userFiltersRef.collection(category).doc(category);
+        
+        await tasksCategoryRef.set({'items': []});
+        await filtersCategoryRef.set({'items': []});
       }
 
       // Clear flow history
-      final historyRef = userDataRef.collection('history').doc('flow');
-      await historyRef.set({
-        'items': [],
+      await userHistoryRef.set({
+        'flows': [],
         'updatedAt': FieldValue.serverTimestamp(),
       });
 
-      // Clear settings
-      final settingsRef = userDataRef.collection('settings').doc('settings');
-      await settingsRef.set({
-        'settings': SettingService.getAllSettings(),
+      // Reset settings to defaults
+      await userSettingsRef.set({
+        'items': SettingService.getAllSettings(),
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     } catch (e) {
