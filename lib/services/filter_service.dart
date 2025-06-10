@@ -9,7 +9,7 @@ import 'package:hive/hive.dart';
 /// - Cloud synchronization of filter data
 class FilterService {
   /// Hive box for storing filter lists
-  static final _filterBox = Hive.box(Keys.filterBox);
+  static final _box = Hive.box(Keys.filterBox);
 
   /// Gets all filters organized by category.
   /// This getter:
@@ -19,8 +19,8 @@ class FilterService {
   /// - Handles missing or invalid data gracefully
   static Map<String, List<String>> get filters {
     final result = <String, List<String>>{};
-    for (var key in _filterBox.keys) {
-      final rawList = _filterBox.get(key);
+    for (var key in _box.keys) {
+      final rawList = _box.get(key);
       if (rawList is List) {
         result[key] = List<String>.from(rawList);
       }
@@ -40,7 +40,7 @@ class FilterService {
   static Future<void> updateFilters(String category, List<String> list) async {
     try {
       // Update local storage
-      await _filterBox.put(category, list);
+      await _box.put(category, list);
       // Sync to cloud
       await CloudService.uploadFilters();
     } catch (e) {
