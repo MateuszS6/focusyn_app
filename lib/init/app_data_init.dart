@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/models/task_model.dart';
@@ -17,8 +18,8 @@ class AppDataInit {
     final taskBox = Hive.box<List>(Keys.taskBox);
     final filterBox = Hive.box(Keys.filterBox);
     final brainBox = Hive.box(Keys.brainBox);
-    final notificationBox = Hive.box(Keys.settingBox);
     final historyBox = Hive.box(Keys.historyBox);
+    final settingBox = Hive.box(Keys.settingBox);
 
     // Initialize task lists for each focus category
     if (!taskBox.containsKey(Keys.actions)) {
@@ -56,20 +57,26 @@ class AppDataInit {
       brainBox.put('lastReset', DateTime.now().toIso8601String());
     }
 
-    // Initialize notification settings with default values
-    if (!notificationBox.containsKey(Keys.notificationsEnabled)) {
-      notificationBox.put(Keys.notificationsEnabled, false);
-    }
-    if (!notificationBox.containsKey(Keys.notificationHour)) {
-      notificationBox.put(Keys.notificationHour, 9);
-    }
-    if (!notificationBox.containsKey(Keys.notificationMinute)) {
-      notificationBox.put(Keys.notificationMinute, 0);
-    }
-
     // Initialize flow history tracking
     if (!historyBox.containsKey('flow_history')) {
       historyBox.put('flow_history', <String>[]);
+    }
+
+    // Initialize notification settings with default values
+    if (!settingBox.containsKey(Keys.navigationBarTextBehaviour)) {
+      settingBox.put(
+        Keys.navigationBarTextBehaviour,
+        NavigationDestinationLabelBehavior.alwaysShow.name,
+      );
+    }
+    if (!settingBox.containsKey(Keys.notificationsEnabled)) {
+      settingBox.put(Keys.notificationsEnabled, false);
+    }
+    if (!settingBox.containsKey(Keys.notificationHour)) {
+      settingBox.put(Keys.notificationHour, 9);
+    }
+    if (!settingBox.containsKey(Keys.notificationMinute)) {
+      settingBox.put(Keys.notificationMinute, 0);
     }
   }
 }
