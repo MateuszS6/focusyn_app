@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/cloud_service.dart';
+import 'package:focusyn_app/services/filter_service.dart';
 import 'package:hive/hive.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/pages/onboarding_page.dart';
@@ -68,7 +70,7 @@ class _SignUpPageState extends State<SignUpPage> {
       _initializeExampleTasks();
 
       // Initialize default filters
-      _initializeFilters();
+      FilterService.initDefaultFilters();
 
       // Initialize brain points system
       _initializeBrainPoints();
@@ -153,17 +155,6 @@ class _SignUpPageState extends State<SignUpPage> {
           'createdAt': DateTime.now().toIso8601String(),
         },
       ],
-    });
-  }
-
-  /// Initializes default filters for different task types
-  void _initializeFilters() {
-    final filterBox = Hive.box(Keys.filterBox);
-    filterBox.putAll({
-      Keys.actions: [Keys.all, 'Home', 'Errands', 'Work'],
-      Keys.flows: [Keys.all, 'Morning', 'Wellness'],
-      Keys.moments: [Keys.all, 'Appointments', 'Social'],
-      Keys.thoughts: [Keys.all, 'Ideas', 'Journal'],
     });
   }
 

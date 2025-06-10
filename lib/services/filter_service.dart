@@ -28,6 +28,16 @@ class FilterService {
     return result;
   }
 
+  /// Initializes default filters for different task types
+  static void initDefaultFilters() {
+    _box.putAll({
+      Keys.actions: [Keys.all, 'Home', 'Errands', 'Work'],
+      Keys.flows: [Keys.all, 'Morning', 'Wellness'],
+      Keys.moments: [Keys.all, 'Appointments', 'Social'],
+      Keys.thoughts: [Keys.all, 'Ideas', 'Journal'],
+    });
+  }
+
   /// Updates the filters for a specific category.
   /// This method:
   /// - Updates local storage with new filter settings
