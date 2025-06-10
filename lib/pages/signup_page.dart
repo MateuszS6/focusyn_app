@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/services/brain_service.dart';
 import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:focusyn_app/services/filter_service.dart';
 import 'package:focusyn_app/services/task_service.dart';
-import 'package:hive/hive.dart';
-import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/pages/onboarding_page.dart';
 
 /// A page that handles new user registration and account creation.
@@ -73,7 +72,7 @@ class _SignUpPageState extends State<SignUpPage> {
       FilterService.initDefaultFilters();
 
       // Initialize brain points system
-      _initializeBrainPoints();
+      BrainService.initBrainPoints();
 
       // Sync all initialized data to Firestore
       await CloudService.syncOnLogin();
@@ -107,13 +106,6 @@ class _SignUpPageState extends State<SignUpPage> {
             ],
           ),
     );
-  }
-
-  /// Initializes brain points system with starting values
-  void _initializeBrainPoints() {
-    final brainBox = Hive.box(Keys.brainBox);
-    brainBox.put(Keys.brainPoints, 100);
-    brainBox.put('lastReset', DateTime.now().toIso8601String());
   }
 
   @override

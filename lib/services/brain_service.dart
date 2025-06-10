@@ -127,4 +127,10 @@ class BrainService {
       reset();
     }
   }
+
+    /// Initializes brain points system with starting values
+  static void initBrainPoints() {
+    _box.put(Keys.brainPoints, 100);
+    _box.put('lastReset', DateTime.now().toIso8601String());
+  }
 }
