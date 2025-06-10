@@ -6,7 +6,6 @@ import 'package:focusyn_app/pages/settings_page.dart';
 import 'package:focusyn_app/pages/privacy_page.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import '../pages/login_page.dart';
-import 'package:hive/hive.dart';
 import 'package:focusyn_app/services/cloud_service.dart';
 
 /// A page that provides user account management functionality.
@@ -385,13 +384,7 @@ class _AccountPageState extends State<AccountPage> {
       await FirebaseAuth.instance.signOut();
 
       // Then clear local data
-      await CloudService.clearLocalData(
-        Hive.box<List>(Keys.taskBox),
-        Hive.box(Keys.filterBox),
-        Hive.box(Keys.brainBox),
-        Hive.box(Keys.historyBox),
-        Hive.box(Keys.chatBox),
-      );
+      await CloudService.clearLocalData();
 
       // Finally navigate to login page
       if (mounted) {

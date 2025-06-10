@@ -64,30 +64,17 @@ class _SignUpPageState extends State<SignUpPage> {
       await userCredential.user?.updateDisplayName(name);
       await CloudService.updateUserProfile(name);
 
-      // Initialize local storage boxes
-      final taskBox = Hive.box<List>(Keys.taskBox);
-      final filterBox = Hive.box(Keys.filterBox);
-      final brainBox = Hive.box(Keys.brainBox);
-      final historyBox = Hive.box(Keys.historyBox);
-      final settingBox = Hive.box(Keys.settingBox);
-
       // Initialize example tasks for new users
-      _initializeExampleTasks(taskBox);
+      _initializeExampleTasks();
 
       // Initialize default filters
-      _initializeFilters(filterBox);
+      _initializeFilters();
 
       // Initialize brain points system
-      _initializeBrainPoints(brainBox);
+      _initializeBrainPoints();
 
       // Sync all initialized data to Firestore
-      await CloudService.syncOnLogin(
-        taskBox,
-        filterBox,
-        brainBox,
-        historyBox,
-        settingBox,
-      );
+      await CloudService.syncOnLogin();
 
       if (!mounted) return;
       Navigator.of(context).pushAndRemoveUntil(
@@ -121,7 +108,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   /// Initializes example tasks for new users
-  void _initializeExampleTasks(Box<List> taskBox) {
+  void _initializeExampleTasks() {
+    final taskBox = Hive.box<List>(Keys.taskBox);
     taskBox.putAll({
       Keys.actions: [
         {
@@ -169,7 +157,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   /// Initializes default filters for different task types
-  void _initializeFilters(Box filterBox) {
+  void _initializeFilters() {
+    final filterBox = Hive.box(Keys.filterBox);
     filterBox.putAll({
       Keys.actions: [Keys.all, 'Home', 'Errands', 'Work'],
       Keys.flows: [Keys.all, 'Morning', 'Wellness'],
@@ -179,7 +168,8 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   /// Initializes brain points system with starting values
-  void _initializeBrainPoints(Box brainBox) {
+  void _initializeBrainPoints() {
+    final brainBox = Hive.box(Keys.brainBox);
     brainBox.put(Keys.brainPoints, 100);
     brainBox.put('lastReset', DateTime.now().toIso8601String());
   }

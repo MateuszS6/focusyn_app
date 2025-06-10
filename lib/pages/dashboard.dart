@@ -95,13 +95,7 @@ class _TodayPageState extends State<TodayPage> {
 
     try {
       // First sync with Firestore
-      await CloudService.syncOnLogin(
-        Hive.box<List>(Keys.taskBox),
-        Hive.box(Keys.filterBox),
-        Hive.box(Keys.brainBox),
-        Hive.box(Keys.historyBox),
-        Hive.box(Keys.settingBox),
-      );
+      await CloudService.syncOnLogin();
 
       // Then update local state
       if (!mounted) return;

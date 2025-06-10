@@ -4,7 +4,6 @@ import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
 import 'package:focusyn_app/pages/login_page.dart';
-import 'package:hive/hive.dart';
 import 'package:focusyn_app/constants/keys.dart';
 
 /// A page that provides privacy and security information and controls.
@@ -243,13 +242,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
                       CloudService.clearAppData()
                           .then((_) {
                             // Then clear local data
-                            return CloudService.clearLocalData(
-                              Hive.box<List>(Keys.taskBox),
-                              Hive.box(Keys.filterBox),
-                              Hive.box(Keys.brainBox),
-                              Hive.box(Keys.historyBox),
-                              Hive.box(Keys.chatBox),
-                            );
+                            return CloudService.clearLocalData();
                           })
                           .then((_) {
                             if (!mounted) return;
@@ -405,13 +398,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
       await user.reauthenticateWithCredential(credential);
 
       // Clear local data first
-      await CloudService.clearLocalData(
-        Hive.box<List>(Keys.taskBox),
-        Hive.box(Keys.filterBox),
-        Hive.box(Keys.brainBox),
-        Hive.box(Keys.historyBox),
-        Hive.box(Keys.chatBox),
-      );
+      await CloudService.clearLocalData();
 
       // Delete user data from Firestore
       await CloudService.deleteUserData();

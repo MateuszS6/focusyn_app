@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/services/setting_service.dart';
 import 'package:hive/hive.dart';
@@ -16,6 +17,12 @@ class CloudService {
 
   /// Firebase Firestore instance for data storage
   static final _firestore = FirebaseFirestore.instance;
+
+  static final _taskBox = Hive.box<List>(Keys.taskBox);
+  static final _filterBox = Hive.box(Keys.filterBox);
+  static final _brainBox = Hive.box(Keys.brainBox);
+  static final _historyBox = Hive.box(Keys.historyBox);
+  static final _settingBox = Hive.box(Keys.settingBox);
 
   /// Ensures user documents exist in Firestore.
   /// This method:
@@ -110,8 +117,6 @@ class CloudService {
   /// - Uploads filters for all categories
   /// - Uses batch operations for atomic updates
   ///
-  /// [filterBox] - Hive box containing filter data
-  ///
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Upload fails
@@ -124,7 +129,6 @@ class CloudService {
     final userDataRef = _firestore.collection('user_data').doc(user.uid);
     final batch = _firestore.batch();
 
-    final filterBox = Hive.box(Keys.filterBox);
     try {
       // Upload filters for each category in a single batch operation
       for (final category in [
@@ -133,7 +137,7 @@ class CloudService {
         Keys.moments,
         Keys.thoughts,
       ]) {
-        final filters = filterBox.get(category) as List<dynamic>? ?? [];
+        final filters = _filterBox.get(category) as List<dynamic>? ?? [];
         final filtersRef = userDataRef.collection('filters').doc(category);
         batch.set(filtersRef, {'items': filters});
       }
@@ -148,8 +152,6 @@ class CloudService {
   /// This method:
   /// - Uploads current points value
   /// - Uploads last reset timestamp
-  ///
-  /// [brainBox] - Hive box containing brain points data
   ///
   /// Throws an exception if:
   /// - No user is authenticated
@@ -166,12 +168,11 @@ class CloudService {
         .collection('brainPoints')
         .doc('current');
 
-    final brainBox = Hive.box(Keys.brainBox);
     try {
       // Get current brain points data
-      final brainPoints = brainBox.get(Keys.brainPoints) ?? 100;
+      final brainPoints = _brainBox.get(Keys.brainPoints) ?? 100;
       final lastReset =
-          brainBox.get('lastReset') ?? DateTime.now().toIso8601String();
+          _brainBox.get('lastReset') ?? DateTime.now().toIso8601String();
 
       // Update brain points in Firestore
       await brainPointsRef.set({
@@ -189,8 +190,6 @@ class CloudService {
   /// - Uploads list of flow completion dates
   /// - Updates the last modification timestamp
   ///
-  /// [historyBox] - Hive box containing flow history data
-  ///
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Upload fails
@@ -206,10 +205,9 @@ class CloudService {
         .collection('history')
         .doc('flow');
 
-    final historyBox = Hive.box(Keys.historyBox);
     try {
       // Get current flow history
-      final history = historyBox.get('flow_history') as List<dynamic>? ?? [];
+      final history = _historyBox.get('flow_history') as List<dynamic>? ?? [];
 
       // Update flow history in Firestore
       await historyRef.set({
@@ -254,10 +252,6 @@ class CloudService {
   /// - Downloads brain points data
   /// - Handles daily reset of brain points
   ///
-  /// [taskBox] - Hive box for storing downloaded tasks
-  /// [filterBox] - Hive box for storing downloaded filters
-  /// [brainBox] - Hive box for storing downloaded brain points
-  ///
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Download fails
@@ -267,9 +261,6 @@ class CloudService {
       throw Exception('No user found in downloadTasks');
     }
 
-    final taskBox = Hive.box<List>(Keys.taskBox);
-    final filterBox = Hive.box(Keys.filterBox);
-    final brainBox = Hive.box(Keys.brainBox);
     try {
       await _ensureUserDocument();
       final userDataRef = _firestore.collection('user_data').doc(user.uid);
@@ -292,8 +283,8 @@ class CloudService {
           if (now.year > lastResetDate.year ||
               now.month > lastResetDate.month ||
               now.day > lastResetDate.day) {
-            await brainBox.put(Keys.brainPoints, 100);
-            await brainBox.put('lastReset', now.toIso8601String());
+            await _brainBox.put(Keys.brainPoints, 100);
+            await _brainBox.put('lastReset', now.toIso8601String());
 
             // Update cloud data to reflect reset
             await userDataRef.collection('brainPoints').doc('current').set({
@@ -302,8 +293,8 @@ class CloudService {
               'updatedAt': FieldValue.serverTimestamp(),
             });
           } else {
-            await brainBox.put(Keys.brainPoints, cloudPoints);
-            await brainBox.put('lastReset', cloudLastReset);
+            await _brainBox.put(Keys.brainPoints, cloudPoints);
+            await _brainBox.put('lastReset', cloudLastReset);
           }
         }
       }
@@ -320,11 +311,11 @@ class CloudService {
         if (tasksDoc.exists) {
           final data = tasksDoc.data();
           if (data != null && data['items'] != null) {
-            final localTasks = taskBox.get(category) ?? [];
+            final localTasks = _taskBox.get(category) ?? [];
 
             // Only update if cloud data exists or local data is empty
             if (data['items'].isNotEmpty || localTasks.isEmpty) {
-              await taskBox.put(category, data['items']);
+              await _taskBox.put(category, data['items']);
             }
           }
         }
@@ -343,11 +334,11 @@ class CloudService {
           final data = filtersDoc.data();
           if (data != null && data['items'] != null) {
             final localFilters =
-                filterBox.get(category) as List<dynamic>? ?? [];
+                _filterBox.get(category) as List<dynamic>? ?? [];
 
             // Only update if cloud data exists or local data is empty
             if (data['items'].isNotEmpty || localFilters.isEmpty) {
-              await filterBox.put(category, data['items']);
+              await _filterBox.put(category, data['items']);
             }
           }
         }
@@ -361,8 +352,6 @@ class CloudService {
   /// This method:
   /// - Downloads list of flow completion dates
   /// - Preserves local data if it exists and cloud data is empty
-  ///
-  /// [historyBox] - Hive box for storing downloaded history
   ///
   /// Throws an exception if:
   /// - No user is authenticated
@@ -379,18 +368,17 @@ class CloudService {
         .collection('history')
         .doc('flow');
 
-    final historyBox = Hive.box(Keys.historyBox);
     try {
       final historyDoc = await historyRef.get();
       if (historyDoc.exists) {
         final data = historyDoc.data();
         if (data != null && data['items'] != null) {
           final localHistory =
-              historyBox.get('flow_history') as List<dynamic>? ?? [];
+              _historyBox.get('flow_history') as List<dynamic>? ?? [];
 
           // Only update if cloud data exists or local data is empty
           if (data['items'].isNotEmpty || localHistory.isEmpty) {
-            await historyBox.put('flow_history', data['items']);
+            await _historyBox.put('flow_history', data['items']);
           } else {
             throw Exception(
               'DEBUG: Preserving local flow history (${localHistory.length} items)',
@@ -436,21 +424,10 @@ class CloudService {
   /// - For new users: uploads all local data
   /// - For existing users: downloads cloud data, then uploads local changes
   ///
-  /// [taskBox] - Hive box containing task data
-  /// [filterBox] - Hive box containing filter data
-  /// [brainBox] - Hive box containing brain points data
-  /// [historyBox] - Hive box containing flow history data
-  ///
   /// Throws an exception if:
   /// - No user is authenticated
   /// - Synchronization fails
-  static Future<void> syncOnLogin(
-    Box<List> taskBox,
-    Box<dynamic> filterBox,
-    Box<dynamic> brainBox,
-    Box<dynamic> historyBox,
-    Box<dynamic> settingBox,
-  ) async {
+  static Future<void> syncOnLogin() async {
     try {
       final user = _auth.currentUser;
       if (user == null) {
@@ -490,19 +467,8 @@ class CloudService {
   /// - Resets brain points to default value
   /// - Clears flow history
   ///
-  /// [taskBox] - Hive box containing task data
-  /// [filterBox] - Hive box containing filter data
-  /// [brainBox] - Hive box containing brain points data
-  /// [historyBox] - Hive box containing flow history data
-  ///
   /// Throws an exception if clearing fails
-  static Future<void> clearLocalData(
-    Box<List> taskBox,
-    Box<dynamic> filterBox,
-    Box<dynamic> brainBox,
-    Box<dynamic> historyBox,
-    Box<dynamic> chatBox,
-  ) async {
+  static Future<void> clearLocalData() async {
     try {
       // Clear all task categories
       for (final category in [
@@ -511,7 +477,7 @@ class CloudService {
         Keys.moments,
         Keys.thoughts,
       ]) {
-        await taskBox.put(category, []);
+        await _taskBox.put(category, []);
       }
 
       // Clear all filter categories
@@ -521,18 +487,27 @@ class CloudService {
         Keys.moments,
         Keys.thoughts,
       ]) {
-        await filterBox.put(category, []);
+        await _filterBox.put(category, []);
       }
 
       // Reset brain points to default values
-      await brainBox.put(Keys.brainPoints, 100);
-      await brainBox.put('lastReset', DateTime.now().toIso8601String());
+      await _brainBox.put(Keys.brainPoints, 100);
+      await _brainBox.put('lastReset', DateTime.now().toIso8601String());
 
       // Clear flow history
-      await historyBox.put('flow_history', <String>[]);
+      await _historyBox.put('flow_history', <String>[]);
+
+      // Clear settings
+      await _settingBox.putAll({
+        Keys.navigationBarTextBehaviour: NavigationDestinationLabelBehavior.alwaysShow.name,
+        Keys.notificationsEnabled: false,
+        Keys.notificationHour: 9,
+        Keys.notificationMinute: 0,
+      });
 
       // Clear chat history
-      await chatBox.put('messages', <String>[]);
+      final chatBox = Hive.box<String>(Keys.chatBox);
+      await chatBox.put('messages', <String>[] as String);
     } catch (e) {
       rethrow;
     }
@@ -567,13 +542,7 @@ class CloudService {
       await Future.wait([userRef.delete(), profileRef.delete()]);
 
       // Clear local data
-      await clearLocalData(
-        Hive.box<List>(Keys.taskBox),
-        Hive.box(Keys.filterBox),
-        Hive.box(Keys.brainBox),
-        Hive.box(Keys.historyBox),
-        Hive.box(Keys.chatBox),
-      );
+      await clearLocalData();
     } catch (e) {
       rethrow;
     }
@@ -663,6 +632,13 @@ class CloudService {
         'items': [],
         'updatedAt': FieldValue.serverTimestamp(),
       });
+
+      // Clear settings
+      final settingsRef = userDataRef.collection('settings').doc('settings');
+      await settingsRef.set({
+        'settings': SettingService.getAllSettings(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
     } catch (e) {
       rethrow;
     }
