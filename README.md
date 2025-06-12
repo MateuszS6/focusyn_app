@@ -24,14 +24,17 @@
 
 ## Screenshots
 
-### Sign In
-![signin](images/sign-in.jpg)
-
 ### Dashboard
-![dashboard](images/dashboard-sync.jpg)
+![dashboard](images/dashboard.jpg)
+
+### Focus Lists
+![focuses](images/focuses.jpg)
 
 ### Synthe AI
-![synthe](images/synthe-ai.jpg)
+![synthe](images/synthe-1.jpg)
+
+### Sign In
+![signin](images/sign-in.jpg)
 
 ## Getting Started
 
