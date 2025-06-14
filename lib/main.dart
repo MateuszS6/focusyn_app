@@ -16,7 +16,7 @@ import 'package:focusyn_app/theme/app_theme.dart'; // Application theming
 /// The entry point of the Focusyn application.
 ///
 /// This function:
-/// 1. Initializes the application by calling [AppInit.initialize]
+/// 1. Initializes the application by calling [AppInit.run]
 /// 2. Runs the application with [MyApp] as the root widget
 ///
 /// The initialization process includes:
@@ -25,7 +25,7 @@ import 'package:focusyn_app/theme/app_theme.dart'; // Application theming
 /// - Loading application settings
 /// - Preparing theme data
 void main() async {
-  await AppInit.initialize();
+  await AppInit.run();
   runApp(const MyApp());
 }
 
