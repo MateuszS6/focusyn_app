@@ -12,11 +12,11 @@ import '../main_screen.dart';
 /// - Error handling for failed login attempts
 /// - Navigation to signup page for new users
 /// - Automatic navigation to main screen on successful login
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SigninPage extends StatefulWidget {
+  const SigninPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SigninPage> createState() => _SigninPageState();
 }
 
 /// Manages the state of the login page, including:
@@ -24,7 +24,7 @@ class LoginPage extends StatefulWidget {
 /// - Loading state during authentication
 /// - Password visibility toggle
 /// - Error handling and user feedback
-class _LoginPageState extends State<LoginPage> {
+class _SigninPageState extends State<SigninPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool loading = false;

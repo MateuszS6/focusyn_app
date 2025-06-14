@@ -389,7 +389,7 @@ class _AccountPageState extends State<AccountPage> {
       // Finally navigate to login page
       if (mounted) {
         Navigator.of(context).pushAndRemoveUntil(
-          MaterialPageRoute(builder: (context) => const LoginPage()),
+          MaterialPageRoute(builder: (context) => const SigninPage()),
           (route) => false,
         );
       }

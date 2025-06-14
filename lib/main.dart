@@ -59,7 +59,7 @@ class MyApp extends StatelessWidget {
   ///
   /// This method implements the following routing logic:
   /// 1. If no user is logged in:
-  ///    - Returns [LoginPage] for authentication
+  ///    - Returns [SigninPage] for authentication
   /// 2. If user is logged in:
   ///    - Checks if onboarding is completed
   ///    - Returns [OnboardingPage] if not completed
@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
     // Check authentication state
     final currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser == null) {
-      return const LoginPage();
+      return const SigninPage();
     }
 
     // Route to appropriate screen

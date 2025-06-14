@@ -409,7 +409,7 @@ class _PrivacyPageState extends State<PrivacyPage> {
       if (!mounted) return;
       // Navigate to login page
       Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (_) => const LoginPage()),
+        MaterialPageRoute(builder: (_) => const SigninPage()),
         (route) => false,
       );
     } on FirebaseAuthException catch (e) {
