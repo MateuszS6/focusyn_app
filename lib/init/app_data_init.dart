@@ -66,9 +66,9 @@ class AppDataInit {
     if (!settingBox.containsKey(Keys.onboardingDone)) {
       settingBox.put(Keys.onboardingDone, false);
     }
-    if (!settingBox.containsKey(Keys.navBarTextBehaviour)) {
+    if (!settingBox.containsKey(Keys.navBarText)) {
       settingBox.put(
-        Keys.navBarTextBehaviour,
+        Keys.navBarText,
         NavigationDestinationLabelBehavior.alwaysShow.name,
       );
     }

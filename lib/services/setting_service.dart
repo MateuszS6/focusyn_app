@@ -19,7 +19,7 @@ class SettingService {
   /// Loads navigation bar text behavior setting
   static String getNavBarText() {
     return _box.get(
-      Keys.navBarTextBehaviour,
+      Keys.navBarText,
       defaultValue: NavigationDestinationLabelBehavior.alwaysShow.name,
     );
   }
@@ -44,7 +44,7 @@ class SettingService {
 
   /// Saves navigation bar text behavior setting
   static Future<void> setNavBarText(String value) async {
-    await _box.put(Keys.navBarTextBehaviour, value);
+    await _box.put(Keys.navBarText, value);
   }
 
   /// Saves notifications enabled setting
@@ -62,7 +62,7 @@ class SettingService {
   static Map<String, dynamic> getAllSettings() {
     return {
       Keys.onboardingDone: isOnboardingDone(),
-      Keys.navBarTextBehaviour: getNavBarText(),
+      Keys.navBarText: getNavBarText(),
       Keys.notisEnabled: isNotisEnabled(),
       Keys.notiHour: getNotificationTime().hour,
       Keys.notiMinute: getNotificationTime().minute,
@@ -73,7 +73,7 @@ class SettingService {
   static Future<void> updateAllSettings(Map<String, dynamic> settings) async {
     await setOnboardingDone(settings[Keys.onboardingDone] ?? false);
     await setNavBarText(
-      settings[Keys.navBarTextBehaviour] ??
+      settings[Keys.navBarText] ??
           NavigationDestinationLabelBehavior.alwaysShow.name,
     );
     await setNotisEnabled(settings[Keys.notisEnabled] ?? false);

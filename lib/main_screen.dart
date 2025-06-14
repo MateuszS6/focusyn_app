@@ -204,7 +204,7 @@ class _MainScreenState extends State<MainScreen> {
           final labelBehavior = NavigationDestinationLabelBehavior.values
               .byName(
                 box.get(
-                  Keys.navBarTextBehaviour,
+                  Keys.navBarText,
                   defaultValue:
                       NavigationDestinationLabelBehavior.alwaysShow.name,
                 ),

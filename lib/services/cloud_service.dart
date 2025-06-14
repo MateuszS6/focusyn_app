@@ -86,7 +86,7 @@ class CloudService {
       // Create initial brain points if it doesn't exist
       if (!userPointsDoc.exists) {
         await userPointsRef.set({
-          'points': 100,
+          Keys.brainPoints: 100,
           'lastReset': DateTime.now().toIso8601String(),
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
@@ -130,7 +130,6 @@ class CloudService {
     final userTasksRef = _userTasksRoot.doc(user.uid);
     final batch = _firestore.batch();
 
-    final taskBox = Hive.box<List>(Keys.taskBox);
     try {
       // Upload tasks for each category in a single batch operation
       for (final category in [
@@ -139,9 +138,8 @@ class CloudService {
         Keys.moments,
         Keys.thoughts,
       ]) {
-        final tasks = taskBox.get(category) ?? [];
-        final tasksRef = userTasksRef.collection(category).doc(category);
-        batch.set(tasksRef, {'items': tasks});
+        final tasks = _taskBox.get(category) ?? [];
+        batch.set(userTasksRef, {category: tasks});
       }
 
       await batch.commit();
@@ -176,8 +174,7 @@ class CloudService {
         Keys.thoughts,
       ]) {
         final filters = _filterBox.get(category) as List<dynamic>? ?? [];
-        final filtersRef = userFiltersRef.collection(category).doc(category);
-        batch.set(filtersRef, {'items': filters});
+        batch.set(userFiltersRef, {category: filters});
       }
 
       await batch.commit();
@@ -210,7 +207,7 @@ class CloudService {
 
       // Update brain points in Firestore
       await brainPointsRef.set({
-        'points': brainPoints,
+        'brainPoints': brainPoints,
         'lastReset': lastReset,
         'updatedAt': FieldValue.serverTimestamp(),
       });
@@ -299,7 +296,7 @@ class CloudService {
       if (brainPointsDoc.exists) {
         final data = brainPointsDoc.data();
         if (data != null) {
-          final cloudPoints = data['points'] as int? ?? 100;
+          final cloudPoints = data[Keys.brainPoints] as int? ?? 100;
           final cloudLastReset =
               data['lastReset'] as String? ?? DateTime.now().toIso8601String();
 
@@ -315,7 +312,7 @@ class CloudService {
 
             // Update cloud data to reflect reset
             await userBrainPointsRef.set({
-              'points': 100,
+              Keys.brainPoints: 100,
               'lastReset': now.toIso8601String(),
               'updatedAt': FieldValue.serverTimestamp(),
             });
@@ -334,15 +331,15 @@ class CloudService {
         Keys.thoughts,
       ]) {
         final tasksDoc =
-            await userTasksRef.collection(category).doc(category).get();
+            await userTasksRef.get();
         if (tasksDoc.exists) {
           final data = tasksDoc.data();
-          if (data != null && data['items'] != null) {
+          if (data != null && data[category] != null) {
             final localTasks = _taskBox.get(category) ?? [];
 
             // Only update if cloud data exists or local data is empty
-            if (data['items'].isNotEmpty || localTasks.isEmpty) {
-              await _taskBox.put(category, data['items']);
+            if (data[category].isNotEmpty || localTasks.isEmpty) {
+              await _taskBox.put(category, data[category]);
             }
           }
         }
@@ -356,16 +353,16 @@ class CloudService {
         Keys.thoughts,
       ]) {
         final filtersDoc =
-            await userFiltersRef.collection(category).doc(category).get();
+            await userFiltersRef.get();
         if (filtersDoc.exists) {
           final data = filtersDoc.data();
-          if (data != null && data['items'] != null) {
+          if (data != null && data[category] != null) {
             final localFilters =
                 _filterBox.get(category) as List<dynamic>? ?? [];
 
             // Only update if cloud data exists or local data is empty
-            if (data['items'].isNotEmpty || localFilters.isEmpty) {
-              await _filterBox.put(category, data['items']);
+            if (data[category].isNotEmpty || localFilters.isEmpty) {
+              await _filterBox.put(category, data[category]);
             }
           }
         }
@@ -395,13 +392,13 @@ class CloudService {
       final historyDoc = await historyRef.get();
       if (historyDoc.exists) {
         final data = historyDoc.data();
-        if (data != null && data['items'] != null) {
+        if (data != null && data['flows'] != null) {
           final localHistory =
               _historyBox.get('flow_history') as List<dynamic>? ?? [];
 
           // Only update if cloud data exists or local data is empty
-          if (data['items'].isNotEmpty || localHistory.isEmpty) {
-            await _historyBox.put('flow_history', data['items']);
+          if (data['flows'].isNotEmpty || localHistory.isEmpty) {
+            await _historyBox.put('flow_history', data['flows']);
           } else {
             throw Exception(
               'DEBUG: Preserving local flow history (${localHistory.length} items)',
@@ -532,7 +529,12 @@ class CloudService {
       final userSettingsRef = _userSettingsRoot.doc(user.uid);
 
       // Delete all category subcollections
-      for (final category in [Keys.actions, Keys.flows, Keys.moments, Keys.thoughts]) {
+      for (final category in [
+        Keys.actions,
+        Keys.flows,
+        Keys.moments,
+        Keys.thoughts,
+      ]) {
         await _deleteCollection(userTasksRef.collection(category));
         await _deleteCollection(userFiltersRef.collection(category));
       }
@@ -606,28 +608,30 @@ class CloudService {
     }
 
     try {
-      // Reset brain points
-      final brainPointsRef = _userBrainPointsRoot.doc(user.uid);
-      await brainPointsRef.set({
-        'points': 100,
-        'lastReset': DateTime.now().toIso8601String(),
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
-
       // Get references to user's root documents
       final userTasksRef = _userTasksRoot.doc(user.uid);
       final userFiltersRef = _userFiltersRoot.doc(user.uid);
+      final userPointsRef = _userBrainPointsRoot.doc(user.uid);
       final userHistoryRef = _userHistoryRoot.doc(user.uid);
       final userSettingsRef = _userSettingsRoot.doc(user.uid);
 
       // Clear tasks and filters for each category
-      for (final category in [Keys.actions, Keys.flows, Keys.moments, Keys.thoughts]) {
-        final tasksCategoryRef = userTasksRef.collection(category).doc(category);
-        final filtersCategoryRef = userFiltersRef.collection(category).doc(category);
-        
-        await tasksCategoryRef.set({'items': []});
-        await filtersCategoryRef.set({'items': []});
+      for (final category in [
+        Keys.actions,
+        Keys.flows,
+        Keys.moments,
+        Keys.thoughts,
+      ]) {
+        await userTasksRef.set({category: []});
+        await userFiltersRef.set({category: []});
       }
+
+      // Reset brain points
+      await userPointsRef.set({
+        Keys.brainPoints: 100,
+        'lastReset': DateTime.now().toIso8601String(),
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
 
       // Clear flow history
       await userHistoryRef.set({
