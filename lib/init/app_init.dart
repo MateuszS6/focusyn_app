@@ -22,11 +22,11 @@ class AppInit {
   /// 4. Configures notifications
   /// 5. Loads environment variables
   /// 6. Initializes app data
-  static Future<void> initialize() async {
+  static Future<void> run() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await _initializeHive();
-    await _initializeFirebase();
-    await _initializeNotifications();
+    await _initHive();
+    await _initFirebase();
+    await _initNotifications();
     await dotenv.load();
     await AppDataInit.run();
   }
@@ -36,7 +36,7 @@ class AppInit {
   /// 1. Initializes Hive with Flutter
   /// 2. Registers the Task adapter
   /// 3. Opens all required Hive boxes for the app
-  static Future<void> _initializeHive() async {
+  static Future<void> _initHive() async {
     await Hive.initFlutter();
 
     // Register adapters
@@ -47,16 +47,16 @@ class AppInit {
     // Open boxes
     await Hive.openBox<List>(Keys.taskBox);
     await Hive.openBox(Keys.filterBox);
+    await Hive.openBox(Keys.brainBox);
+    await Hive.openBox(Keys.historyBox);
     await Hive.openBox(Keys.settingBox);
     await Hive.openBox(Keys.chatBox);
-    await Hive.openBox(Keys.historyBox);
-    await Hive.openBox(Keys.brainBox);
   }
 
   /// Initializes Firebase services using platform-specific options.
   /// This method sets up Firebase Core with the appropriate configuration
   /// for the current platform (iOS/Android).
-  static Future<void> _initializeFirebase() async {
+  static Future<void> _initFirebase() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
@@ -67,9 +67,9 @@ class AppInit {
   /// 1. Initializes the notification service
   /// 2. Checks if notifications are enabled in settings
   /// 3. If enabled, schedules a daily quote notification at the configured time
-  static Future<void> _initializeNotifications() async {
+  static Future<void> _initNotifications() async {
     await NotificationService.initialize();
-    final box = await Hive.openBox(Keys.settingBox);
+    final box = Hive.box(Keys.settingBox);
     final notificationsEnabled = box.get(
       Keys.notisEnabled,
       defaultValue: false,
