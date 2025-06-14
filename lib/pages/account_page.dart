@@ -5,7 +5,7 @@ import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/pages/settings_page.dart';
 import 'package:focusyn_app/pages/privacy_page.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
-import '../pages/login_page.dart';
+import 'signin_page.dart';
 import 'package:focusyn_app/services/cloud_service.dart';
 
 /// A page that provides user account management functionality.

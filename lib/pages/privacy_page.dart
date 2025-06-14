@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:focusyn_app/utils/my_app_bar.dart';
-import 'package:focusyn_app/pages/login_page.dart';
+import 'package:focusyn_app/pages/signin_page.dart';
 import 'package:focusyn_app/constants/keys.dart';
 
 /// A page that provides privacy and security information and controls.

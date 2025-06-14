@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/keys.dart'; // Application constants
 import 'package:focusyn_app/init/app_init.dart'; // Application initialization
 import 'package:focusyn_app/main_screen.dart'; // Main application screen
-import 'package:focusyn_app/pages/login_page.dart'; // User authentication
+import 'package:focusyn_app/pages/signin_page.dart'; // User authentication
 import 'package:focusyn_app/pages/onboarding_page.dart'; // First-time user experience
 import 'package:focusyn_app/services/setting_service.dart';
 import 'package:focusyn_app/theme/app_theme.dart'; // Application theming
