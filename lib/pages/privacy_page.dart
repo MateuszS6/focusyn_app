@@ -397,9 +397,6 @@ class _PrivacyPageState extends State<PrivacyPage> {
       );
       await user.reauthenticateWithCredential(credential);
 
-      // Clear local data first
-      await CloudService.clearLocalData();
-
       // Delete user data from Firestore
       await CloudService.deleteUserData();
 

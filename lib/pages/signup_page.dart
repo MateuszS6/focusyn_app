@@ -72,7 +72,7 @@ class _SignUpPageState extends State<SignUpPage> {
       FilterService.initDefaultFilters();
 
       // Initialize brain points system
-      BrainService.initBrainPoints();
+      BrainService.initPoints();
 
       // Sync all initialized data to Firestore
       await CloudService.syncOnLogin();

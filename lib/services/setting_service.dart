@@ -75,4 +75,27 @@ class SettingService {
       ),
     );
   }
+
+  /// Resets all settings
+  static Future<void> resetLocalSettings() async {
+    await setNavBarText(NavigationDestinationLabelBehavior.alwaysShow.name);
+    await setNotisEnabled(false);
+    await setNotiTime(const TimeOfDay(hour: 9, minute: 0));
+  }
+
+  /// Initializes default settings if not already set
+  static void initSettings() {
+    if (!_box.containsKey(Keys.navBarText)) {
+      _box.put(Keys.navBarText, NavigationDestinationLabelBehavior.alwaysShow.name);
+    }
+    if (!_box.containsKey(Keys.notisEnabled)) {
+      _box.put(Keys.notisEnabled, false);
+    }
+    if (!_box.containsKey(Keys.notiHour)) {
+      _box.put(Keys.notiHour, 9);
+    }
+    if (!_box.containsKey(Keys.notiMinute)) {
+      _box.put(Keys.notiMinute, 0);
+    }
+  }
 }

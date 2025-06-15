@@ -58,4 +58,30 @@ class FilterService {
       rethrow;
     }
   }
+
+  /// Clears all filters from local storage.
+  static void clearLocalFilters() {
+    _box.putAll({
+      Keys.actions: [Keys.all],
+      Keys.flows: [Keys.all],
+      Keys.moments: [Keys.all],
+      Keys.thoughts: [Keys.all],
+    });
+  }
+
+  static void initFilters() {
+    // Initialize filter categories with default 'All' option
+    if (!_box.containsKey(Keys.actions)) {
+      _box.put(Keys.actions, [Keys.all]);
+    }
+    if (!_box.containsKey(Keys.flows)) {
+      _box.put(Keys.flows, [Keys.all]);
+    }
+    if (!_box.containsKey(Keys.moments)) {
+      _box.put(Keys.moments, [Keys.all]);
+    }
+    if (!_box.containsKey(Keys.thoughts)) {
+      _box.put(Keys.thoughts, [Keys.all]);
+    }
+  }
 }

@@ -1,7 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/services/brain_service.dart';
+import 'package:focusyn_app/services/filter_service.dart';
+import 'package:focusyn_app/services/history_service.dart';
 import 'package:focusyn_app/services/setting_service.dart';
+import 'package:focusyn_app/services/task_service.dart';
 import 'package:hive/hive.dart';
 
 /// A service class for managing cloud synchronization of app data.
@@ -21,7 +25,6 @@ class CloudService {
   static final _filterBox = Hive.box(Keys.filterBox);
   static final _brainBox = Hive.box(Keys.brainBox);
   static final _historyBox = Hive.box(Keys.historyBox);
-  static final _settingBox = Hive.box(Keys.settingBox);
 
   static final _userTasksRoot = _firestore.collection('user_tasks');
   static final _userFiltersRoot = _firestore.collection('user_filters');
@@ -129,10 +132,13 @@ class CloudService {
     }
 
     final userTasksRef = _userTasksRoot.doc(user.uid);
-    final batch = _firestore.batch();
 
     try {
-      // Upload tasks for each category in a single batch operation
+      Map<String, dynamic> data = {
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      // Add each category's tasks to the document data
       for (final category in [
         Keys.actions,
         Keys.flows,
@@ -140,10 +146,11 @@ class CloudService {
         Keys.thoughts,
       ]) {
         final tasks = _taskBox.get(category) ?? [];
-        batch.set(userTasksRef, {category: tasks});
+        data[category] = tasks.map((task) => task as Map<String, dynamic>).toList();
       }
 
-      await batch.commit();
+      // Upload all categories in a single operation
+      await userTasksRef.set(data, SetOptions(merge: true));
     } catch (e) {
       rethrow;
     }
@@ -164,10 +171,13 @@ class CloudService {
     }
 
     final userFiltersRef = _userFiltersRoot.doc(user.uid);
-    final batch = _firestore.batch();
 
     try {
-      // Upload filters for each category in a single batch operation
+      Map<String, dynamic> data = {
+        'updatedAt': FieldValue.serverTimestamp(),
+      };
+
+      // Add each category's filters to the document data
       for (final category in [
         Keys.actions,
         Keys.flows,
@@ -175,10 +185,11 @@ class CloudService {
         Keys.thoughts,
       ]) {
         final filters = _filterBox.get(category) as List<dynamic>? ?? [];
-        batch.set(userFiltersRef, {category: filters});
+        data[category] = filters;
       }
 
-      await batch.commit();
+      // Upload all categories in a single operation
+      await userFiltersRef.set(data, SetOptions(merge: true));
     } catch (e) {
       rethrow;
     }
@@ -328,45 +339,48 @@ class CloudService {
       }
 
       // Download tasks for each category
-      for (final category in [
-        Keys.actions,
-        Keys.flows,
-        Keys.moments,
-        Keys.thoughts,
-      ]) {
-        final tasksDoc =
-            await userTasksRef.get();
-        if (tasksDoc.exists) {
-          final data = tasksDoc.data();
-          if (data != null && data[category] != null) {
-            final localTasks = _taskBox.get(category) ?? [];
+      final userTasksDoc = await userTasksRef.get();
+      if (userTasksDoc.exists) {
+        final data = userTasksDoc.data();
+        if (data != null) {
+          for (final category in [
+            Keys.actions,
+            Keys.flows,
+            Keys.moments,
+            Keys.thoughts,
+          ]) {
+            if (data[category] != null) {
+              final cloudTasks = List<dynamic>.from(data[category]);
+              final localTasks = _taskBox.get(category) ?? [];
 
-            // Only update if cloud data exists or local data is empty
-            if (data[category].isNotEmpty || localTasks.isEmpty) {
-              await _taskBox.put(category, data[category]);
+              // Only update if cloud data exists or local data is empty
+              if (cloudTasks.isNotEmpty || localTasks.isEmpty) {
+                await _taskBox.put(category, cloudTasks);
+              }
             }
           }
         }
       }
 
       // Download filters for each category
-      for (final category in [
-        Keys.actions,
-        Keys.flows,
-        Keys.moments,
-        Keys.thoughts,
-      ]) {
-        final filtersDoc =
-            await userFiltersRef.get();
-        if (filtersDoc.exists) {
-          final data = filtersDoc.data();
-          if (data != null && data[category] != null) {
-            final localFilters =
-                _filterBox.get(category) as List<dynamic>? ?? [];
+      final userFiltersDoc = await userFiltersRef.get();
+      if (userFiltersDoc.exists) {
+        final data = userFiltersDoc.data();
+        if (data != null) {
+          for (final category in [
+            Keys.actions,
+            Keys.flows,
+            Keys.moments,
+            Keys.thoughts,
+          ]) {
+            if (data[category] != null) {
+              final cloudFilters = List<dynamic>.from(data[category]);
+              final localFilters = _filterBox.get(category) as List<dynamic>? ?? [];
 
-            // Only update if cloud data exists or local data is empty
-            if (data[category].isNotEmpty || localFilters.isEmpty) {
-              await _filterBox.put(category, data[category]);
+              // Only update if cloud data exists or local data is empty
+              if (cloudFilters.isNotEmpty || localFilters.isEmpty) {
+                await _filterBox.put(category, cloudFilters);
+              }
             }
           }
         }
@@ -492,18 +506,20 @@ class CloudService {
   /// Throws an exception if clearing fails
   static Future<void> clearLocalData() async {
     try {
-      // Clear all task categories
-      await _taskBox.clear();
-      await _filterBox.clear();
+      // Clear all task data
+      TaskService.clearLocalTasks();
+
+      // Clear all filter lists
+      FilterService.clearLocalFilters();
 
       // Reset brain points
-      await _brainBox.clear();
+      BrainService.resetLocalPoints();
 
       // Clear flow history
-      await _historyBox.clear();
+      HistoryService.clearLocalHistory();
 
       // Clear settings
-      await _settingBox.clear();
+      SettingService.resetLocalSettings();
     } catch (e) {
       rethrow;
     }

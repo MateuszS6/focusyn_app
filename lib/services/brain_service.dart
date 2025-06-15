@@ -96,13 +96,9 @@ class BrainService {
   /// This method:
   /// - Sets points to maximum value
   /// - Updates the last reset date
-  /// - Triggers cloud synchronization
-  ///
-  /// Throws an exception if the update or sync fails
-  static Future<void> reset() async {
+  static void resetLocalPoints() {
     _box.put(_pointsKey, _maxPoints);
     _box.put(_dateKey, DateTime.now().toIso8601String());
-    await CloudService.uploadBrainPoints();
   }
 
   /// Checks if points need to be reset based on date.
@@ -114,7 +110,8 @@ class BrainService {
     // Initialize points if no reset date exists
     final lastReset = _box.get(_dateKey) as String?;
     if (lastReset == null) {
-      reset();
+      resetLocalPoints();
+      CloudService.uploadBrainPoints();
       return;
     }
 
@@ -124,13 +121,14 @@ class BrainService {
     if (now.year > lastResetDate.year ||
         now.month > lastResetDate.month ||
         now.day > lastResetDate.day) {
-      reset();
+      resetLocalPoints();
+      CloudService.uploadBrainPoints();
     }
   }
 
     /// Initializes brain points system with starting values
-  static void initBrainPoints() {
+  static void initPoints() {
     _box.put(Keys.brainPoints, 100);
-    _box.put('lastReset', DateTime.now().toIso8601String());
+    _box.put(_dateKey, DateTime.now().toIso8601String());
   }
 }

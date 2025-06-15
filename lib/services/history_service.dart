@@ -55,11 +55,14 @@ class HistoryService {
   /// This method:
   /// - Clears all stored completion dates
   /// - Updates local storage with an empty list
-  /// - Triggers cloud synchronization
-  ///
-  /// Throws an exception if the update or sync fails
-  static Future<void> clearHistory() async {
-    await _box.put(_historyKey, <String>[]);
-    await CloudService.uploadFlowHistory();
+  static void clearLocalHistory() {
+    _box.put(_historyKey, <String>[]);
+  }
+
+  // Initializes flow history tracking
+  static void initHistory() {
+    if (!_box.containsKey('flow_history')) {
+      _box.put('flow_history', <String>[]);
+    }
   }
 }

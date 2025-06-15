@@ -141,4 +141,30 @@ class TaskService {
       rethrow;
     }
   }
+
+  /// Clears all tasks from local storage and syncs to the cloud.
+  static void clearLocalTasks() {
+    _box.putAll({
+      Keys.actions: [],
+      Keys.flows: [],
+      Keys.moments: [],
+      Keys.thoughts: [],
+    });
+  }
+
+  /// Initializes task categories with empty lists if not already set
+  static void initTasks() {
+    if (!_box.containsKey(Keys.actions)) {
+      _box.put(Keys.actions, []);
+    }
+    if (!_box.containsKey(Keys.flows)) {
+      _box.put(Keys.flows, []);
+    }
+    if (!_box.containsKey(Keys.moments)) {
+      _box.put(Keys.moments, []);
+    }
+    if (!_box.containsKey(Keys.thoughts)) {
+      _box.put(Keys.thoughts, []);
+    }
+  }
 }
