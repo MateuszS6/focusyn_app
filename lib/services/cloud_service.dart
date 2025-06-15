@@ -101,7 +101,8 @@ class CloudService {
       // Create initial settings if it doesn't exist
       if (!userSettingsDoc.exists) {
         await userSettingsRef.set({
-          'items': SettingService.getAllSettings(),
+          Keys.general: SettingService.getGeneralSettings(),
+          Keys.notifications: SettingService.getNotificationSettings(),
           'createdAt': FieldValue.serverTimestamp(),
           'updatedAt': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
@@ -256,11 +257,14 @@ class CloudService {
 
     try {
       // Get current settings using SettingService
-      final settings = SettingService.getAllSettings();
+      final general = SettingService.getGeneralSettings();
+      final notis = SettingService.getNotificationSettings();
+
 
       // Update settings in Firestore
       await settingsRef.set({
-        'items': settings,
+        Keys.general: general,
+        Keys.notifications: notis,
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     } catch (e) {
@@ -423,10 +427,12 @@ class CloudService {
       final settingsDoc = await settingsRef.get();
       if (settingsDoc.exists) {
         final data = settingsDoc.data();
-        if (data != null && data['items'] != null) {
+        if (data != null && data[Keys.general] != null && 
+            data[Keys.notifications] != null) {
           // Update settings using SettingService
           await SettingService.updateAllSettings(
-            Map<String, dynamic>.from(data['items']),
+            Map<String, dynamic>.from(data[Keys.general]),
+            Map<String, dynamic>.from(data[Keys.notifications]),
           );
         }
       }
@@ -478,10 +484,10 @@ class CloudService {
 
   /// Clears all local data.
   /// This method:
-  /// - Clears tasks for all categories
-  /// - Clears filters for all categories
+  /// - Clears tasks and filters for all categories
   /// - Resets brain points to default value
   /// - Clears flow history
+  /// - Clears settings
   ///
   /// Throws an exception if clearing fails
   static Future<void> clearLocalData() async {
@@ -490,13 +496,13 @@ class CloudService {
       await _taskBox.clear();
       await _filterBox.clear();
 
-      // Reset brain points to default values
+      // Reset brain points
       await _brainBox.clear();
 
       // Clear flow history
       await _historyBox.clear();
 
-      // Reset settings to defaults using SettingService
+      // Clear settings
       await _settingBox.clear();
     } catch (e) {
       rethrow;
@@ -641,7 +647,8 @@ class CloudService {
 
       // Reset settings to defaults
       await userSettingsRef.set({
-        'items': SettingService.getAllSettings(),
+        Keys.general: SettingService.getGeneralSettings(),
+        Keys.notifications: SettingService.getNotificationSettings(),
         'updatedAt': FieldValue.serverTimestamp(),
       }, SetOptions(merge: true));
     } catch (e) {

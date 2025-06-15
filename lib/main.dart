@@ -9,8 +9,6 @@ import 'package:focusyn_app/constants/keys.dart'; // Application constants
 import 'package:focusyn_app/init/app_init.dart'; // Application initialization
 import 'package:focusyn_app/main_screen.dart'; // Main application screen
 import 'package:focusyn_app/pages/signin_page.dart'; // User authentication
-import 'package:focusyn_app/pages/onboarding_page.dart'; // First-time user experience
-import 'package:focusyn_app/services/setting_service.dart';
 import 'package:focusyn_app/theme/app_theme.dart'; // Application theming
 
 /// The entry point of the Focusyn application.
@@ -61,9 +59,7 @@ class MyApp extends StatelessWidget {
   /// 1. If no user is logged in:
   ///    - Returns [SigninPage] for authentication
   /// 2. If user is logged in:
-  ///    - Checks if onboarding is completed
-  ///    - Returns [OnboardingPage] if not completed
-  ///    - Returns [MainScreen] if onboarding is completed
+  ///    - Returns [MainScreen] as onboarding is completed
   ///
   /// The routing decision is based on:
   /// - Firebase authentication state
@@ -75,7 +71,7 @@ class MyApp extends StatelessWidget {
       return const SigninPage();
     }
 
-    // Route to appropriate screen
-    return SettingService.isOnboardingDone() ? const MainScreen() : const OnboardingPage();
+    // Route to main screen (onboarding already completed)
+    return const MainScreen();
   }
 }

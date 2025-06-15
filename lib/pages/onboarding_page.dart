@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:focusyn_app/constants/keys.dart';
 import 'package:focusyn_app/constants/theme_icons.dart';
 import 'package:focusyn_app/main_screen.dart';
-import 'package:focusyn_app/services/setting_service.dart';
 
 /// A page that introduces new users to the app's features and functionality.
 ///
@@ -26,11 +25,11 @@ class OnboardingPage extends StatefulWidget {
 /// - Completion state management
 class _OnboardingPageState extends State<OnboardingPage> {
   // Page controller for managing slide transitions
-  final PageController _pageController = PageController();
+  final PageController _slideController = PageController();
 
   // Current page index and total number of pages
-  int _currentPage = 0;
-  final int _totalPages = 5;
+  int _currentSlide = 0;
+  final int _totalSlides = 5;
 
   /// List of onboarding items, each representing a slide with:
   /// - Title and description
@@ -76,24 +75,19 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   void dispose() {
-    _pageController.dispose();
+    _slideController.dispose();
     super.dispose();
   }
 
   /// Handles page change events and updates the current page index
-  void _onPageChanged(int page) {
+  void _onSlideChanged(int slide) {
     setState(() {
-      _currentPage = page;
+      _currentSlide = slide;
     });
   }
 
-  /// Completes the onboarding process by:
-  /// 1. Marking onboarding as completed in settings
-  /// 2. Navigating to the main screen
+  /// Completes the onboarding process by navigating to the main screen
   void _completeOnboarding() async {
-    // Mark onboarding as completed
-    SettingService.setOnboardingDone(true);
-
     if (mounted) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => const MainScreen()),
@@ -111,11 +105,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
             // Onboarding Slides
             Expanded(
               child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: _onPageChanged,
-                itemCount: _totalPages,
+                controller: _slideController,
+                onPageChanged: _onSlideChanged,
+                itemCount: _totalSlides,
                 itemBuilder: (context, index) {
-                  return _buildPage(_items[index]);
+                  return _buildSlide(_items[index]);
                 },
               ),
             ),
@@ -131,7 +125,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   /// - Visual element (icon or image)
   /// - Title and description
   /// - Consistent styling and layout
-  Widget _buildPage(OnboardingItem item) {
+  Widget _buildSlide(OnboardingItem item) {
     return Padding(
       padding: const EdgeInsets.all(24.0),
       child: Column(
@@ -182,11 +176,11 @@ class _OnboardingPageState extends State<OnboardingPage> {
           // Page Indicators
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(_totalPages, (index) => _buildDot(index)),
+            children: List.generate(_totalSlides, (index) => _buildDot(index)),
           ),
           const SizedBox(height: 24),
           // Navigation Buttons
-          if (_currentPage == _totalPages - 1)
+          if (_currentSlide == _totalSlides - 1)
             // Get Started Button (on last page)
             SizedBox(
               width: double.infinity,
@@ -217,7 +211,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    _pageController.nextPage(
+                    _slideController.nextPage(
                       duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
@@ -253,7 +247,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: _currentPage == index ? Colors.blue : Colors.grey.shade300,
+        color: _currentSlide == index ? Colors.blue : Colors.grey.shade300,
       ),
     );
   }

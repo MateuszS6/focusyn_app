@@ -63,9 +63,6 @@ class AppDataInit {
     }
 
     // Initialize notification settings with default values
-    if (!settingBox.containsKey(Keys.onboardingDone)) {
-      settingBox.put(Keys.onboardingDone, false);
-    }
     if (!settingBox.containsKey(Keys.navBarText)) {
       settingBox.put(
         Keys.navBarText,
