@@ -1,20 +1,18 @@
-// Core Flutter imports for UI components and state management
-import 'package:flutter/material.dart';
+import 'dart:math' as math; // Math utilities
 
-// Application-specific imports
-import 'package:focusyn_app/constants/theme_icons.dart'; // Custom icon definitions
-import 'package:focusyn_app/services/task_service.dart'; // Task management service
-import 'package:focusyn_app/services/brain_service.dart'; // Brain points management
-import 'package:focusyn_app/services/history_service.dart'; // Flow session history
+import 'package:firebase_auth/firebase_auth.dart'; // Firebase authentication
+import 'package:fl_chart/fl_chart.dart'; // Chart visualization library
+import 'package:flutter/material.dart'; // Core Flutter imports for UI components and state management
 import 'package:focusyn_app/constants/keys.dart'; // Application constants and keys
 import 'package:focusyn_app/constants/quotes.dart'; // Daily motivational quotes
+import 'package:focusyn_app/constants/theme_icons.dart'; // Custom icon definitions
 import 'package:focusyn_app/pages/account_page.dart'; // User account page
-import 'package:focusyn_app/pages/task_page.dart'; // Task management page
-import 'package:fl_chart/fl_chart.dart'; // Chart visualization library
-import 'package:firebase_auth/firebase_auth.dart'; // Firebase authentication
-import 'dart:math' as math; // Math utilities
 import 'package:focusyn_app/pages/onboarding_page.dart'; // User onboarding page
+import 'package:focusyn_app/pages/task_page.dart'; // Task management page
+import 'package:focusyn_app/services/brain_service.dart'; // Brain points management
 import 'package:focusyn_app/services/cloud_service.dart'; // Cloud synchronization
+import 'package:focusyn_app/services/history_service.dart'; // Flow session history
+import 'package:focusyn_app/services/task_service.dart'; // Task management service
 import 'package:focusyn_app/utils/my_scroll_shadow.dart'; // Custom scroll shadow widget
 import 'package:hive/hive.dart'; // Local storage
 
@@ -46,14 +44,14 @@ import 'package:hive/hive.dart'; // Local storage
 /// - Adding new tasks
 /// - Managing brain points
 /// - Viewing detailed progress
-class TodayPage extends StatefulWidget {
-  const TodayPage({super.key});
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({super.key});
 
   @override
-  State<TodayPage> createState() => _TodayPageState();
+  State<DashboardPage> createState() => _DashboardPageState();
 }
 
-/// The state class for [TodayPage].
+/// The state class for [DashboardPage].
 ///
 /// This class manages:
 /// - Timer state for focus sessions
@@ -72,7 +70,7 @@ class TodayPage extends StatefulWidget {
 /// - User interactions
 /// - Task completion events
 /// - Focus session state changes
-class _TodayPageState extends State<TodayPage> {
+class _DashboardPageState extends State<DashboardPage> {
   DateTime? _lastUpdateDate;
   List<DateTime>? _cachedCompletions;
   late int _points;

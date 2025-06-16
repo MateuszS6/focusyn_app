@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:focusyn_app/constants/theme_icons.dart';
-import 'package:focusyn_app/pages/focuses_page.dart';
-import 'package:focusyn_app/pages/dashboard.dart';
-import 'package:focusyn_app/pages/planner_page.dart';
-import 'package:focusyn_app/pages/ai_page.dart';
-import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:focusyn_app/constants/keys.dart';
+import 'package:focusyn_app/constants/theme_icons.dart';
+import 'package:focusyn_app/pages/ai_page.dart';
+import 'package:focusyn_app/pages/dashboard_page.dart';
+import 'package:focusyn_app/pages/focuses_page.dart';
+import 'package:focusyn_app/pages/planner_page.dart';
+import 'package:focusyn_app/services/cloud_service.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 /// The main screen of the application that serves as the root container.
@@ -56,7 +56,7 @@ class _MainScreenState extends State<MainScreen> {
 
   /// List of main application pages in navigation order.
   static const List<Widget> _pages = [
-    TodayPage(),
+    DashboardPage(),
     FocusesPage(),
     AIPage(),
     PlannerPage(),
