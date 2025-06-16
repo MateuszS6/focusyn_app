@@ -71,14 +71,6 @@ class _SettingsPageState extends State<SettingsPage> {
       // Ignore cloud sync errors, settings are still saved locally
       debugPrint('Failed to sync settings to cloud: $e');
     }
-    
-    // Upload settings to cloud
-    try {
-      await CloudService.uploadSettings();
-    } catch (e) {
-      // Ignore cloud sync errors, settings are still saved locally
-      debugPrint('Failed to sync settings to cloud: $e');
-    }
   }
 
   /// Shows a time picker dialog to select the notification time.

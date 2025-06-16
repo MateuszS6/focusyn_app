@@ -173,7 +173,7 @@ class _PlannerPageState extends State<PlannerPage> {
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 4),
         itemCount: allScheduledTasks.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (_, i) {
           final task = allScheduledTasks[i];
           // Determine if the task is a moment or flow

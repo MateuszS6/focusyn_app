@@ -474,7 +474,7 @@ class _TaskPageState extends State<TaskPage> {
     return MyScrollShadow(
       child: ListView.separated(
         itemCount: _filteredTasks.length,
-        separatorBuilder: (_, __) => const SizedBox(height: 12),
+        separatorBuilder: (_, _) => const SizedBox(height: 12),
         padding: const EdgeInsets.symmetric(vertical: 4),
         itemBuilder: (_, index) => _buildTaskTile(_filteredTasks[index]),
       ),
