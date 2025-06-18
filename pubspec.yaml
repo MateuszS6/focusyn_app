@@ -62,14 +62,14 @@ dependencies:
   flutter_timezone: ^4.1.0
   timezone: ^0.10.0
 
+  # Intl (for localisation)
+  intl: ^0.20.2
+
   # HTTP
   http: ^1.1.0
 
   # Scrolling
   flutter_scroll_shadow: ^1.0.0
-
-  # Intl
-  intl: ^0.20.2
 
   # Environment variables
   flutter_dotenv: ^5.1.0
@@ -83,10 +83,6 @@ dev_dependencies:
 
   # Launcher Icons
   flutter_launcher_icons: "^0.14.3"
-
-  # Mockito
-  mockito: ^5.4.4
-  build_runner: ^2.4.8
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
